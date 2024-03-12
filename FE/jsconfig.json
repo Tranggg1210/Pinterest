@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "types": ["vite-plugin-vue-layouts/client"]
+  },
+  "exclude": ["node_modules", "dist"]
+}

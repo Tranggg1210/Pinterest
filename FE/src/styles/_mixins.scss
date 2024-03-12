@@ -1,0 +1,52 @@
+@mixin tablet {
+  @media (min-width: 768px) and (max-width: 1024px) {
+    @content;
+  }
+}
+
+@mixin small-tablet {
+  @media (min-width: 480px) and (max-width: 768px) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media (min-width: 320px) and (max-width: 480px) {
+    @content;
+  }
+}
+
+@mixin flex($justi: unset, $align: unset) {
+  display: flex;
+  justify-content: $justi;
+  align-items: $align;
+}
+
+@mixin position($type: relative, $t: unset, $r: unset, $b: unset, $l: unset, $index: unset) {
+  position: $type;
+  top: $t;
+  left: $l;
+  right: $r;
+  bottom: $b;
+  z-index: $index;
+}
+
+@mixin title-main($color: #000, $fs: 16px, $f-weight: 400, $t-align: left) {
+  color: $color;
+  text-align: $t-align;
+
+  font: {
+    size: $fs;
+    weight: $f-weight;
+  }
+}
+
+@mixin truncate-text($max-lines: 1, $max-width: 100%, $line-height: 1.2em) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $max-lines;
+  -webkit-box-orient: vertical;
+  max-width: $max-width;
+  line-height: $line-height;
+}

@@ -1,0 +1,72 @@
+@use './font';
+@use './variables';
+@use './mixins';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+p {
+  margin: 10px 0;
+}
+
+.container {
+  @include mixins.flex(center);
+  background-color: $white-color;
+  overflow: hidden;
+}
+
+.wide {
+  width: 1200px;
+
+  @include mixins.mobile {
+    width: 90%;
+  }
+
+  @include mixins.small-tablet {
+    width: 90%;
+  }
+
+  @include mixins.tablet {
+    width: 90%;
+  }
+}
+
+.pad40-0-60 {
+  padding: 40px 0 60px;
+
+  @include mixins.mobile {
+    padding: 20px 0 40px;
+
+  }
+
+  @include mixins.small-tablet {
+    padding: 24px 0 44px;
+  }
+}
+
+.home-title {
+  font-family: Arial, Helvetica, sans-serif;
+  @include mixins.title-main(#212121, $fs: 40px, $f-weight: 600);
+  margin: 24px 0 36px;
+
+  @include mixins.mobile {
+    font-size: 32px;
+  }
+
+}
+
+svg {
+  margin-right: 6px;
+}
