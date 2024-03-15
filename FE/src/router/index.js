@@ -12,8 +12,8 @@ const router = createRouter({
 });
 router.beforeEach(auth);
 router.afterEach((to) => {
-  if (to.path === '/') document.title = 'pinterest';
-  else document.title = 'pinterest - ' + to.name;
+  if (to.path === '/') document.title = 'pixelpalette';
+  else document.title = 'pixelpalette - ' + to.name;
 });
 
 export default router;

@@ -1,4 +1,4 @@
-# PINTEREST
+# PIXELPALETTE
 
 Clone social networking site website using Vite + Vue3 + APS.NET and many features.
 
