@@ -1,5 +1,6 @@
 <template>
   <!-- Header -->
+  <HfHeader/>
   <!-- Main -->
   <router-view />
 
