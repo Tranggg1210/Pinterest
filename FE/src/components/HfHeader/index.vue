@@ -61,6 +61,7 @@ const show = ref(false);
     top: 0;
     left: 0;
     right: 0;
+    z-index: 1000;
 }
 .header>.wide{
     @include flex(space-between, center)
