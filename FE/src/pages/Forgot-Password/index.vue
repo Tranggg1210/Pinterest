@@ -104,6 +104,9 @@ const handleForgotPassword = async() => {
       &:hover{
         background-color: $black-color;
       }
+      @include mobile{
+        width: 100%;
+      }
     }
 
     @include mobile{
