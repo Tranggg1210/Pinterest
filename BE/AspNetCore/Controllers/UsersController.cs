@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PixelPalette.Interfaces;
 using PixelPalette.Models;
-using PixelPalette.Repositories;
 
 namespace PixelPalette.Controllers
 {
@@ -16,7 +16,7 @@ namespace PixelPalette.Controllers
             _userRepo = repo;
         }
         [HttpGet]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> GetAllUsers()
         {
             try
@@ -29,13 +29,14 @@ namespace PixelPalette.Controllers
             }
         }
         [HttpGet("{id}")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _userRepo.GetUserByIdAsync(id);
             return user == null ? NotFound() : Ok(user);
         }
         [HttpPost]
+        //[Authorize]
         public async Task<IActionResult> AddUser(UserModel model)
         {
             try
@@ -50,7 +51,7 @@ namespace PixelPalette.Controllers
             }
         }
         [HttpPut("{id}")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> UpdateUser(int id, UserModel model)
         {
             try
@@ -64,7 +65,7 @@ namespace PixelPalette.Controllers
             }
         }
         [HttpDelete]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> DeleteUser(int id)
         {
             try

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PixelPalette.Extensions
 {
-    public static class AuthencationExtensions
+    public static class Authencation
     {
         public static void AddAuthencation(
             this IServiceCollection services, IConfiguration configuration)

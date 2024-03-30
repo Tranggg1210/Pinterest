@@ -19,7 +19,7 @@ namespace PixelPalette.Entities
         public string? Introduction { get; set; }
         public DateTime Birthday { get; set; }
         public bool Gender { get; set; }
-        public string? Country { get; set; } = null!;
+        public string? Country { get; set; }
 
         public virtual ICollection<Collection> Collections { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }

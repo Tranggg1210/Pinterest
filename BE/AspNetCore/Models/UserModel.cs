@@ -10,7 +10,6 @@
         public string Email { get; set; } = null!;
         public DateTime Birthday { get; set; }
         public bool Gender { get; set; }
-        public string Country { get; set; } = null!;
-        public string Language { get; set; } = null!;
+        public string? Country { get; set; }
     }
 }

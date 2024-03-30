@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using PixelPalette.Data;
 using PixelPalette.Entities;
+using PixelPalette.Interfaces;
 using PixelPalette.Models;
 
 namespace PixelPalette.Repositories

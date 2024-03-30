@@ -1,7 +1,7 @@
 ﻿using PixelPalette.Entities;
 using PixelPalette.Models;
 
-namespace PixelPalette.Repositories
+namespace PixelPalette.Interfaces
 {
     public interface IUserRepository
     {

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using PixelPalette.Interfaces;
 using PixelPalette.Models;
-using PixelPalette.Repositories;
 using System.Security.Claims;
 
 namespace PixelPalette.Controllers
