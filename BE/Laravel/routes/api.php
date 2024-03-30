@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\ForgotController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\RegisterController;
+use App\Http\Controllers\Api\SearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,3 +23,6 @@ use Illuminate\Support\Facades\Route;
 // });
 Route::post('/register',[RegisterController::class,'register']) -> name('register');
 Route::post('/login',[LoginController::class,'login']) -> name('login');
+Route::post('/forgot',[ForgotController::class,'forgot']) -> name('forgot');
+Route::get('/search/{keyword?}',[SearchController::class,'search']) -> name('search');
+
