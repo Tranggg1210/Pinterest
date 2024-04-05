@@ -28,10 +28,10 @@ class Handler extends ExceptionHandler
             //
         });
     }
-    public function render($request, Throwable $e)
-    {
-        if ($e instanceof MethodNotAllowedHttpException) {
-            return redirect()->back() -> with('error', 'Sai phương thức request');
-        }
-    }
+    // public function render($request, Throwable $e)
+    // {
+    //     if ($e instanceof MethodNotAllowedHttpException) {
+    //         return redirect()->back() -> with('error', 'Sai phương thức request');
+    //     }
+    // }
 }

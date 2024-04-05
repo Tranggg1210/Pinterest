@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class User extends Model
 {
     protected $table = 'user';
-    const CREATED_AT = 'token_created';
-    const UPDATED_AT = 'token_updated';
+    public $timestamps = false;
     use HasFactory;
 }

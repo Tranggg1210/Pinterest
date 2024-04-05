@@ -21,11 +21,10 @@ class ForgotController extends Controller
         // ]);
         $user = User::where('email', $request->email)->first();
             if ($user) {
-                $account = Account::where('user_id', $user->id)->first();
                 $password = Str::random(8);
-                $account->token = Str::random(32);
-                $account->password = Hash::make($password);
-                $account->save();
+                $user->Token = Str::random(32);
+                $user->PasswordHash = Hash::make($password);
+                $user->save();
                try {
                     Mail::to($user->email)->send(new ForgotMail($user, $password));
                     return response()->json([

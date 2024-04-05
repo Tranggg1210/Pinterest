@@ -12,8 +12,8 @@ class SearchController extends Controller
     public function search(Request $request){
         $keyword = $request -> keyword;
         if(isset($keyword)){
-            $users = User::where('first_name','LIKE', '%'. $keyword . '%') -> orWhere('last_name','LIKE', '%'. $keyword . '%') -> get();
-            $posts = Post::where('caption', 'LIKE', '%'.$keyword.'%')->get();
+            $users = User::where('FirstName','LIKE', '%'. $keyword . '%') -> orWhere('LastName','LIKE', '%'. $keyword . '%') -> get();
+            $posts = Post::where('Caption', 'LIKE', '%'.$keyword.'%')->get();
             return response()->json([
                 'status' => 'success',
                 'data' => [

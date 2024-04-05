@@ -15,15 +15,14 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-        $account = Account::where('username',$request -> username) ->first();
-        $check = Hash::check($request->password, $account->password); // check password
-        if(isset($account) && $check){
-            $user = User::where('id',$account -> user_id)->first();
+        $user = User::where('Email',$request -> Email) ->first();
+        $check = Hash::check($request->Password, $user->PasswordHash); // check password
+        if(isset($user) && $check){
             return response()->json([
              'success' => true,
              'data' => [
                 'user' => $user,
-                'token' => $account -> token
+                'token' => $user -> token
              ]
             ],200);
         }else{
