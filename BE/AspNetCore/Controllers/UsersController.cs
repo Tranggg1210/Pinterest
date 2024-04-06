@@ -7,6 +7,7 @@ namespace PixelPalette.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "v1")]
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepo;
@@ -15,8 +16,8 @@ namespace PixelPalette.Controllers
         {
             _userRepo = repo;
         }
-        [HttpGet]
-        //[Authorize]
+        [HttpGet("getUsers")]
+        [Authorize]
         public async Task<IActionResult> GetAllUsers()
         {
             try
@@ -25,57 +26,87 @@ namespace PixelPalette.Controllers
             }
             catch
             {
-                return BadRequest();
+                return BadRequest("Can't get list user successful!");
             }
         }
-        [HttpGet("{id}")]
-        //[Authorize]
+        [HttpGet("getUser/{id}")]
+        [Authorize]
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _userRepo.GetUserByIdAsync(id);
-            return user == null ? NotFound() : Ok(user);
+            return user == null ? NotFound($"Can't find user by id is {id}!") : Ok(user);
         }
-        [HttpPost]
-        //[Authorize]
-        public async Task<IActionResult> AddUser(UserModel model)
-        {
-            try
-            {
-                var newUserId = await _userRepo.AddUserAsync(model);
-                var newUser = await _userRepo.GetUserByIdAsync(newUserId);
-                return newUser == null ? NotFound() : Ok(newUser);
-            }
-            catch
-            {
-                return BadRequest();
-            }
-        }
-        [HttpPut("{id}")]
-        //[Authorize]
+
+        [HttpPut("updateUser/{id}")]
+        [Authorize]
         public async Task<IActionResult> UpdateUser(int id, UserModel model)
         {
             try
             {
                 await _userRepo.UpdateUserAsync(id, model);
-                return Ok();
+                return Ok("Update user successful!");
             }
             catch
             {
-                return BadRequest();
+                return BadRequest("Update user failure!");
             }
         }
-        [HttpDelete]
-        //[Authorize]
+        [HttpDelete("deleteUser/{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteUser(int id)
         {
             try
             {
                 await _userRepo.DeleteUserAsync(id);
-                return Ok();
+                return Ok("Remove user successful!");
             }
             catch
             {
-                return BadRequest();
+                return BadRequest("Remove user failure!");
+            }
+        }
+        [HttpPut("EditAvatar/{id}")]
+        [Authorize]
+        public async Task<IActionResult> EditUserAvatar(int id, IFormFile file)
+        {
+            try
+            {
+                await _userRepo.EditAvatar(id, file);
+                return Ok("Edit profile picture user successful!");
+            }
+            catch
+            {
+                return BadRequest("Edit profile picture user failure!");
+            }
+        }
+
+        [HttpPut("EditProfile/{id}")]
+        [Authorize]
+        public async Task<IActionResult> EditProfile(int id, ProfileModel profileModel)
+        {
+            try
+            {
+                await _userRepo.UpdateProfileAsync(id, profileModel);
+                return Ok("Edit profile info user successful!");
+            }
+            catch
+            {
+                return BadRequest("Edit profile info user failure!");
+            }
+        }
+
+        [HttpPut("EditAccount/{id}")]
+        [Authorize]
+        public async Task<IActionResult> EditAccount(int id, AccountModel accountModel)
+        {
+            try
+            {
+                await _userRepo.UpdateAccountAsync(id, accountModel);
+                return Ok("Edit account info user successful!");
+            }
+            catch
+            {
+                return BadRequest("Edit account info user failure!");
             }
         }
     }

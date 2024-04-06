@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using PixelPalette.Data;
 using PixelPalette.Entities;
 using PixelPalette.Interfaces;
 using PixelPalette.Models;
@@ -11,55 +13,91 @@ namespace PixelPalette.Repositories
 {
     public class AccountRepository : IAccountRepository
     {
-        private readonly UserManager<User> userManager;
-        private readonly SignInManager<User> signInManager;
-        private readonly IConfiguration configuration;
+        private readonly PixelPaletteContext _context;
+        private readonly UserManager<User> _userManager;
+        private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
+        private readonly SignInManager<User> _signInManager;
+        private User? _user;
 
-        public AccountRepository(UserManager<User> userManager, SignInManager<User> signInManager,
-            IConfiguration configuration)
+        public AccountRepository(PixelPaletteContext context, IMapper mapper, UserManager<User> userManager, IConfiguration configuration, SignInManager<User> signInManager)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
-            this.configuration = configuration;
-
+            _context = context;
+            _userManager = userManager;
+            _configuration = configuration;
+            _mapper = mapper;
+            _signInManager = signInManager; ;
         }
-        public async Task<string> SignInAsync(SignInModel model)
+
+        public async Task<string> CreateToken()
         {
-            var result = await signInManager.PasswordSignInAsync
-                (model.Email, model.Password, false, false);
-            if (!result.Succeeded)
-            {
-                return string.Empty;
-            }
-            var authClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, model.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-            var authenKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]));
+            var signingCredentials = GetSigningCredentials();
+            var claims = GetClaims();
+            var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
+            var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+            
+            _user!.Token = token;
+            _context.Users.Update(_user);
+            await _context.SaveChangesAsync();
 
-            var token = new JwtSecurityToken(
-                issuer: configuration["JWT:ValidIssuer"],
-                audience: configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddMinutes(20),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha256Signature)
+            return token;
+        }
+
+        private SigningCredentials GetSigningCredentials()
+        {
+            var key = Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]);
+            var secret = new SymmetricSecurityKey(key);
+            return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256Signature);
+        }
+
+        private List<Claim> GetClaims() => new List<Claim> { new Claim(ClaimTypes.Name, _user!.UserName) };
+
+        private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
+        {
+            return new JwtSecurityToken(
+                issuer: _configuration["JWT:ValidIssuer"],
+                audience: _configuration["JWT:ValidAudience"],
+                expires: DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["JWT:expires"])),
+                claims: claims,
+                signingCredentials: signingCredentials
             );
+        }
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+        public async Task<bool> SignInAsync(SignInModel model)
+        {
+            _user = await _userManager.FindByNameAsync(model.UserName);
+
+            var result = (_user != null && await _userManager.CheckPasswordAsync(_user, model.Password));
+
+            if (!result) 
+                return false;
+            
+            return result;
         }
 
         public async Task<IdentityResult> SignUpAsync(SignUpModel model)
         {
-            var user = new User
+            var user = _mapper.Map<User>(model);
+            return await _userManager.CreateAsync(user, model.Password);
+        }
+        public async Task<bool> ChangePasswordAsync(ChangePasswordModel model)
+        {
+            var user = await _userManager.FindByNameAsync(model.UserName);
+            if (user != null)
             {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Email = model.Email,
-                UserName = model.Email
-            };
+                var result = await _userManager.CheckPasswordAsync(user, model.OldPassword);
 
-            return await userManager.CreateAsync(user, model.Password);
+                if (!result || !model.NewPassword.Equals(model.ComfirmPassword))
+                    return false;
+
+                var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                if (changePasswordResult.Succeeded)
+                {
+                    await _signInManager.RefreshSignInAsync(user);
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
