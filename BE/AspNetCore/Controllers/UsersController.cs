@@ -37,20 +37,6 @@ namespace PixelPalette.Controllers
             return user == null ? NotFound($"Can't find user by id is {id}!") : Ok(user);
         }
 
-        [HttpPut("updateUser/{id}")]
-        [Authorize]
-        public async Task<IActionResult> UpdateUser(int id, UserModel model)
-        {
-            try
-            {
-                await _userRepo.UpdateUserAsync(id, model);
-                return Ok("Update user successful!");
-            }
-            catch
-            {
-                return BadRequest("Update user failure!");
-            }
-        }
         [HttpDelete("deleteUser/{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteUser(int id)

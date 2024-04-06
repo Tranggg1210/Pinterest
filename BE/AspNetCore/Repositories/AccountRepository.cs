@@ -17,16 +17,14 @@ namespace PixelPalette.Repositories
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
-        private readonly SignInManager<User> _signInManager;
         private User? _user;
 
-        public AccountRepository(PixelPaletteContext context, IMapper mapper, UserManager<User> userManager, IConfiguration configuration, SignInManager<User> signInManager)
+        public AccountRepository(PixelPaletteContext context, IMapper mapper, UserManager<User> userManager, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
             _configuration = configuration;
             _mapper = mapper;
-            _signInManager = signInManager; ;
         }
 
         public async Task<string> CreateToken()
@@ -92,10 +90,7 @@ namespace PixelPalette.Repositories
 
                 var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                 if (changePasswordResult.Succeeded)
-                {
-                    await _signInManager.RefreshSignInAsync(user);
                     return true;
-                }
             }
             return false;
         }

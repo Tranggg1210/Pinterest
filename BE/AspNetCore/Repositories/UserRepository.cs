@@ -71,20 +71,6 @@ namespace PixelPalette.Repositories
             var user = await _context.Users!.FindAsync(id);
             return _mapper.Map<UserModel>(user);
         }
-
-        public async Task<bool> UpdateUserAsync(int id, UserModel model)
-        {
-            var updateUser = await _context.Users!.FindAsync(id);
-            if (updateUser != null && id == model.Id)
-            {
-                Transmit(model, ref updateUser);
-                _context.Users!.Update(updateUser);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            return false;
-        }
-
         public async Task<bool> UpdateProfileAsync(int id, ProfileModel model)
         {
             var updateProfile = await _context.Users!.FindAsync(id);

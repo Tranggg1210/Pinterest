@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PixelPalette.Interfaces;
 using PixelPalette.Models;
@@ -35,6 +36,7 @@ namespace PixelPalette.Controllers
             return Ok(new { token = await _accountRepo.CreateToken() });
         }
         [HttpPut("ChangePassword")]
+        [Authorize]
         public async Task<IActionResult> ChangePassword(ChangePasswordModel changePasswordModel)
         {
             if (!await _accountRepo.ChangePasswordAsync(changePasswordModel))
