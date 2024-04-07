@@ -35,29 +35,32 @@ namespace PixelPalette.Repositories
             return false;
         }
 
-        public async Task<bool> EditAvatar(int id, IFormFile file)
+        public async Task<string> EditAvatar(int id, IFormFile file)
         {
             var user = await _context.Users!.FindAsync(id);
 
             if (user != null)
             {
                 var addResult = await _photoService.AddPhotoAsync(file);
-                if (addResult.Error != null) return false;
+                if (addResult.Error != null) return string.Empty;
 
                 if (user.AvatarId != null)
                 {
                     var deleteResult = await _photoService.DeletePhotoAsync(user.AvatarId);
-                    if (deleteResult.Error != null) return false;
+                    if (deleteResult.Error != null) return string.Empty;
                 }
-
-                user.AvatarUrl = addResult.SecureUrl.AbsoluteUri;
-                user.AvatarId = addResult.PublicId;
-
-                _context.Users!.Update(user);
-                await _context.SaveChangesAsync();
-                return true;
+                try
+                {
+                    var Url = addResult.SecureUrl.AbsoluteUri;
+                    user.AvatarUrl = Url;
+                    user.AvatarId = addResult.PublicId;
+                    _context.Users!.Update(user);
+                    await _context.SaveChangesAsync();
+                    return Url;
+                }
+                catch { }
             }
-            return false;
+            return string.Empty;
         }
 
         public async Task<IEnumerable<UserModel>> GetAllUsersAsync()
@@ -71,7 +74,7 @@ namespace PixelPalette.Repositories
             var user = await _context.Users!.FindAsync(id);
             return _mapper.Map<UserModel>(user);
         }
-        public async Task<bool> UpdateProfileAsync(int id, ProfileModel model)
+        public async Task<ProfileModel> UpdateProfileAsync(int id, ProfileModel model)
         {
             var updateProfile = await _context.Users!.FindAsync(id);
             if (updateProfile != null && id == model.Id)
@@ -79,12 +82,12 @@ namespace PixelPalette.Repositories
                 Transmit(model, ref updateProfile);
                 _context.Users!.Update(updateProfile);
                 await _context.SaveChangesAsync();
-                return true;
+                return model;
             }
-            return false;
+            return null!;
         }
 
-        public async Task<bool> UpdateAccountAsync(int id, AccountModel model)
+        public async Task<AccountModel> UpdateAccountAsync(int id, AccountModel model)
         {
             var updateAccount = await _context.Users!.FindAsync(id);
             if (updateAccount != null && id == model.Id)
@@ -92,9 +95,9 @@ namespace PixelPalette.Repositories
                 Transmit(model, ref updateAccount);
                 _context.Users!.Update(updateAccount);
                 await _context.SaveChangesAsync();
-                return true;
+                return model;
             }
-            return false;
+            return null!;
         }
     }
 }

@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using CloudinaryDotNet;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PixelPalette.Entities;
 using PixelPalette.Interfaces;
 using PixelPalette.Models;
 
@@ -26,7 +29,7 @@ namespace PixelPalette.Controllers
             }
             catch
             {
-                return BadRequest("Can't get list user successful!");
+                return BadRequest("An error when get list user!");
             }
         }
         [HttpGet("getUser/{id}")]
@@ -43,27 +46,22 @@ namespace PixelPalette.Controllers
         {
             try
             {
-                await _userRepo.DeleteUserAsync(id);
-                return Ok("Remove user successful!");
+                var result = await _userRepo.DeleteUserAsync(id);
+                return result ? NotFound($"Can't find user by id is {id}!") : Ok("Remove user successful!");
             }
             catch
             {
-                return BadRequest("Remove user failure!");
+                return BadRequest("An error when remove user!");
             }
         }
         [HttpPut("EditAvatar/{id}")]
         [Authorize]
         public async Task<IActionResult> EditUserAvatar(int id, IFormFile file)
         {
-            try
-            {
-                await _userRepo.EditAvatar(id, file);
-                return Ok("Edit profile picture user successful!");
-            }
-            catch
-            {
-                return BadRequest("Edit profile picture user failure!");
-            }
+            var avatarUrl = await _userRepo.EditAvatar(id, file);
+            if (!string.IsNullOrEmpty(avatarUrl))
+                return Ok(avatarUrl);
+            return BadRequest("An error when edit avatar user!");
         }
 
         [HttpPut("EditProfile/{id}")]
@@ -72,12 +70,12 @@ namespace PixelPalette.Controllers
         {
             try
             {
-                await _userRepo.UpdateProfileAsync(id, profileModel);
-                return Ok("Edit profile info user successful!");
+                var profile = await _userRepo.UpdateProfileAsync(id, profileModel);
+                return profile == null ? NotFound($"Can't find profile info by id is {id}!") : Ok(profile);
             }
             catch
             {
-                return BadRequest("Edit profile info user failure!");
+                return BadRequest("An error when edit profile info user!");
             }
         }
 
@@ -87,12 +85,12 @@ namespace PixelPalette.Controllers
         {
             try
             {
-                await _userRepo.UpdateAccountAsync(id, accountModel);
-                return Ok("Edit account info user successful!");
+                var account = await _userRepo.UpdateAccountAsync(id, accountModel);
+                return account == null ? NotFound($"Can't find account by id is {id}!") : Ok(account);
             }
             catch
             {
-                return BadRequest("Edit account info user failure!");
+                return BadRequest("An error when edit account info user!");
             }
         }
     }

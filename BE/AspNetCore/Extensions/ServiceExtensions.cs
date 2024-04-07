@@ -57,6 +57,7 @@ namespace PixelPalette.Extensions
                 });
             });
         }
+       
         public static void ConfigureIdentity(this IServiceCollection services)
         {
             services.AddIdentityCore<User>(o =>
