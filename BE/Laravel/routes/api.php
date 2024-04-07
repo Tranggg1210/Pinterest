@@ -24,5 +24,5 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register',[RegisterController::class,'register']) -> name('register');
 Route::post('/login',[LoginController::class,'login']) -> name('login');
 Route::post('/forgot',[ForgotController::class,'forgot']) -> name('forgot');
-Route::post('/search',[SearchController::class,'search']) -> name('search');
+Route::get('/search',[SearchController::class,'search']) -> name('search');
 
