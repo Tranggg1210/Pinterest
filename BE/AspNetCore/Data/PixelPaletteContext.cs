@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ using PixelPalette.Entities;
 
 namespace PixelPalette.Data
 {
-    public partial class PixelPaletteContext : IdentityDbContext<User, Role, int>
+    public partial class PixelPaletteContext : DbContext
     {
         public PixelPaletteContext()
         {
@@ -25,7 +26,7 @@ namespace PixelPalette.Data
         public virtual DbSet<Follower> Followers { get; set; } = null!;
         public virtual DbSet<Message> Messages { get; set; } = null!;
         public virtual DbSet<Post> Posts { get; set; } = null!;
-        public override DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<User> Users { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -165,7 +166,7 @@ namespace PixelPalette.Data
                 entity.HasIndex(e => e.FollowerUserId, "IX_Follower_FollowerUserId");
 
                 entity.HasIndex(e => e.FollowingUserId, "IX_Follower_FollowingUserId");
-                
+
                 entity.Property(e => e.Id).HasColumnName("Id");
 
                 entity.Property(e => e.FollowerUserId).HasColumnName("FollowerUserId");
@@ -278,10 +279,15 @@ namespace PixelPalette.Data
             {
                 entity.ToTable("User");
 
-                entity.HasIndex(e => e.Email, "User_Email_unique")
-                    .IsUnique();
+                entity.HasIndex(e => e.Email, "IX_User_Email");
 
-                entity.Property(e => e.Id).HasColumnName("Id");
+                entity.HasIndex(e => e.UserName, "IX_User_UserName");
+
+                entity.Property(e => e.Email).IsRequired();
+
+                entity.Property(e => e.UserName).IsRequired();
+
+                entity.Property(e => e.PasswordHash).IsRequired();
 
                 entity.Property(e => e.Birthday)
                     .HasColumnType("date")
@@ -291,40 +297,40 @@ namespace PixelPalette.Data
                     .HasMaxLength(255)
                     .HasColumnName("Country");
 
-                entity.Property(e => e.Email)
-                    .HasMaxLength(255)
-                    .HasColumnName("Email");
-
                 entity.Property(e => e.FirstName)
                     .HasMaxLength(255)
                     .HasColumnName("FirstName");
 
                 entity.Property(e => e.Gender).HasColumnName("Gender");
 
-                entity.Property(e => e.ImageUrl)
-                    .HasMaxLength(255)
-                    .HasColumnName("ImageUrl");
+                entity.Property(e => e.Token).HasColumnName("Token");
 
                 entity.Property(e => e.Introduction).HasColumnName("Introduction");
 
                 entity.Property(e => e.LastName)
                     .HasMaxLength(255)
                     .HasColumnName("LastName");
+
+                entity.Ignore("AccessFailedCount");
+
+                entity.Ignore("ConcurrencyStamp");
+
+                entity.Ignore("EmailConfirmed");
+
+                entity.Ignore("LockoutEnabled");
+
+                entity.Ignore("LockoutEnd");
+
+                entity.Ignore("PhoneNumber");
+
+                entity.Ignore("PhoneNumberConfirmed");
+
+                entity.Ignore("SecurityStamp");
+
+                entity.Ignore("TwoFactorEnabled");
+
             });
-
-            modelBuilder.Entity<Role>().ToTable("Role");
-
-            modelBuilder.Entity<IdentityUserClaim<int>>().ToTable("UserClaim");
-
-            modelBuilder.Entity<IdentityUserRole<int>>().ToTable("UserRole");
-
-            modelBuilder.Entity<IdentityUserLogin<int>>().ToTable("UserLogin");
-
-            modelBuilder.Entity<IdentityUserToken<int>>().ToTable("UserToken");
-
-            modelBuilder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaim");
-
-            OnModelCreatingPartial(modelBuilder); 
+            OnModelCreatingPartial(modelBuilder);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

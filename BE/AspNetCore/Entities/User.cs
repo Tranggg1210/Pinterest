@@ -15,11 +15,13 @@ namespace PixelPalette.Entities
         }
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
-        public string? ImageUrl { get; set; }
         public string? Introduction { get; set; }
+        public string? AvatarId { get; set; }
+        public string? AvatarUrl { get; set; }
         public DateTime Birthday { get; set; }
         public bool Gender { get; set; }
         public string? Country { get; set; }
+        public string? Token { get; set; }
 
         public virtual ICollection<Collection> Collections { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }

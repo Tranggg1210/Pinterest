@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using CloudinaryDotNet;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PixelPalette.Entities;
 using PixelPalette.Interfaces;
 using PixelPalette.Models;
 
@@ -7,6 +10,7 @@ namespace PixelPalette.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "v1")]
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepo;
@@ -15,8 +19,8 @@ namespace PixelPalette.Controllers
         {
             _userRepo = repo;
         }
-        [HttpGet]
-        //[Authorize]
+        [HttpGet("getUsers")]
+        [Authorize]
         public async Task<IActionResult> GetAllUsers()
         {
             try
@@ -25,57 +29,68 @@ namespace PixelPalette.Controllers
             }
             catch
             {
-                return BadRequest();
+                return BadRequest("An error when get list user!");
             }
         }
-        [HttpGet("{id}")]
-        //[Authorize]
+        [HttpGet("getUser/{id}")]
+        [Authorize]
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _userRepo.GetUserByIdAsync(id);
-            return user == null ? NotFound() : Ok(user);
+            return user == null ? NotFound($"Can't find user by id is {id}!") : Ok(user);
         }
-        [HttpPost]
-        //[Authorize]
-        public async Task<IActionResult> AddUser(UserModel model)
-        {
-            try
-            {
-                var newUserId = await _userRepo.AddUserAsync(model);
-                var newUser = await _userRepo.GetUserByIdAsync(newUserId);
-                return newUser == null ? NotFound() : Ok(newUser);
-            }
-            catch
-            {
-                return BadRequest();
-            }
-        }
-        [HttpPut("{id}")]
-        //[Authorize]
-        public async Task<IActionResult> UpdateUser(int id, UserModel model)
-        {
-            try
-            {
-                await _userRepo.UpdateUserAsync(id, model);
-                return Ok();
-            }
-            catch
-            {
-                return BadRequest();
-            }
-        }
-        [HttpDelete]
-        //[Authorize]
+
+        [HttpDelete("deleteUser/{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteUser(int id)
         {
             try
             {
-                await _userRepo.DeleteUserAsync(id);
-                return Ok();
+                var result = await _userRepo.DeleteUserAsync(id);
+                return result ? NotFound($"Can't find user by id is {id}!") : Ok("Remove user successful!");
             }
             catch
             {
-                return BadRequest();
+                return BadRequest("An error when remove user!");
+            }
+        }
+        [HttpPut("EditAvatar/{id}")]
+        [Authorize]
+        public async Task<IActionResult> EditUserAvatar(int id, IFormFile file)
+        {
+            var avatarUrl = await _userRepo.EditAvatar(id, file);
+            if (!string.IsNullOrEmpty(avatarUrl))
+                return Ok(avatarUrl);
+            return BadRequest("An error when edit avatar user!");
+        }
+
+        [HttpPut("EditProfile/{id}")]
+        [Authorize]
+        public async Task<IActionResult> EditProfile(int id, ProfileModel profileModel)
+        {
+            try
+            {
+                var profile = await _userRepo.UpdateProfileAsync(id, profileModel);
+                return profile == null ? NotFound($"Can't find profile info by id is {id}!") : Ok(profile);
+            }
+            catch
+            {
+                return BadRequest("An error when edit profile info user!");
+            }
+        }
+
+        [HttpPut("EditAccount/{id}")]
+        [Authorize]
+        public async Task<IActionResult> EditAccount(int id, AccountModel accountModel)
+        {
+            try
+            {
+                var account = await _userRepo.UpdateAccountAsync(id, accountModel);
+                return account == null ? NotFound($"Can't find account by id is {id}!") : Ok(account);
+            }
+            catch
+            {
+                return BadRequest("An error when edit account info user!");
             }
         }
     }
