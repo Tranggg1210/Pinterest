@@ -1,13 +1,43 @@
 <script setup>
 import { ref, reactive } from 'vue';
+import { register } from '@/api/auth.api';
+import { useAuthStore } from '@/stores/auth';
+import { validateEmail, validatePassword } from '@/utils/validator';
 
-const input = reactive({
+const message = useMessage();
+const loading = ref(false);
+const formValue = reactive({
   email: '',
   password: '',
-  date: ''
+  birthday: '',
+  repeatPassword: ''
 });
 
 const formRef = ref(null);
+const rules = {
+  email: {
+    required: true,
+    validator: validateEmail,
+    trigger: 'blur'
+  },
+  password: {
+    required: true,
+    validator: validatePassword,
+    trigger: 'blur'
+  },
+  repeatPassword: {
+    required: true,
+    validator: (_, repeatPassword) => {
+      if (repeatPassword !== formValue.password) {
+        return new Error('Mật khẩu không giống với mật khẩu đã nhập lại!');
+      }
+      return true;
+    },
+    trigger: ['blur', 'password-input']
+  }
+};
+
+const registerHandler = () => {};
 </script>
 <template>
   <div class="sign-up">
@@ -17,20 +47,35 @@ const formRef = ref(null);
       <h1 class="signup-title">PixelPalette</h1>
       <p>Tìm những ý tưởng mới để thử</p>
 
-      <form action="" class="form" :model="input">
+      <form action="" class="form" :model="formValue" :rules="rules" ref="formRef">
         <div class="form-item">
           <label for="email">Email</label>
-          <input type="email" v-model="input.email" placeholder="Email" />
+          <input type="email" v-model="formValue.email" placeholder="Email" />
         </div>
         <div class="form-item">
           <label for="password">Mật khẩu</label>
-          <input type="password" v-model="input.password" placeholder="Tạo mật khẩu" />
+          <input type="password" v-model="formValue.password" placeholder="Tạo mật khẩu" />
+        </div>
+        <div class="form-item">
+          <label for="password">Mật khẩu vừa nhập</label>
+          <input
+            type="password"
+            v-model="formValue.repeatPassword"
+            placeholder="Xác nhận mật khẩu"
+          />
         </div>
         <div class="form-item">
           <label for="date">Ngày sinh</label>
-          <input type="date" v-model="input.date" />
+          <input type="date" v-model="formValue.birthday" />
         </div>
-        <button type="submit" class="btn-submit pointer">Tiếp tục</button>
+        <button
+          type="submit"
+          class="btn-submit pointer"
+          :loading="loading"
+          @click="registerHandler"
+        >
+          Tiếp tục
+        </button>
       </form>
 
       <div class="note">
@@ -40,7 +85,9 @@ const formRef = ref(null);
           <span>Chính sách quyền riêng tư </span>của chúng tôi.
         </p>
         <p class="pointer"><span>Thông báo khi thu thập</span></p>
-        <p class="confirm pointer">Bạn đã là thành viên? <span> Đăng nhập</span></p>
+        <p class="confirm pointer">
+          Bạn đã là thành viên? <router-link to="/login">Đăng nhập</router-link>
+        </p>
       </div>
     </div>
   </div>
@@ -108,6 +155,10 @@ form {
     padding: 13px 15px;
     margin-bottom: 10px;
     margin-top: 5px;
+
+    &:hover {
+      box-shadow: 1px 1px 10px rgb(198, 253, 198);
+    }
   }
 }
 
@@ -122,6 +173,11 @@ form {
   font-size: 16px;
   padding: 13px 0px;
   margin-top: 10px;
+  &:hover {
+    opacity: 0.7;
+    border: 0;
+    box-shadow: none;
+  }
 }
 
 span {
