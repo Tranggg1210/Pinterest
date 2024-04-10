@@ -4,15 +4,11 @@ namespace PixelPalette.Models
 {
     public class SignUpModel
     {
-        [Required]
-        public string FirstName { get; set; } = null!;
-        [Required]
-        public string LastName { get; set; } = null!;
-        [Required, EmailAddress]
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        [Required(ErrorMessage ="UserName is required"), EmailAddress]
         public string Email { get; set; } = null!;
-        [Required]
+        [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; } = null!;
-        [Required]
-        public string ConfirmPassword { get; set; } = null!;
     }
 }

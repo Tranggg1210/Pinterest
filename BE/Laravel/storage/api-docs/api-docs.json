@@ -1,0 +1,238 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Api",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/": {},
+        "/api/forgot": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "operationId": "2769350df5de92a08879ef3addd786bb",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "Email": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object",
+                                        "example": {
+                                            "email": "trungquanbg3@gmail.com"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "operationId": "e32a2d003f11300b69b29d2c5bfc7351",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "Email": {
+                                                "type": "string"
+                                            },
+                                            "PasswordHash": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object",
+                                        "example": {
+                                            "Email": "trungquanbg3@gmail.com",
+                                            "Password": "123"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "Id": {
+                                                        "type": "string"
+                                                    },
+                                                    "FirstName": {
+                                                        "type": "string"
+                                                    },
+                                                    "LastName": {
+                                                        "type": "string"
+                                                    },
+                                                    "ImageUrl": {
+                                                        "type": "string"
+                                                    },
+                                                    "Introduction": {
+                                                        "type": "string"
+                                                    },
+                                                    "Birthday": {
+                                                        "type": "string"
+                                                    },
+                                                    "Gender": {
+                                                        "type": "string"
+                                                    },
+                                                    "Country": {
+                                                        "type": "string"
+                                                    },
+                                                    "Email": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "operationId": "30ca788be39e7657143289d631035de8",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "Email": {
+                                                "type": "string"
+                                            },
+                                            "PasswordHash": {
+                                                "type": "string"
+                                            },
+                                            "Id": {
+                                                "type": "string"
+                                            },
+                                            "FirstName": {
+                                                "type": "string"
+                                            },
+                                            "LastName": {
+                                                "type": "string"
+                                            },
+                                            "ImageUrl": {
+                                                "type": "string"
+                                            },
+                                            "Introduction": {
+                                                "type": "string"
+                                            },
+                                            "Birthday": {
+                                                "type": "string"
+                                            },
+                                            "Gender": {
+                                                "type": "string"
+                                            },
+                                            "Country": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object",
+                                        "example": {
+                                            "Email": "trungquanbg3@gmail.com",
+                                            "Password": "123",
+                                            "FirstName": "Quân",
+                                            "LastName": "NTQ",
+                                            "ImageUrl": "url",
+                                            "Introduction": "",
+                                            "Birthday": "09-01-2003",
+                                            "Gender": "1",
+                                            "Country": "VN"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/search/": {
+            "get": {
+                "tags": [
+                    "Search"
+                ],
+                "summary": "Search users",
+                "operationId": "searchUsers",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "path",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {}
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        }
+    }
+}

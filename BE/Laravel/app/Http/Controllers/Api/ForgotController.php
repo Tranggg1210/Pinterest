@@ -11,6 +11,29 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+/**
+ * @OA\Post(
+ *  path="/api/forgot",
+ *  method="POST",
+ *  tags={"User"},
+ *    @OA\RequestBody(
+ *         @OA\JsonContent(
+ *             allOf = {
+ *                  @OA\Schema(
+ *                      @OA\Property(property="Email",type="string"),
+ *                      example={"email": "trungquanbg3@gmail.com"}
+ *                  )
+ *              }
+ *         )
+ *     ),
+*          @OA\Response(
+*          response = 200,
+*          description = "Success",
+
+*       ),
+*   ),
+* )
+ **/
 
 class ForgotController extends Controller
 {
@@ -34,7 +57,8 @@ class ForgotController extends Controller
                }catch(\Throwable $th){
                     return response()->json([
                         'status' => true,
-                        'message' => 'Không thể kết nối được đến gmail !',
+                        'error' => 'Không thể kết nối được đến gmail !',
+                        'message' => "Chưa gửi mật khẩu mới tới email !",
                     ], 200);
                }
             } else {

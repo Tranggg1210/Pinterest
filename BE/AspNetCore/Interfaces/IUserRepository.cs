@@ -5,10 +5,11 @@ namespace PixelPalette.Interfaces
 {
     public interface IUserRepository
     {
-        public Task<IEnumerable<UserModel>> GetAllUsersAsync();
-        public Task<UserModel> GetUserByIdAsync(int id);
-        public Task<int> AddUserAsync(UserModel model);
-        public Task UpdateUserAsync(int id, UserModel model);
-        public Task DeleteUserAsync(int id);
+        Task<IEnumerable<UserModel>> GetAllUsersAsync();
+        Task<UserModel> GetUserByIdAsync(int id);
+        Task<ProfileModel> UpdateProfileAsync(int id, ProfileModel model);
+        Task<AccountModel> UpdateAccountAsync(int id, AccountModel model);
+        Task<bool> DeleteUserAsync(int id);
+        Task<string> EditAvatar(int publicId, IFormFile file);
     }
 }
