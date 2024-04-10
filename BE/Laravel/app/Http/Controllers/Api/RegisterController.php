@@ -9,6 +9,42 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
+/**
+ * @OA\Post(
+ *  path="/api/register",
+ * method="POST",
+ * tags={"User"},
+ *    @OA\RequestBody(
+ *         @OA\JsonContent(
+ *             allOf = {
+ *                  @OA\Schema(
+ *                      @OA\Property(property="Email",type="string"),
+ *                      @OA\Property(property="PasswordHash",type="string"),
+*                       @OA\Property(property="Id",type="string"),
+*                       @OA\Property(property="FirstName",type="string"),
+*                       @OA\Property(property="LastName",type="string"),
+*                       @OA\Property(property="ImageUrl",type="string"),
+*                       @OA\Property(property="Introduction",type="string"),
+*                       @OA\Property(property="Birthday",type="string"),
+*                       @OA\Property(property="Gender",type="string"),
+*                       @OA\Property(property="Country",type="string"),
+ *                      example={"Email": "trungquanbg3@gmail.com", "Password": "123","FirstName": "Quân","LastName": "NTQ", "ImageUrl": "url", "Introduction": "","Birthday": "09-01-2003","Gender": "1","Country": "VN"}
+ *                  )
+ *              }
+ *         )
+ *     ),
+*          @OA\Response(
+*          response = 200,
+*          description = "Success",
+*          @OA\JsonContent(
+*           @OA\Property(property="status",type="integer"),
+*           @OA\Property(property="message",type="string"),
+*
+*           ),
+*       ),
+*   ),
+* )
+ **/
 class RegisterController extends Controller
 {
     public function register(Request $request)
@@ -17,7 +53,7 @@ class RegisterController extends Controller
         $check = User::where('Email', $request -> Email)->first();
         if (isset($check)) {
             return response()->json([
-                'status' => 200,
+                'status' => 400,
                 'message' => 'Tài khoản đã tồn tại !',
             ]);
         }else{
@@ -32,7 +68,6 @@ class RegisterController extends Controller
             $user -> Country = $request->Country;
             $user -> Email = $request -> Email;
             $user->PasswordHash = Hash::make($request->Password);
-            // $user -> Token = Str::random(32);
             $user->save();
             return response()->json([
               'status' => 200,

@@ -8,6 +8,42 @@ use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Laravel\Scout\Searchable;
+/**
+ * @OA\Get(
+ *     path="/api/search/",
+ *     operationId="searchUsers",
+ *     tags={"Search"},
+ *     summary="Search users",
+ *     @OA\Parameter(
+ *         name="keyword",
+ *         in="path",
+ *         required=false,
+ *         @OA\Schema(
+ *             type="array",
+ *             @OA\Items(
+ *                 @OA\Schema(
+ *                     @OA\Property(property="Id", type="string"),
+ *                     @OA\Property(property="FirstName", type="string"),
+ *                     @OA\Property(property="LastName", type="string"),
+ *                     @OA\Property(property="ImageUrl", type="string"),
+ *                     @OA\Property(property="Introduction", type="string"),
+ *                     @OA\Property(property="Birthday", type="string"),
+ *                     @OA\Property(property="Gender", type="string"),
+ *                     @OA\Property(property="Country", type="string"),
+ *                     @OA\Property(property="Email", type="string"),
+ *                     example={"Keyword": "trungquanbg3@gmail.com"}
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Success"
+ *     )
+ * )
+ */
+
+
 class SearchController extends Controller
 {
     public function search(Request $request){
