@@ -19,10 +19,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
+//     return '123';
 // });
 Route::post('/register',[RegisterController::class,'register']) -> name('register');
 Route::post('/login',[LoginController::class,'login']) -> name('login');
 Route::post('/forgot',[ForgotController::class,'forgot']) -> name('forgot');
-Route::post('/search',[SearchController::class,'search']) -> name('search');
+Route::get('/search/{keyword?}',[SearchController::class,'search']) -> name('search');
+
 

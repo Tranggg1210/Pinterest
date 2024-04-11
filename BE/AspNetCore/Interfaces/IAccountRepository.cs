@@ -6,7 +6,9 @@ namespace PixelPalette.Interfaces
 {
     public interface IAccountRepository
     {
-        public Task<IdentityResult> SignUpAsync(SignUpModel model);
-        public Task<string> SignInAsync(SignInModel model);
+        Task<IdentityResult> SignUpAsync(SignUpModel model);
+        Task<bool> SignInAsync(SignInModel model);
+        Task<bool> ChangePasswordAsync(ChangePasswordModel model);
+        Task<string> CreateToken();
     }
 }
