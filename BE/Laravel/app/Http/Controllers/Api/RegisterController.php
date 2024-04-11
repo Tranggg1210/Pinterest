@@ -13,6 +13,8 @@ use Illuminate\Support\Str;
  * @OA\Post(
  *  path="/api/register",
  * method="POST",
+ * summary="Đăng ký ",
+ * description="Đăng ký ",
  * tags={"User"},
  *    @OA\RequestBody(
  *         @OA\JsonContent(
@@ -23,12 +25,12 @@ use Illuminate\Support\Str;
 *                       @OA\Property(property="Id",type="string"),
 *                       @OA\Property(property="FirstName",type="string"),
 *                       @OA\Property(property="LastName",type="string"),
-*                       @OA\Property(property="ImageUrl",type="string"),
+*                       @OA\Property(property="AvatarId",type="string"),
 *                       @OA\Property(property="Introduction",type="string"),
 *                       @OA\Property(property="Birthday",type="string"),
 *                       @OA\Property(property="Gender",type="string"),
 *                       @OA\Property(property="Country",type="string"),
- *                      example={"Email": "trungquanbg3@gmail.com", "Password": "123","FirstName": "Quân","LastName": "NTQ", "ImageUrl": "url", "Introduction": "","Birthday": "09-01-2003","Gender": "1","Country": "VN"}
+ *                      example={"Email": "trungquanbg3@gmail.com", "Password": "123","FirstName": "Quân","LastName": "NTQ", "AvatarId": "url", "Introduction": "","Birthday": "09-01-2003","Gender": "1","Country": "VN"}
  *                  )
  *              }
  *         )
@@ -63,7 +65,7 @@ class RegisterController extends Controller
             $user->LastName = $request->LastName;
             $user->Birthday = $request->Birthday;
             $user->Gender = $request->Gender;
-            $user->ImageUrl = $request->ImageUrl;
+            $user->AvatarId = $request->AvatarId;
             $user -> Introduction = $request->Introduction;
             $user -> Country = $request->Country;
             $user -> Email = $request -> Email;

@@ -11,6 +11,8 @@
                 "tags": [
                     "User"
                 ],
+                "summary": "Quên mật khẩu ",
+                "description": "Quên mật khẩu ",
                 "operationId": "2769350df5de92a08879ef3addd786bb",
                 "requestBody": {
                     "content": {
@@ -40,12 +42,122 @@
                 }
             }
         },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Đăng ký ",
+                "description": "Đăng ký ",
+                "operationId": "30ca788be39e7657143289d631035de8",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "Email": {
+                                                "type": "string"
+                                            },
+                                            "PasswordHash": {
+                                                "type": "string"
+                                            },
+                                            "Id": {
+                                                "type": "string"
+                                            },
+                                            "FirstName": {
+                                                "type": "string"
+                                            },
+                                            "LastName": {
+                                                "type": "string"
+                                            },
+                                            "AvatarId": {
+                                                "type": "string"
+                                            },
+                                            "Introduction": {
+                                                "type": "string"
+                                            },
+                                            "Birthday": {
+                                                "type": "string"
+                                            },
+                                            "Gender": {
+                                                "type": "string"
+                                            },
+                                            "Country": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object",
+                                        "example": {
+                                            "Email": "trungquanbg3@gmail.com",
+                                            "Password": "123",
+                                            "FirstName": "Quân",
+                                            "LastName": "NTQ",
+                                            "AvatarId": "url",
+                                            "Introduction": "",
+                                            "Birthday": "09-01-2003",
+                                            "Gender": "1",
+                                            "Country": "VN"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "integer"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/search/": {
+            "get": {
+                "tags": [
+                    "Search"
+                ],
+                "summary": "Tìm kiếm",
+                "description": "Tìm kiếm người dùng hoặc bài post",
+                "operationId": "search",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "required": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
         "/api/login": {
             "post": {
                 "tags": [
                     "User"
                 ],
-                "operationId": "e32a2d003f11300b69b29d2c5bfc7351",
+                "summary": "Đăng nhập ",
+                "description": "Đăng nhập ",
+                "operationId": "99539a8e18179644cbac3165cf994fe5",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -91,7 +203,7 @@
                                                     "LastName": {
                                                         "type": "string"
                                                     },
-                                                    "ImageUrl": {
+                                                    "AvatarId": {
                                                         "type": "string"
                                                     },
                                                     "Introduction": {
@@ -125,111 +237,40 @@
                 }
             }
         },
-        "/api/register": {
+        "/api/logout": {
             "post": {
                 "tags": [
                     "User"
                 ],
-                "operationId": "30ca788be39e7657143289d631035de8",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "allOf": [
-                                    {
-                                        "properties": {
-                                            "Email": {
-                                                "type": "string"
-                                            },
-                                            "PasswordHash": {
-                                                "type": "string"
-                                            },
-                                            "Id": {
-                                                "type": "string"
-                                            },
-                                            "FirstName": {
-                                                "type": "string"
-                                            },
-                                            "LastName": {
-                                                "type": "string"
-                                            },
-                                            "ImageUrl": {
-                                                "type": "string"
-                                            },
-                                            "Introduction": {
-                                                "type": "string"
-                                            },
-                                            "Birthday": {
-                                                "type": "string"
-                                            },
-                                            "Gender": {
-                                                "type": "string"
-                                            },
-                                            "Country": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "type": "object",
-                                        "example": {
-                                            "Email": "trungquanbg3@gmail.com",
-                                            "Password": "123",
-                                            "FirstName": "Quân",
-                                            "LastName": "NTQ",
-                                            "ImageUrl": "url",
-                                            "Introduction": "",
-                                            "Birthday": "09-01-2003",
-                                            "Gender": "1",
-                                            "Country": "VN"
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "integer"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/search/": {
-            "get": {
-                "tags": [
-                    "Search"
-                ],
-                "summary": "Search users",
-                "operationId": "searchUsers",
+                "summary": "Đăng xuất ",
+                "description": "Đăng xuất ",
+                "operationId": "84c346b5fbf89662322f7b60466d3011",
                 "parameters": [
                     {
-                        "name": "keyword",
-                        "in": "path",
-                        "required": false,
+                        "name": "access_token",
+                        "in": "header",
+                        "description": "Điền token JWT",
+                        "required": true,
                         "schema": {
-                            "type": "array",
-                            "items": {}
+                            "type": "string"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success"
+                        "description": "Logged out successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "405": {
+                        "description": "Method Not Allowed"
                     }
                 }
             }
