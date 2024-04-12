@@ -14,6 +14,8 @@ use Illuminate\Support\Str;
 /**
  * @OA\Post(
  *  path="/api/forgot",
+ *  summary="Quên mật khẩu ",
+ *  description="Quên mật khẩu ",
  *  method="POST",
  *  tags={"User"},
  *    @OA\RequestBody(

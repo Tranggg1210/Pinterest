@@ -32,22 +32,39 @@ yarn build
 - **Http clent**: [Axios](https://axios-http.com/)
 
 ## Kết nối với sql server
+
 ### Mở SQL Server 2022 Configuration
+
     + Mở thư mục  SQL Server Network Configuration
     + Chỉnh sửa TCP/IP -> Enable
     + Chỉnh sửa Port trong TCP/IP -> 1433
+
 ### Trong .env chỉnh sửa
+
     + DB_CONNECTION=sqlsrv
     + DB_HOST=DESKTOP-QTRJVTE\SQLEXPRESS
     + DB_PORT=1433
     + DB_DATABASE=pinterestdb
     + DB_USERNAME=
     + DB_PASSWORD=
-    
+
     + Với DB_DATABASE là tên database dự án , DB_HOST là server name (Tên máy \ "server.Có thể mở SQL server coppy tên )
+
 ## Cài đặt laravel
-    + Composer create-project laravel/laravel Laravel
+
+## Chạy composer install để cài đặt các package cần thiết để chạy be
+
+## Truy cập vào
+
+    ```sh
+    cd BE
+    cd Laravel
+    ```
+
 ## Chạy laravel
+
     + php artisan serve
+
 ## Đối với .env
+
     + Không thực hiện ẩn .env trong dự án
