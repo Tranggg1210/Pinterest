@@ -1,6 +1,6 @@
-﻿namespace PixelPalette.Models
+﻿namespace PixelPalette.Helpers
 {
-    public class ChangePasswordModel
+    public class ChangePasswordParams
     {
         public string UserName { get; set; } = null!;
         public string OldPassword { get; set; } = null!;

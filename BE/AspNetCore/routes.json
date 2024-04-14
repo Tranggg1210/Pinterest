@@ -100,7 +100,6 @@
         "id": 1
       },
       "requestBody": {
-        "id": 1,
         "firstName": "Minh Hoàng",
         "lastName": "Cao Sỹ",
         "introduction": "Depress T_T"
@@ -109,7 +108,15 @@
         "id": 1,
         "firstName": "Minh Hoàng",
         "lastName": "Cao Sỹ",
-        "introduction": "Depress T_T"
+        "avatarId": "lxelsyg5sct6kwkxrubw",
+        "avatarUrl": "https://res.cloudinary.com/djaze4ci7/image/upload/v1712484361/lxelsyg5sct6kwkxrubw.jpg",
+        "introduction": "Depress T_T",
+        "email": "mhoang@gmail.com",
+        "userName": "mhoang@gmail.com",
+        "birthday": "2003-09-28T00:00:00",
+        "gender": true,
+        "country": "Việt Nam",
+        "token": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoibWhvYW5nQGdtYWlsLmNvbSIsImV4cCI6MTcxMjQyMDE1MywiaXNzIjoiVXNlciIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjcxNzcifQ.79H1GQuGaeZIvXiqH8lJwSe9vSgBawXmWhFs9v_WJNk"
       }
     },
     "EditAccount": {
@@ -118,7 +125,6 @@
         "id": 1
       },
       "requestBody": {
-        "id": 1,
         "email": "mhoang@gmail.com",
         "birthday": "2003-09-28",
         "gender": true,
@@ -126,31 +132,151 @@
       },
       "response": {
         "id": 1,
+        "firstName": "Minh Hoàng",
+        "lastName": "Cao Sỹ",
+        "avatarId": "lxelsyg5sct6kwkxrubw",
+        "avatarUrl": "https://res.cloudinary.com/djaze4ci7/image/upload/v1712484361/lxelsyg5sct6kwkxrubw.jpg",
+        "introduction": "Depress T_T",
         "email": "mhoang@gmail.com",
-        "birthday": "2003-09-28",
+        "userName": "mhoang@gmail.com",
+        "birthday": "2003-09-28T00:00:00",
         "gender": true,
-        "country": "Việt Nam"
+        "country": "Việt Nam",
+        "token": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoibWhvYW5nQGdtYWlsLmNvbSIsImV4cCI6MTcxMjQyMDE1MywiaXNzIjoiVXNlciIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjcxNzcifQ.79H1GQuGaeZIvXiqH8lJwSe9vSgBawXmWhFs9v_WJNk"
       }
+    },
+    "getPosts": {
+      "get": "{baseUrl}/api/Posts/getPosts",
+      "parameters": "no",
+      "requestBody": "no",
+      "response": [
+        {
+          "id": 4,
+          "userId": 1,
+          "collectionId": null,
+          "link": "https://github.com/Tranggg1210/PixelPalette",
+          "caption": "Coding",
+          "detail": "It's not a bug, it's a feature",
+          "theme": "Dogma",
+          "thumbnailUrl": "https://res.cloudinary.com/djaze4ci7/image/upload/v1712985617/uddloooly21rujadtoj7.jpg",
+          "thumbnailId": "uddloooly21rujadtoj7",
+          "likeAmount": 0
+        }
+      ]
+    },
+    "getPost": {
+      "get": "{baseUrl}/api/Posts/getPost/{id}",
+      "parameters": {
+        "id": 4
+      },
+      "requestBody": "no",
+      "response": {
+        "id": 4,
+        "userId": 1,
+        "collectionId": null,
+        "link": "https://github.com/Tranggg1210/PixelPalette",
+        "caption": "Coding",
+        "detail": "It's not a bug, it's a feature",
+        "theme": "Dogma",
+        "thumbnailUrl": "https://res.cloudinary.com/djaze4ci7/image/upload/v1712985617/uddloooly21rujadtoj7.jpg",
+        "thumbnailId": "uddloooly21rujadtoj7",
+        "likeAmount": 0
+      }
+    },
+    "deletePost": {
+      "delete": "{baseUrl}/api/Posts/deletePost/{id}",
+      "parameters": {
+        "id": 3
+      },
+      "requestBody": "No",
+      "response": "Remove post successful!"
+    },
+    "createPost": {
+      "post": "{baseUrl}/api/Posts/createPost",
+      "parameters": "no",
+      "requestBody": {
+        "userId": 1,
+        "collectionId": null,
+        "link": "https://github.com/Tranggg1210/PixelPalette",
+        "caption": "Coding",
+        "detail": "It's not a bug, it's a feature",
+        "theme": "Dogma",
+        "thumbnailUrl": "https://res.cloudinary.com/djaze4ci7/image/upload/v1712985617/uddloooly21rujadtoj7.jpg",
+        "thumbnailId": "uddloooly21rujadtoj7"
+      },
+      "response": {
+        "id": 4,
+        "userId": 1,
+        "collectionId": null,
+        "link": "https://github.com/Tranggg1210/PixelPalette",
+        "caption": "Coding",
+        "detail": "It's not a bug, it's a feature",
+        "theme": "Dogma",
+        "thumbnailUrl": "https://res.cloudinary.com/djaze4ci7/image/upload/v1712985617/uddloooly21rujadtoj7.jpg",
+        "thumbnailId": "uddloooly21rujadtoj7",
+        "likeAmount": 0
+      }
+    },
+    "updatePost": {
+      "put": "{baseUrl}/api/Posts/updatePost/{id}",
+      "parameters": {
+        "id": 4
+      },
+      "requestBody": {
+        "collectionId": null,
+        "link": "https://github.com/Tranggg1210/PixelPalette",
+        "caption": "Coding",
+        "detail": "It's not a bug, it's a feature"
+      },
+      "response": {
+        "id": 4,
+        "userId": 1,
+        "collectionId": null,
+        "link": "https://github.com/Tranggg1210/PixelPalette",
+        "caption": "Coding",
+        "detail": "It's not a bug, it's a feature",
+        "theme": "Dogma",
+        "thumbnailUrl": "https://res.cloudinary.com/djaze4ci7/image/upload/v1712985617/uddloooly21rujadtoj7.jpg",
+        "thumbnailId": "uddloooly21rujadtoj7",
+        "likeAmount": 0
+      }
+    },
+    "uploadThumbnail": {
+      "post": "{baseUrl}/api/Posts/uploadThumbnail",
+      "parameters": "no",
+      "requestBody": {
+        "file": "multipart/form-data"
+      },
+      "response": {
+        "thumbnailUrl": "https://res.cloudinary.com/djaze4ci7/image/upload/v1712986689/ljlyluaiisjay8zegrmv.jpg",
+        "thumbnailId": "ljlyluaiisjay8zegrmv"
+      }
+    },
+    "deleteThumbnail": {
+      "post": "{baseUrl}/api/Posts/deleteThumbnail",
+      "parameters": {
+        "publicId": "ljlyluaiisjay8zegrmv"
+      },
+      "requestBody": "no",
+      "response": "Remove thumbnail successful!"
     },
     "components": {
       "schemas": {
-        "AccountModel": {
+        "AccountParams": {
           "type": "object",
           "properties": {
-            "id": {
-              "type": "integer",
-              "format": "int32"
-            },
             "email": {
               "type": "string",
               "nullable": true
             },
             "birthday": {
               "type": "string",
-              "format": "date-time"
+              "format": "date-time",
+              "nullable": true
             },
             "gender": {
-              "type": "boolean"
+              "type": "boolean",
+              "nullable": true
             },
             "country": {
               "type": "string",
@@ -159,7 +285,7 @@
           },
           "additionalProperties": false
         },
-        "ChangePasswordModel": {
+        "ChangePasswordParams": {
           "type": "object",
           "properties": {
             "userName": {
@@ -181,13 +307,71 @@
           },
           "additionalProperties": false
         },
-        "ProfileModel": {
+        "PostInitParams": {
           "type": "object",
           "properties": {
-            "id": {
+            "userId": {
               "type": "integer",
               "format": "int32"
             },
+            "collectionId": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "link": {
+              "type": "string",
+              "nullable": true
+            },
+            "caption": {
+              "type": "string",
+              "nullable": true
+            },
+            "detail": {
+              "type": "string",
+              "nullable": true
+            },
+            "theme": {
+              "type": "string",
+              "nullable": true
+            },
+            "thumbnailUrl": {
+              "type": "string",
+              "nullable": true
+            },
+            "thumbnailId": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "PostSetParams": {
+          "type": "object",
+          "properties": {
+            "collectionId": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "link": {
+              "type": "string",
+              "nullable": true
+            },
+            "caption": {
+              "type": "string",
+              "nullable": true
+            },
+            "detail": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          "additionalProperties": false
+        },
+        "ProfileParams": {
+          "type": "object",
+          "properties": {
             "firstName": {
               "type": "string",
               "nullable": true

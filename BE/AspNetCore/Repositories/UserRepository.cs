@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PixelPalette.Data;
 using PixelPalette.Entities;
+using PixelPalette.Helpers;
 using PixelPalette.Interfaces;
 using PixelPalette.Models;
 using PixelPalette.Services;
@@ -74,28 +75,28 @@ namespace PixelPalette.Repositories
             var user = await _context.Users!.FindAsync(id);
             return _mapper.Map<UserModel>(user);
         }
-        public async Task<ProfileModel> UpdateProfileAsync(int id, ProfileModel model)
+        public async Task<UserModel> UpdateProfileAsync(int id, ProfileParams param)
         {
             var updateProfile = await _context.Users!.FindAsync(id);
-            if (updateProfile != null && id == model.Id)
+            if (updateProfile != null)
             {
-                Transmit(model, ref updateProfile);
+                Transmit(param, ref updateProfile);
                 _context.Users!.Update(updateProfile);
                 await _context.SaveChangesAsync();
-                return model;
+                return _mapper.Map<UserModel>(updateProfile);
             }
             return null!;
         }
 
-        public async Task<AccountModel> UpdateAccountAsync(int id, AccountModel model)
+        public async Task<UserModel> UpdateAccountAsync(int id, AccountParams param)
         {
             var updateAccount = await _context.Users!.FindAsync(id);
-            if (updateAccount != null && id == model.Id)
+            if (updateAccount != null)
             {
-                Transmit(model, ref updateAccount);
+                Transmit(param, ref updateAccount);
                 _context.Users!.Update(updateAccount);
                 await _context.SaveChangesAsync();
-                return model;
+                return _mapper.Map<UserModel>(updateAccount);
             }
             return null!;
         }
