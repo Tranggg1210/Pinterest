@@ -3,8 +3,8 @@ using CloudinaryDotNet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PixelPalette.Entities;
+using PixelPalette.Helpers;
 using PixelPalette.Interfaces;
-using PixelPalette.Models;
 
 namespace PixelPalette.Controllers
 {
@@ -19,6 +19,7 @@ namespace PixelPalette.Controllers
         {
             _userRepo = repo;
         }
+
         [HttpGet("getUsers")]
         [Authorize]
         public async Task<IActionResult> GetAllUsers()
@@ -54,6 +55,7 @@ namespace PixelPalette.Controllers
                 return BadRequest("An error when remove user!");
             }
         }
+
         [HttpPut("EditAvatar/{id}")]
         [Authorize]
         public async Task<IActionResult> EditUserAvatar(int id, IFormFile file)
@@ -61,36 +63,36 @@ namespace PixelPalette.Controllers
             var avatarUrl = await _userRepo.EditAvatar(id, file);
             if (!string.IsNullOrEmpty(avatarUrl))
                 return Ok(avatarUrl);
-            return BadRequest("An error when edit avatar user!");
+            return BadRequest("An error when edit avatar!");
         }
 
         [HttpPut("EditProfile/{id}")]
         [Authorize]
-        public async Task<IActionResult> EditProfile(int id, ProfileModel profileModel)
+        public async Task<IActionResult> EditProfile(int id, ProfileParams param)
         {
             try
             {
-                var profile = await _userRepo.UpdateProfileAsync(id, profileModel);
+                var profile = await _userRepo.UpdateProfileAsync(id, param);
                 return profile == null ? NotFound($"Can't find profile info by id is {id}!") : Ok(profile);
             }
             catch
             {
-                return BadRequest("An error when edit profile info user!");
+                return BadRequest("An error when edit profile info!");
             }
         }
 
         [HttpPut("EditAccount/{id}")]
         [Authorize]
-        public async Task<IActionResult> EditAccount(int id, AccountModel accountModel)
+        public async Task<IActionResult> EditAccount(int id, AccountParams param)
         {
             try
             {
-                var account = await _userRepo.UpdateAccountAsync(id, accountModel);
+                var account = await _userRepo.UpdateAccountAsync(id, param);
                 return account == null ? NotFound($"Can't find account by id is {id}!") : Ok(account);
             }
             catch
             {
-                return BadRequest("An error when edit account info user!");
+                return BadRequest("An error when edit account info!");
             }
         }
     }

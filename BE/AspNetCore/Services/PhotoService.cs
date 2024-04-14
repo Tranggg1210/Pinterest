@@ -41,5 +41,17 @@ namespace PixelPalette.Services
             var result = await _cloudinary.DestroyAsync(deleteParams);
             return result;
         }
+
+        public async Task<bool> CheckPublicIdExistAsync(string publicId)
+        {
+            var result = await _cloudinary.GetResourceAsync(publicId);
+            return result != null;
+        }
+
+        public async Task<IEnumerable<string>> GetAllPublicIdsAsync()
+        {
+            var result = await _cloudinary.ListResourcesAsync();
+            return result.Resources.Select(r => r.PublicId);
+        }
     }
 }
