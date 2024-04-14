@@ -19,6 +19,7 @@ builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 
