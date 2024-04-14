@@ -97,7 +97,7 @@ const registerHandler = () => {};
 .container {
   width: 500px;
   border-radius: 25px;
-  margin: 100px auto;
+  margin: 10px auto;
   display: flex;
   flex-direction: column;
   align-items: center;

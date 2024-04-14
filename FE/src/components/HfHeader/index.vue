@@ -19,8 +19,12 @@ const showSearchModel = ref(false);
         <input type="text" placeholder="Tìm kiếm..." />
       </div>
       <div class="btn-container">
-        <HfButton class="btn-login"> Đăng nhập </HfButton>
-        <HfButton class="btn-signup"> Đăng ký </HfButton>
+        <router-link to="/login" exact-active-class="active">
+          <HfButton class="btn-login"> Đăng nhập </HfButton>
+        </router-link>
+        <router-link to="/sign-up" exact-active-class="active">
+          <HfButton class="btn-signup"> Đăng ký </HfButton>
+        </router-link>
       </div>
       <IconMenu2 size="28" class="mobile-menu-icon" @click="show = true" />
       <n-drawer v-model:show="show" width="70%">
@@ -32,8 +36,12 @@ const showSearchModel = ref(false);
             </div>
           </template>
           <div class="mobile-menu">
-            <HfButton class="btn-login"> Đăng nhập </HfButton>
-            <HfButton class="btn-signup"> Đăng ký </HfButton>
+            <router-link to="/login" exact-active-class="active">
+              <HfButton class="btn-login"> Đăng nhập </HfButton>
+            </router-link>
+            <router-link to="/sign-up" exact-active-class="active">
+              <HfButton class="btn-signup"> Đăng ký </HfButton>
+            </router-link>
           </div>
         </n-drawer-content>
       </n-drawer>
@@ -77,8 +85,8 @@ const showSearchModel = ref(false);
 }
 
 .active button {
-  background-color: $black-color;
-  color: $white-color;
+  background-color: $black-color !important;
+  color: $white-color !important;
 }
 .btn-home {
   @include mobile {

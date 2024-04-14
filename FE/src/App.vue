@@ -1,13 +1,11 @@
 <script setup>
 const themeOverrides = {
-  common: {
-    
-  },
+  common: {},
   Button: {
     textColorWarning: '#fff',
     textColorHoverWarning: '#fff',
     textColorFocusWarning: '#fff',
-    textColorPressedWarning: '#fff',
+    textColorPressedWarning: '#fff'
   }
 };
 </script>
