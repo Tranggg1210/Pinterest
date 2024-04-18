@@ -1,0 +1,40 @@
+.posts{
+    margin-top: 20px;
+}
+.posts-title{
+    font-size: 24px;
+    font-weight: 600;
+    padding: 8px;
+    text-align: center;
+    color: #fff;
+    background-color: #e60023;
+    border-radius: 2px;
+}
+.handle-posts{
+    @include flex(center, center);
+    flex-direction: column;
+    background-color: #fff;
+    padding: 24px;
+    box-shadow: 0px 0px 12px rgba(0 0 0 / 10%);
+}
+.image-uploaded{
+    margin: 24px 0 0;
+}
+
+.infor-uploaded{
+    width: 60%;
+    margin: 24px 40px;
+}
+.posts-input{
+    border: 1px solid #ccc;
+    border-radius:4px ;
+}
+.btn-container{
+    @include flex(center, center);
+    button{
+        background-color: red;
+        color: #fff;
+        font-weight: 600;
+        padding: 12px 36px;
+    }
+}
