@@ -1,50 +1,92 @@
 <script setup>
-import { ref } from 'vue';
+import { computed, reactive } from 'vue';
 import { RouterLink } from 'vue-router';
+import {login} from '../../api/auth.api';
+import { validateEmail, validatePassword } from '@/utils/validator';
+import axios from 'axios';
+import { useAuthStore } from '@/stores/auth';
+import { useRoute } from 'vue-router';
 
-const email = ref('');
-const password = ref('');
-function validateForm() {
-  var email = document.getElementById('email').value;
-  var password = document.getElementById('password').value;
-
-  if (email === '' || password === '') {
-    alert('Vui lòng điền đầy đủ thông tin.');
-    return false;
+const message = useMessage();
+const authStore = useAuthStore();
+const router = useRouter();
+const route = useRoute();
+const account = reactive({
+  email: null,
+  password: null
+});
+const formRef = ref(null);
+const rules = {
+  email: {
+    required: true,
+    validator: validateEmail,
+    trigger: 'blur'
+  },
+  password: {
+    required: true,
+    validator: validatePassword,
+    trigger: 'blur'
   }
-  if (email !== '@gmail.com') {
-    alert('Vui lòng điền đúng tài khoản email.');
-    return false;
+};
+const showForgotPassword = computed(() => {
+  if(!account.password) return true;
+  else{
+    return true;
   }
-  if (password.length <= 8) {
-    alert('Vui lòng nhập mật khẩu dài hơn 8 ký tự');
-    return false;
-  }
-  return true;
-}
+});
+const loginHandler = () => {
+  formRef.value?.validate(async (errors) => {
+    if (!errors) {
+      try {
+        const { data } = await axios.post("https://api.escuelajs.co/api/v1/auth/login",account);
+        authStore.save({
+          ...data
+        });
+        message.success('Đăng nhập thành công. Xin chào ' + account.email);
+        router.push(route.query.redirect || '/');
+      } catch (err) {
+        if (!!err.response) {
+          message.error(err.response.data.message);
+        } else {
+          message.error(err.message);
+        }
+      }
+    }
+  });
+};
 </script>
 
 <template>
   <div class="login">
     <div class="login__logo">
-      <img src="../../assets/images/logo.png" alt="" />
+      <IconBrandPinterest size="36" style="color: red" />
     </div>
     <div class="login__title">
       <p class="login__title-heading">Chào mừng bạn đến với Pinterest</p>
     </div>
-    <form class="login__wrapper" @submit.prevent="validateForm">
-      <div class="login__wrapper-email">
-        <label for="email">Email</label> <br />
-        <input type="email" id="email" v-model="email" placeholder="Email" required />
-      </div>
-      <div class="login__wrapper-password">
-        <label for="password">Mật khẩu</label> <br />
-        <input type="password" id="password" v-model="password" placeholder="Mật khẩu" required />
-      </div>
-      <div class="login__wrapper-forgotpass">
+    <n-form class="login__wrapper" ref="formRef" :model="account" :rules="rules" size="large">
+      <n-form-item path="email" label="Email">
+        <n-input
+          v-model:value="account.email"
+          placeholder="Email"
+          class="form-input"
+        />
+      </n-form-item>
+      <n-form-item path="password" label="Mật khẩu" style="margin-top: 4px;">
+        <n-input
+          v-model:value="account.password"
+          placeholder="Mật khẩu"
+          type="password"
+          show-password-on="click"
+          class="form-input"
+        />
+      </n-form-item>
+      <div class="login__wrapper-forgotpass" v-if="showForgotPassword">
         <RouterLink to="/forgot-password">Quên mật khẩu?</RouterLink>
       </div>
-      <button type="submit" class="login__wrapper-button button-login">Đăng nhập</button>
+      <n-form-item>
+        <button type="submit" class="login__wrapper-button button-login" @click="loginHandler">Đăng nhập</button>
+      </n-form-item>
       <div class="login__wrapper-infor">
         <p>
           Bằng cách tiếp tục, bạn đồng ý với <br />
@@ -55,14 +97,15 @@ function validateForm() {
           <a href="#" class="login__strong-infor">Thông báo khi thu thập.</a>
         </p>
       </div>
-      <div class="login__border"></div>
       <div class="login__wrapper-register">
         <p>
-          <RouterLink to="/sign-up" class="login__strong-infor">Chưa tham gia Pinterest? Đăng ký</RouterLink> <br />
-          Bạn là doanh nghiệp? <a href="#" class="login__strong-infor">Hãy bắt đầu tại đây!</a>
+          <RouterLink to="/sign-up" class="login__strong-infor"
+            >Chưa tham gia Pinterest? Đăng ký</RouterLink
+          >
+          <br />
         </p>
       </div>
-    </form>
+    </n-form>
   </div>
 </template>
 
@@ -74,7 +117,6 @@ button {
 
 .login {
   width: 484px;
-  /* height: 720px; */
   background: #fff;
   display: flex;
   flex-direction: column;
@@ -87,17 +129,10 @@ button {
     width: 268px;
   }
 
-  &__logo img {
-    width: 39px;
-    height: 39px;
-    display: block;
-    margin: 0 auto;
-  }
-
   &__title {
     width: 400px;
-    height: 85px;
-    margin-bottom: 40px;
+    height: 80px;
+    margin-bottom: 60px;
   }
 
   &__title-heading {
@@ -107,48 +142,14 @@ button {
     font-weight: 600;
   }
 
-  &__wrapper-email {
-    label {
-      font-size: 14px;
-      color: #111111;
-      padding-left: 8px;
-      display: inline-block;
-      margin-bottom: 5px;
-    }
-
-    input {
-      padding: 12px 16px;
-      width: 100%;
-      border-radius: 12px;
-      border: 2px solid #cdcdcd;
-    }
-  }
-
-  &__wrapper-password {
-    label {
-      font-size: 14px;
-      color: #111111;
-      padding-left: 8px;
-      display: inline-block;
-      margin: 5px 0;
-    }
-
-    input {
-      padding: 12px 16px;
-      width: 100%;
-      border-radius: 12px;
-      border: 2px solid #cdcdcd;
-    }
-  }
-
   &__wrapper-forgotpass {
-    font-size: 14px;
+    font-size: 13px;
     color: #111111;
     font-weight: 450;
-    display: inline-block;
-    margin: 2px 6px 12px;
-    a:hover{
-        color: #e60023;
+    margin: -23px 6px 12px;
+    text-align: right;
+    a:hover {
+      color: #e60023;
     }
   }
 
@@ -168,17 +169,17 @@ button {
       align-items: center;
       justify-content: center;
       font-weight: bold;
+      outline: none;
     }
   }
 
-  &__wrapper_or {
-    p {
-      text-align: center;
-      font-size: 14px;
-      font-weight: bold;
-      color: #333333;
-      margin: 8px 0;
-    }
+  .form-input {
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    outline: none;
+    padding: 5px;
+    position: relative;
+    margin-bottom: 2px;
   }
 
   &__wrapper-button {

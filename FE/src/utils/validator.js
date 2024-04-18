@@ -28,37 +28,46 @@ function validateUsername(username) {
   return true;
 }
 
-function validateEmail(email) {
+function validateEmail(_,email) {
+  if (email === null || typeof email === 'undefined') {
+    return new Error('Vui lòng nhập email!');
+  }
+
   if (email.trim() === '') {
     return new Error('Vui lòng nhập địa chỉ email!');
   } else if (!/^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$/.test(email)) {
     return new Error('Email không đúng định dạng!');
   }
+
   return true;
 }
 
-function validatePassword(password) {
+function validatePassword(_,password) {
   // Chuỗi rỗng
+  if (password === null || typeof password === 'undefined') {
+    return new Error('Vui lòng nhập password!');
+  }
+
   if (password.trim() === '') {
     return new Error('Vui lòng nhập mật khẩu!');
   }
   // Regex
-  const regex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,}$/;
-  if (!regex.test(password)) {
-    // Chữ cái
-    if (!/[a-zA-Z]/.test(password)) {
-      return new Error('Mật khẩu phải chứa ít nhất một chữ cái!');
-    }
-    // Chữ số
-    if (!/\d/.test(password)) {
-      return new Error('Mật khẩu phải chứa ít nhất một chữ số!');
-    }
-    // Chiều dài
-    if (password.length < 6) {
-      return new Error('Mật khẩu phải dài ít nhất 6 ký tự!');
-    }
-    return new Error('Mật khẩu không hợp lệ!');
-  }
+  // const regex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,}$/;
+  // if (!regex.test(password)) {
+  //   // Chữ cái
+  //   if (!/[a-zA-Z]/.test(password)) {
+  //     return new Error('Mật khẩu phải chứa ít nhất một chữ cái!');
+  //   }
+  //   // Chữ số
+  //   if (!/\d/.test(password)) {
+  //     return new Error('Mật khẩu phải chứa ít nhất một chữ số!');
+  //   }
+  //   // Chiều dài
+  //   if (password.length < 6) {
+  //     return new Error('Mật khẩu phải dài ít nhất 6 ký tự!');
+  //   }
+  //   return new Error('Mật khẩu không hợp lệ!');
+  // }
   // Mật khẩu hợp lệ
   return true;
 }

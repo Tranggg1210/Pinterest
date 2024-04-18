@@ -5,7 +5,7 @@ import { ref } from 'vue';
 <template>
   <div class="post__item">
     <div class="post-image">
-      <img src="../../assets//images//test6.jpg" alt="" />
+      <img src="https://i.pinimg.com/736x/a4/c7/13/a4c713ee683ff455464faa9132a69688.jpg" alt="" />
 
       <div class="model">
         <div class="model__header">
@@ -35,8 +35,8 @@ import { ref } from 'vue';
 }
 .post__item {
   z-index: 1;
-  min-height: 100px;
-  margin-bottom: 30px;
+  min-height: 120px;
+  margin-bottom: 12px;
   .post-image {
     position: relative;
     height: 80%;
@@ -73,9 +73,10 @@ import { ref } from 'vue';
     height: 20%;
     .post__info-bottom {
       display: flex;
+      align-items: center;
       .post-avatar {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
         border-radius: 100%;
       }
       .post-username {
