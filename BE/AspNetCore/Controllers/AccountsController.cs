@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using PixelPalette.Helpers;
 using PixelPalette.Interfaces;
 using PixelPalette.Models;
 using System.Security.Claims;
@@ -37,9 +38,9 @@ namespace PixelPalette.Controllers
         }
         [HttpPut("ChangePassword")]
         [Authorize]
-        public async Task<IActionResult> ChangePassword(ChangePasswordModel changePasswordModel)
+        public async Task<IActionResult> ChangePassword(ChangePasswordParams param)
         {
-            if (!await _accountRepo.ChangePasswordAsync(changePasswordModel))
+            if (!await _accountRepo.ChangePasswordAsync(param))
                 ModelState.AddModelError("","Change new password failure!");
             return Ok("Change new password successful");
         }

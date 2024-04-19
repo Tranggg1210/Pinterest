@@ -1,17 +1,39 @@
-<script setup>
-
-</script>
+<script setup></script>
 <template>
-    <div>
-
+  <div class="container">
+    <div class="wide post__container">
+      <HfPost></HfPost>
+      <HfPost></HfPost>
+      <HfPost></HfPost>
+      <HfPost></HfPost>
+      <HfPost></HfPost>
+      <HfPost></HfPost>
+      <HfPost></HfPost>
+      <HfPost></HfPost>
+      <HfPost></HfPost>
+      <HfPost></HfPost>
+      <HfPost></HfPost>
+      <HfPost></HfPost>
+      <HfPost></HfPost>
+      <HfPost></HfPost>
+      <HfPost></HfPost>
+      <HfPost></HfPost>
+      <HfPost></HfPost>
+      <HfPost></HfPost>
+      <HfPost></HfPost>
+      <HfPost></HfPost>
     </div>
+  </div>
 </template>
 
-<style lang="scss" scoped>
-
+<style scoped lang="scss">
+.post__container {
+  margin-top: 30px;
+}
 </style>
+
 <route lang="yaml">
-    name: Home
-    meta:
-      layout: default
+name: Home
+meta:
+  layout: default
 </route>
