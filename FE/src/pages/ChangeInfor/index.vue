@@ -1,133 +1,114 @@
+<script setup>
+import { NInput } from 'naive-ui'
+import { NSelect } from 'naive-ui'
+import { NButton } from 'naive-ui'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { NInputGroup } from 'naive-ui'
+
+
+</script>
+
 <template>
   <div class="container">
-    <div class="Header">
-      <div class="Header__title">
-        Chỉnh sửa Ghim
+    <header>
+      <h1>Chỉnh sửa Ghim</h1>
+      <a href="!#"><i class="fa-solid fa-xmark cancel"></i></a>
+    </header>
+    <section id="section">
+      <label for="Title">Tiêu đề</label>
+      <n-input class="input" v-model:value="value" type="text" placeholder="Thêm tiêu đề" />
+      <label for="Describe">Mô tả</label>
+      <n-input class="input"
+      v-model:value="value"
+      type="textarea"
+      placeholder="Viết mô tả cho Ghim của bạn ở đây hoặc thêm một danh sách cụ thể bên dưới"
+      />
+      <label for="Link">Liên kết</label>
+      <n-input class="input" v-model:value="value" type="text" placeholder="Thêm liên kết" />
+      <label for="table">Bảng</label>
+      <n-select class="input select" :style="{ width: '50%'}" :options="selectOptions" placeholder="Chọn bảng"/>    
+      <p class="other">Tùy chọn khác <i class="fa-solid fa-chevron-down"></i></p> 
+  </section>
+  <hr>
+    <footer>
+      <div class="button">
+      <n-button  class="buttonn" strong secondary>
+      Xóa
+      </n-button>
+      <n-button class="buttonn" strong secondary type="error">
+      Lưu
+      </n-button>
       </div>
-      <div class="Header__icon">
-        <button class="button__cancel"><i class="fa-solid fa-x"></i></button>
-      </div>
-    </div>
-    <div class="Form">
-      <div class="Form__title">
-        <label for="">Tiêu đề</label><br>
-        <input type="text" placeholder="Thêm tiêu đề">
-      </div>
-      <div class="Form__desc">
-        <label for="">Mô tả</label><br>
-        <textarea class="Form__input" placeholder="Viết mô tả của bạn tại đây"></textarea>
-      </div>
-      <div class="Form__link">
-        <label for="">Liên kết</label><br>
-        <input type="text" placeholder="Thêm liên kết">
-      </div>
-      <div class="Form__extra">
-        <div class="Form__extra__table">
-          <label for="Bảng">Bảng</label>
-          <input v-model="Ontable" type="text" placeholder="Không có bảng nào">
-        </div>
-        <div class="Form__extra__section">
-          <label for="Phần">Phần</label>
-          <input v-model="Onsection" type="text" placeholder="Không có phần nào">
-        </div>
-      </div>
-      <div class="Form__choice">
-        <a href="#">Tùy chọn khác <i class="fa-solid fa-chevron-down"></i></a>
-      </div>
-    </div>
-    <div class="Footer">
-      <input type="button" value="Xóa" class="button button__delete">
-      <input type="button" value="Lưu" class="button button__save">
-    </div>
+    </footer>
   </div>
 </template>
-  
-<script>
-</script>
-  
-<style lang="scss" scoped>
-  .container {
-    position: relative;
-    width: 500px;
-    background: #f6f6f6;
-    position: fixed;
-    top: 0;
-    right: 0;
+
+<style scoped >
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.container{
+  width: 550px;
+  height: 100vh;
+  /* background: #f3f3f3; */
+  border: 1px solid black;
+}
+header{
+  height: 100px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .cancel{
+    font-size: 30px;
+    margin-right: 15px;
+    color: black;
   }
-  
-  .Header {
-    padding: 30px;
-    height: 100px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-  
-    &__title {
-      font-size: 30px;
-    }
-  
-    &__icon button {
-      font-size: 20px;
-      border: none;
-      background: #f6f6f6;
-      margin-right: 20px;
-    }
+  h1{
+    font-weight: 600;
   }
-  
-  .Form {
-    border-top: 1px solid gray;
-    border-bottom: 1px solid gray;
-    overflow-y: scroll;
-    padding: 30px;
-    height: 400px;
-    display: flex;
-    flex-direction: column;
-    gap: 35px;
-  
-    & input {
-      margin-top: 10px;
-      width: 100%;
-      border-radius: 13px;
-      padding: 8px;
-    }
-  
-    &__extra {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-    }
+}
+section{
+  padding: 24px;
+  overflow-y: scroll;
+  height: 400px;
+  border-top: 1px solid black;
+  label:last-child{
+    font-size: ;
   }
-  
-  .Form__choice a {
-    text-decoration: none;
+  .input{
+    padding: 8px 12px;
+    border-radius: 15px;
+    margin-bottom: 12px;
+    border: 2px solid gray;
   }
-  
-  .Footer {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    height: 100px;
-    gap: 10px;
-  
-    & .button {
-      display: inline-block;
-      padding: 12px 16px;
-      border-radius: 999px;
-      border: none;
-      font-weight: 500;
-      font-size: 15px;
-      cursor: pointer;
-    }
-  
-    & .button__delete {
-      background: #e9e9e9;
-    }
-  
-    & .button__save {
-      background: #e60023;
-      color: #fff;
-    }
+  .input:focus-within {
+    border: 3px solid #007aff;
   }
+  .select {
+    margin-bottom: 22px;
+  }
+  .other{
+    font-size: 16px;
+    font-weight: 500;
+  }
+}
+footer{
+  height: calc(100vh - 110px - 400px);
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 40px;
+  align-items: center;
+  button{
+  padding: 20px;
+  border-radius: 30px;
+  margin-left: 10px;
+  }
+  .buttonn{
+    font-weight: 600;
+  }
+}
 </style>
-  
