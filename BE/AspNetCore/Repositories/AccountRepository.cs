@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using PixelPalette.Data;
 using PixelPalette.Entities;
+using PixelPalette.Helpers;
 using PixelPalette.Interfaces;
 using PixelPalette.Models;
 using System.IdentityModel.Tokens.Jwt;
@@ -78,17 +79,17 @@ namespace PixelPalette.Repositories
             var user = _mapper.Map<User>(model);
             return await _userManager.CreateAsync(user, model.Password);
         }
-        public async Task<bool> ChangePasswordAsync(ChangePasswordModel model)
+        public async Task<bool> ChangePasswordAsync(ChangePasswordParams param)
         {
-            var user = await _userManager.FindByNameAsync(model.UserName);
+            var user = await _userManager.FindByNameAsync(param.UserName);
             if (user != null)
             {
-                var result = await _userManager.CheckPasswordAsync(user, model.OldPassword);
+                var result = await _userManager.CheckPasswordAsync(user, param.OldPassword);
 
-                if (!result || !model.NewPassword.Equals(model.ComfirmPassword))
+                if (!result || !param.NewPassword.Equals(param.ComfirmPassword))
                     return false;
 
-                var changePasswordResult = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                var changePasswordResult = await _userManager.ChangePasswordAsync(user, param.OldPassword, param.NewPassword);
                 if (changePasswordResult.Succeeded)
                     return true;
             }

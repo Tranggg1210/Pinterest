@@ -6,5 +6,7 @@ namespace PixelPalette.Interfaces
     {
         Task<ImageUploadResult> AddPhotoAsync(IFormFile file);
         Task<DeletionResult> DeletePhotoAsync(string publicId);
+        Task<bool> CheckPublicIdExistAsync(string publicId);
+        Task<IEnumerable<string>> GetAllPublicIdsAsync();
     }
 }

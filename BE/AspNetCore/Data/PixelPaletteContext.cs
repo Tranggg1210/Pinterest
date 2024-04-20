@@ -248,13 +248,9 @@ namespace PixelPalette.Data
                     .HasColumnName("LikeAmount")
                     .HasDefaultValueSql("('0')");
 
-                entity.Property(e => e.Media)
+                entity.Property(e => e.Link)
                     .HasMaxLength(255)
-                    .HasColumnName("Media");
-
-                entity.Property(e => e.Reference)
-                    .HasMaxLength(255)
-                    .HasColumnName("Reference");
+                    .HasColumnName("Link");
 
                 entity.Property(e => e.Theme)
                     .HasMaxLength(255)
