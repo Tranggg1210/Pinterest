@@ -44,21 +44,22 @@ class ForgotController extends Controller
         // $validate = Validator::make([
         //     'email' => 'required|email',
         // ]);
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('Email', $request->email)->first();
             if ($user) {
                 $password = Str::random(8);
                 $user->Token = Str::random(32);
                 $user->PasswordHash = Hash::make($password);
                 $user->save();
+                dd(Mail::to($user->Email)->send(new ForgotMail($user, $password)));
                try {
-                    Mail::to($user->email)->send(new ForgotMail($user, $password));
+                    Mail::to($user->Email)->send(new ForgotMail($user, $password));
                     return response()->json([
-                        'status' => 'success',
+                        'status' => true,
                         'message' => 'Reset password thành công !',
                     ], 200);
                }catch(\Throwable $th){
                     return response()->json([
-                        'status' => true,
+                        'status' => false,
                         'error' => 'Không thể kết nối được đến gmail !',
                         'message' => "Chưa gửi mật khẩu mới tới email !",
                     ], 200);

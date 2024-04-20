@@ -31,7 +31,8 @@ class Handler extends ExceptionHandler
     // public function render($request, Throwable $e)
     // {
     //     if ($e instanceof MethodNotAllowedHttpException) {
-    //         return redirect()->back() -> with('error', 'Sai phương thức request');
+    //         echo "<h1>Truy cập không hợp lệ</h1>";
+    //         return;
     //     }
     // }
 }

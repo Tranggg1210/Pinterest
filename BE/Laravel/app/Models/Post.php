@@ -23,4 +23,7 @@ class Post extends Model
     {
         return 'PixelPalette_post';
     }
+    public function getLatestPost(User $user){
+        return $this->where('user_id', $user->Id)->latest()->first();
+    }
 }
