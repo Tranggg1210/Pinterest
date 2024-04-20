@@ -9,7 +9,18 @@
     + Cài composer require laravel/scout
     + Cài composer require algolia/scout-extended
 ## Laravel websocket 
+
     link : https://beyondco.de/docs/laravel-websockets/getting-started/installation
+    +Trong .env
+        #Websocket
+        BROADCAST_DRIVER=pusher
+        PUSHER_APP_ID= PixelPaletteID
+        PUSHER_APP_KEY= PixelPaletteKey
+        PUSHER_APP_SECRET= PixelPaletteSecret
+        PUSHER_HOST=127.0.0.1
+        PUSHER_PORT=6001
+        PUSHER_SCHEME=http
+        PUSHER_APP_CLUSTER=mt1
     + Cài đặt composer require beyondcode/laravel-websockets .Nếu phát sinh lỗi thêm "-W" ở cuối
 
     + Chạy server websocket
