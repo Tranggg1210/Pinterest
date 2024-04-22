@@ -9,7 +9,7 @@ namespace PixelPalette.Interfaces
     {
         Task<IdentityResult> SignUpAsync(SignUpModel model);
         Task<bool> SignInAsync(SignInModel model);
-        Task<bool> ChangePasswordAsync(ChangePasswordParams model);
+        Task<bool> ChangePasswordAsync(string userName, ChangePasswordParams model);
         Task<string> CreateToken();
     }
 }

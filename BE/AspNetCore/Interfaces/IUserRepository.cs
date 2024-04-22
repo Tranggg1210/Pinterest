@@ -8,9 +8,11 @@ namespace PixelPalette.Interfaces
     {
         Task<IEnumerable<UserModel>> GetAllUsersAsync();
         Task<UserModel> GetUserByIdAsync(int id);
-        Task<UserModel> UpdateProfileAsync(int id, ProfileParams param);
-        Task<UserModel> UpdateAccountAsync(int id, AccountParams param);
+        Task<UserModel> UpdateProfileAsync(int id, ProfileParams entryParams);
+        Task<UserModel> UpdateAccountAsync(int id, AccountParams entryParams);
         Task<bool> DeleteUserAsync(int id);
-        Task<string> EditAvatar(int publicId, IFormFile file);
+        Task<string> EditAvatarAsync(int id, IFormFile file);
+        Task<bool> FollowHandleAsync(int id, int followingId);
+        Task<bool> UnfollowHandleAsync(int id, int followingId);
     }
 }

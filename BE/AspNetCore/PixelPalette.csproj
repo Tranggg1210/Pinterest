@@ -29,6 +29,10 @@
     <None Include="routes.json" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\" />
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties routes_1json__JsonSchema="https://api.airplane.dev/v0/schemas/task.json" /></VisualStudio></ProjectExtensions>
 
 </Project>

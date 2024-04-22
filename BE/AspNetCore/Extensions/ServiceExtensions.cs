@@ -57,7 +57,7 @@ namespace PixelPalette.Extensions
                 });
             });
         }
-       
+
         public static void ConfigureIdentity(this IServiceCollection services)
         {
             services.AddIdentityCore<User>(o =>
@@ -70,7 +70,8 @@ namespace PixelPalette.Extensions
                 o.User.RequireUniqueEmail = true;
             })
                 .AddEntityFrameworkStores<PixelPaletteContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddSignInManager<SignInManager<User>>();
         }
         public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration)
         {

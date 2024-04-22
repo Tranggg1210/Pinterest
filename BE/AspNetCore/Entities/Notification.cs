@@ -3,17 +3,13 @@ using System.Collections.Generic;
 
 namespace PixelPalette.Entities
 {
-    public partial class Comment
+    public partial class Notification
     {
         public int Id { get; set; }
-        public int? CommentReplyId { get; set; }
         public int UserId { get; set; }
-        public int PostId { get; set; }
-        public string Content { get; set; } = null!;
+        public string Data { get; set; } = null!;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public long Like { get; set; }
 
-        public virtual Post Post { get; set; } = null!;
         public virtual User User { get; set; } = null!;
     }
 }
