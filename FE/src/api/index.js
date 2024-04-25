@@ -21,6 +21,7 @@ api.interceptors.response.use(
       localStorage.removeItem(LocalStorage.auth);
       router.push('/login');
     }
+    return Promise.reject(error);
   }
 );
 

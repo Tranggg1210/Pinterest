@@ -1,0 +1,145 @@
+.header {
+    background-color: $white-color;
+    box-shadow: 1px 1px 20px rgba(0 0 0/2%);
+    padding: 16px 24px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    @include mobile{
+      padding: 16px 0px;
+    }
+  }
+  .header-shadow {
+    box-shadow: 1px 2px 12px rgba(0 0 0/10%);
+  }
+  .header > .wide {
+    @include flex(space-between, center);
+  }
+  .header-logo {
+    @include flex(center, center);
+    color: $primary-color;
+    margin-right: 6px;
+    svg {
+      margin-right: 2px !important;
+    }
+  
+    @include mobile {
+      h2 {
+        display: none;
+      }
+    }
+    @include small-tablet {
+      h2 {
+        font-size: 18px;
+      }
+    }
+  }
+  
+  .active button {
+    background-color: $black-color !important;
+    color: $white-color !important;
+  }
+  .btn-home {
+    @include mobile {
+      display: none;
+    }
+    @include small-tablet {
+      display: none;
+    }
+    @include tablet {
+      display: none;
+    }
+  }
+  .header-search {
+    width: 60%;
+    border: none;
+    background-color: $secondary-color;
+    padding: 8px 16px;
+    @include flex(center, center);
+    border-radius: 32px;
+  
+    input {
+      width: 98%;
+      border: none;
+      outline: none;
+      font-size: 16px;
+      padding: 3px 4px;
+      background-color: transparent;
+    }
+    @include tablet {
+      width: 50%;
+    }
+  }
+  .btn-container {
+    @include flex(center, center);
+    .btn-signup {
+      background-color: $primary-color;
+      color: $white-color;
+      margin: 0;
+    }
+    @include mobile {
+      display: none;
+    }
+    @include small-tablet {
+      display: none;
+    }
+  }
+  .mobile-menu-icon {
+    display: none;
+    cursor: pointer;
+    transition: all 0.4s linear;
+  
+    &:hover {
+      color: $primary-color;
+    }
+    @include mobile {
+      display: block;
+    }
+    @include small-tablet {
+      display: block;
+    }
+  }
+  .mobile-menu {
+    button {
+      border-radius: 0;
+      background-color: transparent;
+      margin-left: -6px;
+      width: 106%;
+      text-align: left;
+      @include small-tablet {
+        width: 103%;
+      }
+    }
+  }
+  .cushion {
+    height: 76px;
+  }
+  .menu-logined{
+    @include flex(center, center);
+    @include mobile{
+      display: none;
+    }
+    @include small-tablet{
+      display: none;
+    }
+  }
+  .menu-logined-icon{
+    width: 42px;
+    height: 42px;
+    margin: 0 8px;
+    padding: 8px;
+    transition: all 0.3s linear;
+    border-radius: 50%;
+    cursor: pointer;
+    &:hover{
+      background-color: #ccc;
+    }
+  }
+  .user-avatar{
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    margin:0 4px 0 16px;
+  }

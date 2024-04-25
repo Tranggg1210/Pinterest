@@ -2,6 +2,7 @@ import { apiDefault } from './index';
 import { ApiConstant } from '@/constant/api.constant';
 
 const authApi = () => ({
+  login: async({email, passowrd}) => apiDefault.post(ApiConstant.auth.login, {email, passowrd}),
   register: async ({ email, password, birthday }) => {
     return apiDefault.post(ApiConstant.auth.register, {
       email,
@@ -12,4 +13,4 @@ const authApi = () => ({
   }
 });
 
-export const { register } = authApi();
+export const { login,register } = authApi();
