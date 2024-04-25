@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using PixelPalette.Entities;
 using PixelPalette.Helpers;
 using PixelPalette.Interfaces;
 using PixelPalette.Models;
-using System.Security.Claims;
 
 namespace PixelPalette.Controllers
 {
@@ -13,36 +14,54 @@ namespace PixelPalette.Controllers
     [ApiExplorerSettings(GroupName = "v1")]
     public class AccountsController : ControllerBase
     {
-        private readonly IAccountRepository _accountRepo;
+        private readonly IAccountRepository _repo;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public AccountsController(IAccountRepository repo)
+        public AccountsController(IAccountRepository repo, UserManager<User> userManager, SignInManager<User> signInManager)
         {
-            _accountRepo = repo;
+            _repo = repo;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
-        [HttpPost("SignUp")]
-        public async Task<IActionResult> SignUp(SignUpModel signUpModel)
+        [HttpPost("signUp")]
+        public async Task<ActionResult> SignUp(SignUpModel signUpModel)
         {
-            var result = await _accountRepo.SignUpAsync(signUpModel);
+            var result = await _repo.SignUpAsync(signUpModel);
             if (result.Succeeded)
             {
                 return Ok(result.Succeeded);
             }
-            return StatusCode(500, "Error from Server!");
+            return StatusCode(500, false);
         }
-        [HttpPost("SignIn")]
-        public async Task<IActionResult> SignIn(SignInModel signInModel)
+        [HttpPost("signIn")]
+        public async Task<ActionResult> SignIn(SignInModel signInModel)
         {
-            if (!await _accountRepo.SignInAsync(signInModel))
-                return Unauthorized("Login unsuccessful!");
-            return Ok(new { token = await _accountRepo.CreateToken() });
+            if (!await _repo.SignInAsync(signInModel))
+                return Unauthorized("Unauthorised");
+            var token = new
+            {
+                token = await _repo.CreateToken()
+            };
+            string tokenJson = JsonConvert.SerializeObject(token);
+            var cookieOptions = new CookieOptions
+            {
+                Path = "/",
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict
+            };
+            Response.Cookies.Append("Token", tokenJson, cookieOptions);
+            return Ok(token);
         }
-        [HttpPut("ChangePassword")]
+        [HttpPut("changePassword")]
         [Authorize]
-        public async Task<IActionResult> ChangePassword(ChangePasswordParams param)
+        public async Task<ActionResult> ChangePassword(ChangePasswordParams entryParams)
         {
-            if (!await _accountRepo.ChangePasswordAsync(param))
-                ModelState.AddModelError("","Change new password failure!");
-            return Ok("Change new password successful");
+            string userName = _userManager.GetUserName(HttpContext.User);
+            if (string.IsNullOrEmpty(userName) || !await _repo.ChangePasswordAsync(userName, entryParams))
+                return BadRequest(false);
+            return Ok(true);
         }
     }
 }

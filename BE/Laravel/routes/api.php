@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\FollowController;
 use App\Http\Controllers\Api\ForgotController;
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\SearchController;
-use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,22 +22,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return auth() -> user();
-});
 Route::get('/search/{keyword?}',[SearchController::class,'search']) -> name('search');
 Route::post('/register',[RegisterController::class,'register']) -> name('register');
 Route::post('/forgot',[ForgotController::class,'forgot']) -> name('forgot');
 
-Route::group([
-
-    'middleware' => 'api',
-
-], function ($router) {
-
+Route::group(['middleware' => 'api',], function ($router) {
     Route::post('login', [AuthController::class,'login']) -> name('login');
-    Route::post('logout', [AuthController::class,'logout']) -> name('logout');
-    Route::post('refresh', 'AuthController@refresh');
-    Route::post('me', 'AuthController@me');
-
 });
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+    //     return auth() -> user();
+    // });
+    Route::middleware("auth:api")->group(function(){
+    Route::post('user', [AuthController::class,'user']) -> name('user');
+    Route::post('logout', [AuthController::class,'logout']) -> name('logout');
+    Route::post('follow/{UserId?}', [FollowController::class,'follow']) -> name('follow');;
+    Route::post('notifications', [NotificationController::class,'notification']) -> name('notification');;
+    Route::post('comments/{PostId?}', [CommentController::class,'sendcomment']) -> name('comment');
+});
+Route::get('get-comment/{PostId?}', [CommentController::class,'getComments']) -> name('getComment');

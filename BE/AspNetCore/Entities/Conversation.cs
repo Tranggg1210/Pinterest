@@ -11,10 +11,13 @@ namespace PixelPalette.Entities
         }
 
         public int Id { get; set; }
-        public int CreatedByUserId { get; set; }
-        public DateTime? CreatedAt { get; set; }
+        public string Name { get; set; } = null!;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public int CreatorId { get; set; }
+        public int ConnectorId { get; set; }
 
-        public virtual User CreatedByUser { get; set; } = null!;
+        public virtual User Connector { get; set; } = null!;
+        public virtual User Creator { get; set; } = null!;
         public virtual ICollection<Message> Messages { get; set; }
     }
 }

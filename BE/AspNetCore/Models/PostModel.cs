@@ -11,6 +11,6 @@
         public string? Theme { get; set; }
         public string ThumbnailUrl { get; set; } = null!;
         public string ThumbnailId { get; set; } = null!;
-        public long LikeAmount { get; set; }
+        public long Like { get; set; }
     }
 }

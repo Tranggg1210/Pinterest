@@ -7,21 +7,22 @@ using PixelPalette.Entities;
 using PixelPalette.Helpers;
 using PixelPalette.Interfaces;
 using PixelPalette.Models;
-using PixelPalette.Services;
 
 namespace PixelPalette.Repositories
 {
-    public class UserRepository : TransmitService, IUserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly PixelPaletteContext _context;
         private readonly IMapper _mapper;
         private readonly IPhotoService _photoService;
+        private readonly ITool _tools;
 
-        public UserRepository(PixelPaletteContext context, IMapper mapper, IPhotoService photoService)
+        public UserRepository(PixelPaletteContext context, IMapper mapper, IPhotoService photoService, ITool tools)
         {
             _context = context;
             _mapper = mapper;
             _photoService = photoService;
+            _tools = tools;
         }
 
         public async Task<bool> DeleteUserAsync(int id)
@@ -36,7 +37,7 @@ namespace PixelPalette.Repositories
             return false;
         }
 
-        public async Task<string> EditAvatar(int id, IFormFile file)
+        public async Task<string> EditAvatarAsync(int id, IFormFile file)
         {
             var user = await _context.Users!.FindAsync(id);
 
@@ -48,18 +49,14 @@ namespace PixelPalette.Repositories
                 if (user.AvatarId != null)
                 {
                     var deleteResult = await _photoService.DeletePhotoAsync(user.AvatarId);
-                    if (deleteResult.Error != null) return string.Empty;
+                    if (deleteResult.Error != null || deleteResult.Result == "not found") return string.Empty;
                 }
-                try
-                {
-                    var Url = addResult.SecureUrl.AbsoluteUri;
-                    user.AvatarUrl = Url;
-                    user.AvatarId = addResult.PublicId;
-                    _context.Users!.Update(user);
-                    await _context.SaveChangesAsync();
-                    return Url;
-                }
-                catch { }
+                var Url = addResult.SecureUrl.AbsoluteUri;
+                user.AvatarUrl = Url;
+                user.AvatarId = addResult.PublicId;
+                _context.Users!.Update(user);
+                await _context.SaveChangesAsync();
+                return Url;
             }
             return string.Empty;
         }
@@ -75,12 +72,12 @@ namespace PixelPalette.Repositories
             var user = await _context.Users!.FindAsync(id);
             return _mapper.Map<UserModel>(user);
         }
-        public async Task<UserModel> UpdateProfileAsync(int id, ProfileParams param)
+        public async Task<UserModel> UpdateProfileAsync(int id, ProfileParams entryParams)
         {
             var updateProfile = await _context.Users!.FindAsync(id);
             if (updateProfile != null)
             {
-                Transmit(param, ref updateProfile);
+                _tools.Duplicate(entryParams, ref updateProfile);
                 _context.Users!.Update(updateProfile);
                 await _context.SaveChangesAsync();
                 return _mapper.Map<UserModel>(updateProfile);
@@ -88,17 +85,65 @@ namespace PixelPalette.Repositories
             return null!;
         }
 
-        public async Task<UserModel> UpdateAccountAsync(int id, AccountParams param)
+        public async Task<UserModel> UpdateAccountAsync(int id, AccountParams entryParams)
         {
             var updateAccount = await _context.Users!.FindAsync(id);
             if (updateAccount != null)
             {
-                Transmit(param, ref updateAccount);
+                _tools.Duplicate(entryParams, ref updateAccount);
+                updateAccount.UserName = updateAccount.Email;
                 _context.Users!.Update(updateAccount);
                 await _context.SaveChangesAsync();
                 return _mapper.Map<UserModel>(updateAccount);
             }
             return null!;
+        }
+
+        public async Task<bool> FollowHandleAsync(int id, int followingId)
+        {
+            if (id != followingId)
+            {
+                var user = await _context.Users!.FindAsync(id);
+                var following = await _context.Users!.FindAsync(followingId);
+                if (user != null && following != null)
+                {
+                    var follwer = new Follower
+                    {
+                        FollowerUserId = id,
+                        FollowingUserId = followingId
+                    };
+                    await _context.Followers.AddAsync(follwer);
+                    user.Following++;
+                    _context.Update(user);
+                    following.Follower++;
+                    _context.Update(following);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public async Task<bool> UnfollowHandleAsync(int id, int followingId)
+        {
+            if (id != followingId)
+            {
+                var follower = await _context.Followers
+                    .FirstOrDefaultAsync(f => f.FollowerUserId == id && f.FollowingUserId == followingId);
+                if (follower != null)
+                {
+                    var user = await _context.Users!.FindAsync(id);
+                    var following = await _context.Users!.FindAsync(followingId);
+                    _context.Followers.Remove(follower);
+                    user!.Following--;
+                    _context.Update(user);
+                    following!.Follower--;
+                    _context.Update(following);
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

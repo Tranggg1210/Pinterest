@@ -65,9 +65,7 @@ namespace PixelPalette.Repositories
         public async Task<bool> SignInAsync(SignInModel model)
         {
             _user = await _userManager.FindByNameAsync(model.UserName);
-
             var result = (_user != null && await _userManager.CheckPasswordAsync(_user, model.Password));
-
             if (!result) 
                 return false;
             
@@ -79,17 +77,17 @@ namespace PixelPalette.Repositories
             var user = _mapper.Map<User>(model);
             return await _userManager.CreateAsync(user, model.Password);
         }
-        public async Task<bool> ChangePasswordAsync(ChangePasswordParams param)
+        public async Task<bool> ChangePasswordAsync(string userName, ChangePasswordParams entryParams)
         {
-            var user = await _userManager.FindByNameAsync(param.UserName);
+            var user = await _userManager.FindByNameAsync(userName);
             if (user != null)
             {
-                var result = await _userManager.CheckPasswordAsync(user, param.OldPassword);
+                var result = await _userManager.CheckPasswordAsync(user, entryParams.OldPassword);
 
-                if (!result || !param.NewPassword.Equals(param.ComfirmPassword))
+                if (!result && !entryParams.NewPassword.Equals(entryParams.ComfirmPassword))
                     return false;
 
-                var changePasswordResult = await _userManager.ChangePasswordAsync(user, param.OldPassword, param.NewPassword);
+                var changePasswordResult = await _userManager.ChangePasswordAsync(user, entryParams.OldPassword, entryParams.NewPassword);
                 if (changePasswordResult.Succeeded)
                     return true;
             }

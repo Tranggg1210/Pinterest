@@ -7,17 +7,17 @@ namespace PixelPalette.Entities
     {
         public Collection()
         {
-            Posts = new HashSet<Post>();
+            Ownerships = new HashSet<Ownership>();
         }
 
         public int Id { get; set; }
         public int UserId { get; set; }
         public string Name { get; set; } = null!;
-        public string? Background { get; set; }
         public string? Description { get; set; }
-        public bool Status { get; set; }
+        public string? BackgroundId { get; set; }
+        public string? BackgroundUrl { get; set; }
 
         public virtual User User { get; set; } = null!;
-        public virtual ICollection<Post> Posts { get; set; }
+        public virtual ICollection<Ownership> Ownerships { get; set; }
     }
 }
