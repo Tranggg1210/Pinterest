@@ -86,14 +86,14 @@ class AuthController extends Controller
     public function login(Request $request)
     {
 
-        $user = User::where('Email',$request -> Email) ->first();
+        $user = User::where('Email',$request -> email) ->first();
         if(!isset($user)){
             return response()->json([
                'success' => false,
                'message' => 'Tài khoản hoặc mật khẩu không chính xác !',
             ]);
         }
-        $check = Hash::check($request->Password, $user->PasswordHash); // check password
+        $check = Hash::check($request->password, $user->PasswordHash); // check password
 
         $user -> save();
         if(isset($user) && $check){
@@ -101,16 +101,6 @@ class AuthController extends Controller
             $user -> Token = $token;
             return response()->json([
              'success' => true,
-             'user' => [
-                'FirstName' => $user->FirstName,
-                'LastName'  => $user->LastName,
-                'ImageUrl'  => $user ->AvatarId,
-                'Introduction'=> $user ->Introduction,
-                'Birthday'  => $user ->Birthday,
-                'Gender'    => $user -> Gender,
-                'Country'   => $user -> Country,
-                'Email'     => $user -> Email,
-             ],
              'access_token' => $token,
              'type' => 'Bearer'
             ],200);
@@ -120,6 +110,21 @@ class AuthController extends Controller
               'message' => 'Tài khoản hoặc mật khẩu không chính xác !'
             ],200);
         }
+    }
+    public function me(){
+        $user = auth()->user();
+        return response()->json([
+            'user' => [
+                'FirstName' => $user->FirstName,
+                'LastName'  => $user->LastName,
+                'ImageUrl'  => $user ->AvatarId,
+                'Introduction'=> $user ->Introduction,
+                'Birthday'  => $user ->Birthday,
+                'Gender'    => $user -> Gender,
+                'Country'   => $user -> Country,
+                'Email'     => $user -> Email,
+             ],
+        ],200);
     }
 
     public function logout()

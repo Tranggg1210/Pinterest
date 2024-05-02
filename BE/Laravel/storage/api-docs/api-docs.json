@@ -6,6 +6,42 @@
     },
     "paths": {
         "/api/": {},
+        "/api/follow/": {
+            "post": {
+                "tags": [
+                    "Follow user"
+                ],
+                "summary": "Follow",
+                "description": "Theo dõi người khác sau khi đăng nhập",
+                "operationId": "Follow",
+                "parameters": [
+                    {
+                        "name": "Id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Đã follow/bỏ follow"
+                    },
+                    "400": {
+                        "description": "Không thể follow bản thân"
+                    },
+                    "403": {
+                        "description": "Không tồn tại người dùng này"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/forgot": {
             "post": {
                 "tags": [
