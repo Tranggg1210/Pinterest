@@ -43,16 +43,19 @@ p {
   overflow: hidden;
 }
 
-.post__container {
+.posts-container {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  grid-column-gap: 24px;
+  gap: 20px;
   @include mobile {
     grid-template-columns: repeat(1, 1fr);
   }
 
   @include small-tablet {
     grid-template-columns: repeat(3, 1fr);
+  }
+  @include tablet{
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 

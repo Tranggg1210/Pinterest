@@ -1,5 +1,5 @@
 .user-infor {
-  margin-top: 20px;
+  margin-top: 0px;
 
   h1 {
     margin: 20px 0 40px;
@@ -184,5 +184,8 @@
 
   .n-button__content {
     color: #fff !important;
+  }
+  .form-input{
+    border: 1px solid #ccc;
   }
 }
