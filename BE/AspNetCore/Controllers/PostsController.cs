@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using PixelPalette.Entities;
 using PixelPalette.Helpers;
 using PixelPalette.Interfaces;
+using PixelPalette.Models;
 
 namespace PixelPalette.Controllers
 {
@@ -11,104 +14,181 @@ namespace PixelPalette.Controllers
     [ApiExplorerSettings(GroupName = "v1")]
     public class PostsController : ControllerBase
     {
-        private readonly IPostRepository _postRepo;
+        private readonly IPostRepository _repo;
+        private readonly UserManager<User> _userManager;
+        private Thumbnail? _thumbnail = null;
 
-        public PostsController(IPostRepository repo)
+        public PostsController(IPostRepository repo, UserManager<User> userManager)
         {
-            _postRepo = repo;
+            _repo = repo;
+            _userManager = userManager;
         }
-        [HttpGet("getPosts")]
+        [HttpGet("getAll")]
         [Authorize]
-        public async Task<IActionResult> GetAllPosts()
+        public async Task<ActionResult<IEnumerable<PostModel>>> GetAll()
         {
             try
             {
-                return Ok(await _postRepo.GetAllPostAsync());
+                return Ok(await _repo.GetAllPostAsync());
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest("An error when get list post!");
+                return BadRequest(ex.Message.ToString());
             }
         }
-        [HttpGet("getPost/{id}")]
+        [HttpGet("getById/{id}")]
         [Authorize]
-        public async Task<IActionResult> GetUser(int id)
-        {
-            var post = await _postRepo.GetPostByIdAsync(id);
-            return post == null ? NotFound($"Can't find post by id is {id}!") : Ok(post);
-        }
-
-        [HttpDelete("deletePost/{id}")]
-        [Authorize]
-        public async Task<IActionResult> DeletePost(int id)
+        public async Task<ActionResult<PostModel>> GetById(int id)
         {
             try
             {
-                var result = await _postRepo.DeletePostAsync(id);
-                return !result ? NotFound($"Can't find post by id is {id}!") : Ok("Remove post successful!");
+                var post = await _repo.GetPostByIdAsync(id);
+                return post == null ? NotFound("Not found") : Ok(post);
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest("An error when remove post!");
+                return BadRequest(ex.Message.ToString());
             }
         }
 
-        [HttpPost("createPost")]
+        [HttpGet("getByCollectionId/{collectionId}")]
         [Authorize]
-        public async Task<IActionResult> CreatePost(PostInitParams param)
+        public async Task<ActionResult<IEnumerable<PostModel>>> GetByCollectionId(int collectionId)
         {
             try
             {
-                var post = await _postRepo.AddPostAsync(param);
+                return Ok(await _repo.GetPostByCollectionIdAsync(collectionId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
+            }
+        }
+
+        [HttpGet("getByUserId/{userId}")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<PostModel>>> GetByUserId()
+        {
+            try
+            {
+                string userName = _userManager.GetUserName(HttpContext.User);
+                var user = await _userManager.FindByNameAsync(userName);
+                return Ok(await _repo.GetPostByUserIdAsync(user.Id));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
+            }
+        }
+
+        [HttpPost("create")]
+        [Authorize]
+        public async Task<ActionResult<PostModel>> Create(PostCreateParams entryParams)
+        {
+            try
+            {
+                string userName = _userManager.GetUserName(HttpContext.User);
+                var user = await _userManager.FindByNameAsync(userName);
+                var post = await _repo.AddPostAsync(user.Id, entryParams);
                 return Ok(post);
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest("An error when add new post!");
+                return BadRequest(ex.Message.ToString());
             }
         }
 
-        [HttpPut("updatePost/{id}")]
+        [HttpPost("toggleCollection")]
         [Authorize]
-        public async Task<IActionResult> UpdatePost(int id, PostSetParams param)
+        public async Task<ActionResult> ToggleCollection(int postId, int collectionId)
         {
             try
             {
-                var post = await _postRepo.UpdatePostAsync(id, param);
-                return post == null ? NotFound($"Can't find post by id is {id}!") : Ok(post);
+                var result = await _repo.OwnershipAsync(postId, collectionId);
+                return !result ? NotFound("Not found") : Ok(true);
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest("An error when edit post!");
+                return BadRequest(ex.Message.ToString());
             }
         }
 
-        [HttpPost("uploadThumbnail")]
+        [HttpPost("toggleLike")]
         [Authorize]
-        public async Task<IActionResult> UploadThumbnail(IFormFile file)
+        public async Task<ActionResult> ToggleLike(int postId)
         {
-            var result = await _postRepo.UploadThumbnailAsync(file);
-            return result == null ? BadRequest("An error when upload image to cloud!") :
-                Ok(new
+            try
+            {
+                string userName = _userManager.GetUserName(HttpContext.User);
+                var user = await _userManager.FindByNameAsync(userName);
+                var result = await _repo.LikePostAsync(postId, user.Id);
+                return !result ? NotFound("Not found") : Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
+            }
+        }
+
+        [HttpDelete("delete/{id}")]
+        [Authorize]
+        public async Task<ActionResult> Delete(int id)
+        {
+            try
+            {
+                var result = await _repo.DeletePostAsync(id);
+                return !result ? NotFound("Not found") : Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
+            }
+        }
+
+        [HttpPut("update/{id}")]
+        [Authorize]
+        public async Task<ActionResult<PostModel>> Update(PostUpdateParams entryParams)
+        {
+            try
+            {
+                if (_thumbnail != null)
                 {
-                    ThumbnailUrl = result.SecureUrl.AbsoluteUri,
-                    ThumbnailId = result.PublicId
-                });
+                    string userName = _userManager.GetUserName(HttpContext.User);
+                    var user = await _userManager.FindByNameAsync(userName);
+                    var post = await _repo.UpdatePostAsync(user.Id, entryParams, _thumbnail);
+                    if (post != null) return Ok(post);
+                }
+                return BadRequest(false);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
+            }
         }
 
-        [HttpDelete("deleteThumbnail")]
+        [HttpPost("upload")]
         [Authorize]
-        public async Task<IActionResult> DeleteThumbnail(string publicId)
+        public async Task<ActionResult<Thumbnail>> Upload(IFormFile file)
         {
-            try
+            var result = await _repo.UploadThumbnailAsync(file);
+            if (result != null)
             {
-                var result = await _postRepo.DeleteThumbnailAsync(publicId);
-                return result ? NotFound($"Can't find thumbnail by id is {publicId}!") : Ok("Remove thumbnail successful!");
+                _thumbnail = new Thumbnail
+                {
+                    PublicId = result.PublicId,
+                    Url = result.SecureUrl.AbsoluteUri
+                };
+                return Ok(_thumbnail);
             }
-            catch (Exception)
-            {
-                return BadRequest("An error when delete or not found image on cloud!");
-            }
+            return BadRequest(false);
+        }
+
+        [HttpDelete("cancel")]
+        [Authorize]
+        public async Task<ActionResult> Cancel(string publicId)
+        {
+            var result = await _repo.DeleteThumbnailAsync(publicId);
+            return !result ? BadRequest(false) : Ok(true);
         }
 
     }

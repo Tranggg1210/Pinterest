@@ -7,12 +7,14 @@ namespace PixelPalette.Entities
     {
         public int Id { get; set; }
         public int ConversationId { get; set; }
-        public int CreatedByUserId { get; set; }
+        public int SenderId { get; set; }
+        public int RecipientId { get; set; }
         public string Content { get; set; } = null!;
-        public DateTime CreatedAt { get; set; }
-        public string Status { get; set; } = null!;
+        public DateTime DateSent { get; set; } = DateTime.UtcNow;
+        public DateTime? DateRead { get; set; }
 
         public virtual Conversation Conversation { get; set; } = null!;
-        public virtual User CreatedByUser { get; set; } = null!;
+        public virtual User Recipient { get; set; } = null!;
+        public virtual User Sender { get; set; } = null!;
     }
 }

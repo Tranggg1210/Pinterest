@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using PixelPalette.Entities;
@@ -19,12 +16,15 @@ namespace PixelPalette.Data
             : base(options)
         {
         }
+
         public virtual DbSet<Collection> Collections { get; set; } = null!;
         public virtual DbSet<Comment> Comments { get; set; } = null!;
         public virtual DbSet<Conversation> Conversations { get; set; } = null!;
-        public virtual DbSet<Favourite> Favourites { get; set; } = null!;
         public virtual DbSet<Follower> Followers { get; set; } = null!;
+        public virtual DbSet<LikePost> LikePosts { get; set; } = null!;
         public virtual DbSet<Message> Messages { get; set; } = null!;
+        public virtual DbSet<Notification> Notifications { get; set; } = null!;
+        public virtual DbSet<Ownership> Ownerships { get; set; } = null!;
         public virtual DbSet<Post> Posts { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
 
@@ -39,31 +39,13 @@ namespace PixelPalette.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
             modelBuilder.Entity<Collection>(entity =>
             {
                 entity.ToTable("Collection");
 
                 entity.HasIndex(e => e.UserId, "IX_Collection_UserId");
 
-                entity.Property(e => e.Id)
-                    .ValueGeneratedNever()
-                    .HasColumnName("Id");
-
-                entity.Property(e => e.Background)
-                    .HasMaxLength(255)
-                    .HasColumnName("Background");
-
-                entity.Property(e => e.Description).HasColumnName("Description");
-
-                entity.Property(e => e.Name)
-                    .HasMaxLength(255)
-                    .HasColumnName("Name");
-
-                entity.Property(e => e.Status).HasColumnName("Status");
-
-                entity.Property(e => e.UserId).HasColumnName("UserId");
+                entity.Property(e => e.Name).HasMaxLength(255);
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Collections)
@@ -80,25 +62,11 @@ namespace PixelPalette.Data
 
                 entity.HasIndex(e => e.UserId, "IX_Comment_UserId");
 
-                entity.Property(e => e.Id).HasColumnName("Id");
-
-                entity.Property(e => e.CommentReplyToId)
-                    .HasMaxLength(255)
-                    .HasColumnName("CommentReplyId");
-
-                entity.Property(e => e.Content).HasColumnName("Content");
-
                 entity.Property(e => e.CreatedAt)
                     .HasColumnType("datetime")
-                    .HasColumnName("CreatedAt");
+                    .HasDefaultValueSql("('0001-01-01T00:00:00.000')");
 
-                entity.Property(e => e.LikeAmount)
-                    .HasColumnName("LikeAmount")
-                    .HasDefaultValueSql("('0')");
-
-                entity.Property(e => e.PostId).HasColumnName("PostId");
-
-                entity.Property(e => e.UserId).HasColumnName("UserId");
+                entity.Property(e => e.Like).HasDefaultValueSql("('0')");
 
                 entity.HasOne(d => d.Post)
                     .WithMany(p => p.Comments)
@@ -117,46 +85,23 @@ namespace PixelPalette.Data
             {
                 entity.ToTable("Conversation");
 
-                entity.HasIndex(e => e.CreatedByUserId, "IX_Conversation_CreatedByUserId");
+                entity.HasIndex(e => e.Name, "IX_Conversation_CreatedByUserId");
 
-                entity.Property(e => e.Id).HasColumnName("Id");
+                entity.Property(e => e.CreatedAt).HasColumnType("datetime");
 
-                entity.Property(e => e.CreatedAt)
-                    .HasColumnType("datetime")
-                    .HasColumnName("CreatedAt");
+                entity.Property(e => e.Name).HasMaxLength(255);
 
-                entity.Property(e => e.CreatedByUserId).HasColumnName("CreatedByUserId");
-
-                entity.HasOne(d => d.CreatedByUser)
-                    .WithMany(p => p.Conversations)
-                    .HasForeignKey(d => d.CreatedByUserId)
+                entity.HasOne(d => d.Connector)
+                    .WithMany(p => p.ConversationConnectors)
+                    .HasForeignKey(d => d.ConnectorId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Conversation_CreatedByUserId_foreign");
-            });
+                    .HasConstraintName("FK_Conversation_User");
 
-            modelBuilder.Entity<Favourite>(entity =>
-            {
-                entity.ToTable("Favourite");
-
-                entity.HasIndex(e => e.UserId, "IX_Favourite_UserId");
-
-                entity.Property(e => e.Id).HasColumnName("Id");
-
-                entity.Property(e => e.Image)
-                    .HasMaxLength(255)
-                    .HasColumnName("Image");
-
-                entity.Property(e => e.Name)
-                    .HasMaxLength(255)
-                    .HasColumnName("Name");
-
-                entity.Property(e => e.UserId).HasColumnName("UserId");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.Favourites)
-                    .HasForeignKey(d => d.UserId)
+                entity.HasOne(d => d.Creator)
+                    .WithMany(p => p.ConversationCreators)
+                    .HasForeignKey(d => d.CreatorId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Favourite_UserId_foreign");
+                    .HasConstraintName("FK_Conversation_User1");
             });
 
             modelBuilder.Entity<Follower>(entity =>
@@ -167,25 +112,38 @@ namespace PixelPalette.Data
 
                 entity.HasIndex(e => e.FollowingUserId, "IX_Follower_FollowingUserId");
 
-                entity.Property(e => e.Id).HasColumnName("Id");
-
-                entity.Property(e => e.FollowerUserId).HasColumnName("FollowerUserId");
-
-                entity.Property(e => e.FollowingUserId).HasColumnName("FollowingUserId");
-
-                entity.Property(e => e.Status).HasColumnName("Status");
-
                 entity.HasOne(d => d.FollowerUser)
-                    .WithMany()
+                    .WithMany(p => p.FollowerFollowerUsers)
                     .HasForeignKey(d => d.FollowerUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("Follower_FollowerUserId_foreign");
 
                 entity.HasOne(d => d.FollowingUser)
-                    .WithMany()
+                    .WithMany(p => p.FollowerFollowingUsers)
                     .HasForeignKey(d => d.FollowingUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("Follower_FollowingUserId_foreign");
+            });
+
+            modelBuilder.Entity<LikePost>(entity =>
+            {
+                entity.ToTable("LikePost");
+
+                entity.HasIndex(e => e.PostId, "IX_LikePost_PostId");
+
+                entity.HasIndex(e => e.UserId, "IX_LikePost_UserId");
+
+                entity.HasOne(d => d.Post)
+                    .WithMany(p => p.LikePosts)
+                    .HasForeignKey(d => d.PostId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_LikePost_Post");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.LikePosts)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_LikePost_User");
             });
 
             modelBuilder.Entity<Message>(entity =>
@@ -194,24 +152,15 @@ namespace PixelPalette.Data
 
                 entity.HasIndex(e => e.ConversationId, "IX_Message_ConversationId");
 
-                entity.HasIndex(e => e.CreatedByUserId, "IX_Message_CreatedByUserId");
+                entity.HasIndex(e => e.RecipientId, "IX_Message_RecipientId");
 
-                entity.Property(e => e.Id).HasColumnName("Id");
+                entity.HasIndex(e => e.SenderId, "IX_Message_SenderId");
 
-                entity.Property(e => e.Content).HasColumnName("Content");
+                entity.Property(e => e.DateRead).HasColumnType("datetime");
 
-                entity.Property(e => e.ConversationId).HasColumnName("ConversationId");
-
-                entity.Property(e => e.CreatedAt)
+                entity.Property(e => e.DateSent)
                     .HasColumnType("datetime")
-                    .HasColumnName("CreatedAt")
                     .HasDefaultValueSql("('2024-03-17 14:29:45')");
-
-                entity.Property(e => e.CreatedByUserId).HasColumnName("CreatedByUserId");
-
-                entity.Property(e => e.Status)
-                    .HasMaxLength(255)
-                    .HasColumnName("Status");
 
                 entity.HasOne(d => d.Conversation)
                     .WithMany(p => p.Messages)
@@ -219,50 +168,70 @@ namespace PixelPalette.Data
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("Message_ConversationId_foreign");
 
-                entity.HasOne(d => d.CreatedByUser)
-                    .WithMany(p => p.Messages)
-                    .HasForeignKey(d => d.CreatedByUserId)
+                entity.HasOne(d => d.Recipient)
+                    .WithMany(p => p.MessageRecipients)
+                    .HasForeignKey(d => d.RecipientId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Message_CreatedByUserId_foreign");
+                    .HasConstraintName("Message_RecipientId_foreign");
+
+                entity.HasOne(d => d.Sender)
+                    .WithMany(p => p.MessageSenders)
+                    .HasForeignKey(d => d.SenderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("Message_SenderId_foreign");
+            });
+
+            modelBuilder.Entity<Notification>(entity =>
+            {
+                entity.ToTable("Notification");
+
+                entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Notifications)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Notification_User");
+            });
+
+            modelBuilder.Entity<Ownership>(entity =>
+            {
+                entity.ToTable("Ownership");
+
+                entity.HasIndex(e => e.CollectionId, "IX_Ownership_CollectionId");
+
+                entity.HasIndex(e => e.PostId, "IX_Ownership_PostId");
+
+                entity.HasOne(d => d.Collection)
+                    .WithMany(p => p.Ownerships)
+                    .HasForeignKey(d => d.CollectionId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Ownership_Collection");
+
+                entity.HasOne(d => d.Post)
+                    .WithMany(p => p.Ownerships)
+                    .HasForeignKey(d => d.PostId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Ownership_Post");
             });
 
             modelBuilder.Entity<Post>(entity =>
             {
                 entity.ToTable("Post");
 
-                entity.HasIndex(e => e.CollectionId, "IX_Post_CollectionId");
-
                 entity.HasIndex(e => e.UserId, "IX_Post_UserId");
 
-                entity.Property(e => e.Id).HasColumnName("Id");
+                entity.Property(e => e.Caption).HasMaxLength(255);
 
-                entity.Property(e => e.Caption)
-                    .HasMaxLength(255)
-                    .HasColumnName("Caption");
+                entity.Property(e => e.Like).HasDefaultValueSql("('0')");
 
-                entity.Property(e => e.CollectionId).HasColumnName("CollectionId");
+                entity.Property(e => e.Link).HasMaxLength(255);
 
-                entity.Property(e => e.Detail).HasColumnName("Detail");
+                entity.Property(e => e.Theme).HasMaxLength(255);
 
-                entity.Property(e => e.LikeAmount)
-                    .HasColumnName("LikeAmount")
-                    .HasDefaultValueSql("('0')");
+                entity.Property(e => e.ThumbnailId).HasDefaultValueSql("(N'')");
 
-                entity.Property(e => e.Link)
-                    .HasMaxLength(255)
-                    .HasColumnName("Link");
-
-                entity.Property(e => e.Theme)
-                    .HasMaxLength(255)
-                    .HasColumnName("Theme");
-
-                entity.Property(e => e.UserId).HasColumnName("UserId");
-
-                entity.HasOne(d => d.Collection)
-                    .WithMany(p => p.Posts)
-                    .HasForeignKey(d => d.CollectionId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Post_CollectionId_foreign");
+                entity.Property(e => e.ThumbnailUrl).HasDefaultValueSql("(N'')");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Posts)
@@ -279,33 +248,17 @@ namespace PixelPalette.Data
 
                 entity.HasIndex(e => e.UserName, "IX_User_UserName");
 
-                entity.Property(e => e.Email).IsRequired();
+                entity.Property(e => e.Birthday).HasColumnType("date");
 
-                entity.Property(e => e.UserName).IsRequired();
+                entity.Property(e => e.Country).HasMaxLength(255);
 
-                entity.Property(e => e.PasswordHash).IsRequired();
+                entity.Property(e => e.FirstName).HasMaxLength(255);
 
-                entity.Property(e => e.Birthday)
-                    .HasColumnType("date")
-                    .HasColumnName("Birthday");
+                entity.Property(e => e.Follower).HasDefaultValueSql("('0')");
 
-                entity.Property(e => e.Country)
-                    .HasMaxLength(255)
-                    .HasColumnName("Country");
+                entity.Property(e => e.Following).HasDefaultValueSql("('0')");
 
-                entity.Property(e => e.FirstName)
-                    .HasMaxLength(255)
-                    .HasColumnName("FirstName");
-
-                entity.Property(e => e.Gender).HasColumnName("Gender");
-
-                entity.Property(e => e.Token).HasColumnName("Token");
-
-                entity.Property(e => e.Introduction).HasColumnName("Introduction");
-
-                entity.Property(e => e.LastName)
-                    .HasMaxLength(255)
-                    .HasColumnName("LastName");
+                entity.Property(e => e.LastName).HasMaxLength(255);
 
                 entity.Ignore("AccessFailedCount");
 
@@ -324,8 +277,8 @@ namespace PixelPalette.Data
                 entity.Ignore("SecurityStamp");
 
                 entity.Ignore("TwoFactorEnabled");
-
             });
+
             OnModelCreatingPartial(modelBuilder);
         }
 

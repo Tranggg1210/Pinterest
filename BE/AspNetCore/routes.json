@@ -5,10 +5,10 @@
       "post": "{baseUrl}/api/Accounts/SignUp",
       "parameters": "No",
       "requestBody": {
-        "firstName": "string",
-        "lastName": "string",
-        "email": "user@gmail.com",
-        "password": "string"
+        "firstName": "Huy",
+        "lastName": "Cao",
+        "email": "huy@gmail.com",
+        "password": "Abc123abc@"
       },
       "response": true
     },
@@ -16,8 +16,8 @@
       "post": "{baseUrl}/api/Accounts/SignIn",
       "parameters": "No",
       "requestBody": {
-        "userName": "user@gmail.com",
-        "password": "string"
+        "username": "huy@gmail.com",
+        "password": "Abc123abc@"
       },
       "response": {
         "token": "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiaHV5QGdtYWlsLmNvbSIsImV4cCI6MTcxMjQ4NzQ0NiwiaXNzIjoiVXNlciIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjcxNzcifQ.QJ1-pbqfWVeqO1CLIYOfkVgIVnUZGCqG9c2t0g2zfgI"
@@ -27,10 +27,10 @@
       "put": "{baseUrl}/api/Accounts/ChangePassword",
       "parameters": "No",
       "requestBody": {
-        "userName": "string",
-        "oldPassword": "string",
-        "newPassword": "string",
-        "comfirmPassword": "string"
+        "userName": "huy@gmail.com",
+        "oldPassword": "Abc123abc@",
+        "newPassword": "Abc123abc@",
+        "comfirmPassword": "Abc123abc@"
       },
       "response": "Change new password successful"
     },

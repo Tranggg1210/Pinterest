@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using CloudinaryDotNet;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PixelPalette.Entities;
 using PixelPalette.Helpers;
 using PixelPalette.Interfaces;
+using PixelPalette.Models;
 
 namespace PixelPalette.Controllers
 {
@@ -13,86 +15,159 @@ namespace PixelPalette.Controllers
     [ApiExplorerSettings(GroupName = "v1")]
     public class UsersController : ControllerBase
     {
-        private readonly IUserRepository _userRepo;
+        private readonly IUserRepository _repo;
+        private readonly UserManager<User> _userManager;
 
-        public UsersController(IUserRepository repo)
+        public UsersController(IUserRepository repo, UserManager<User> userManager)
         {
-            _userRepo = repo;
+            _repo = repo;
+            _userManager = userManager;
         }
 
-        [HttpGet("getUsers")]
+        [HttpGet("getAll")]
         [Authorize]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<ActionResult<IEnumerable<UserModel>>> GetAll()
         {
             try
             {
-                return Ok(await _userRepo.GetAllUsersAsync());
+                return Ok(await _repo.GetAllUsersAsync());
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest("An error when get list user!");
+                return BadRequest(ex.Message.ToString());
             }
         }
-        [HttpGet("getUser/{id}")]
+        [HttpGet("getById/{id}")]
         [Authorize]
-        public async Task<IActionResult> GetUser(int id)
-        {
-            var user = await _userRepo.GetUserByIdAsync(id);
-            return user == null ? NotFound($"Can't find user by id is {id}!") : Ok(user);
-        }
-
-        [HttpDelete("deleteUser/{id}")]
-        [Authorize]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<ActionResult<UserModel>> GetUser(int id)
         {
             try
             {
-                var result = await _userRepo.DeleteUserAsync(id);
-                return result ? NotFound($"Can't find user by id is {id}!") : Ok("Remove user successful!");
+                var user = await _repo.GetUserByIdAsync(id);
+                return user == null ? NotFound("Not found") : Ok(user);
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest("An error when remove user!");
+                return BadRequest(ex.Message.ToString());
             }
         }
 
-        [HttpPut("EditAvatar/{id}")]
+        [HttpGet("getLoginUser")]
         [Authorize]
-        public async Task<IActionResult> EditUserAvatar(int id, IFormFile file)
+        public async Task<ActionResult<UserModel>> GetLoginUser()
         {
-            var avatarUrl = await _userRepo.EditAvatar(id, file);
-            if (!string.IsNullOrEmpty(avatarUrl))
+            try
+            {
+                string userName = _userManager.GetUserName(HttpContext.User);
+                var user = await _userManager.FindByNameAsync(userName);
+                var loginer = await _repo.GetUserByIdAsync(user.Id);
+                return loginer == null ? NotFound("Not found") : Ok(loginer);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
+            }
+        }
+
+        [HttpPost("follower/{followingId}")]
+        [Authorize]
+        public async Task<ActionResult> Follower(int followingId)
+        {
+            try
+            {
+                string userName = _userManager.GetUserName(HttpContext.User);
+                var user = await _userManager.FindByNameAsync(userName);
+                var result = await _repo.FollowHandleAsync(user.Id, followingId);
+                return !result ? NotFound("Not found") : Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
+            }
+        }
+
+        [HttpPost("unfollower/{followingId}")]
+        [Authorize]
+        public async Task<ActionResult> Unfollower(int followingId)
+        {
+            try
+            {
+                string userName = _userManager.GetUserName(HttpContext.User);
+                var user = await _userManager.FindByNameAsync(userName);
+                var result = await _repo.UnfollowHandleAsync(user.Id, followingId);
+                return !result ? NotFound("Not found") : Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
+            }
+        }
+
+        [HttpDelete("delete/{id}")]
+        [Authorize]
+        public async Task<ActionResult> Delete(int id)
+        {
+            try
+            {
+                var result = await _repo.DeleteUserAsync(id);
+                return result ? NotFound("Not found") : Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
+            }
+        }
+
+        [HttpPut("avatar/{id}")]
+        [Authorize]
+        public async Task<ActionResult> Avatar(IFormFile file)
+        {
+            try
+            {
+                string userName = _userManager.GetUserName(HttpContext.User);
+                var user = await _userManager.FindByNameAsync(userName);
+                var avatarUrl = await _repo.EditAvatarAsync(user.Id, file);
+                if (string.IsNullOrEmpty(avatarUrl))
+                    return BadRequest(false);
                 return Ok(avatarUrl);
-            return BadRequest("An error when edit avatar!");
-        }
-
-        [HttpPut("EditProfile/{id}")]
-        [Authorize]
-        public async Task<IActionResult> EditProfile(int id, ProfileParams param)
-        {
-            try
-            {
-                var profile = await _userRepo.UpdateProfileAsync(id, param);
-                return profile == null ? NotFound($"Can't find profile info by id is {id}!") : Ok(profile);
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest("An error when edit profile info!");
+                return BadRequest(ex.Message.ToString());
             }
         }
 
-        [HttpPut("EditAccount/{id}")]
+        [HttpPut("profile/{id}")]
         [Authorize]
-        public async Task<IActionResult> EditAccount(int id, AccountParams param)
+        public async Task<ActionResult<UserModel>> Profile(ProfileParams entryParams)
         {
             try
             {
-                var account = await _userRepo.UpdateAccountAsync(id, param);
-                return account == null ? NotFound($"Can't find account by id is {id}!") : Ok(account);
+                string userName = _userManager.GetUserName(HttpContext.User);
+                var user = await _userManager.FindByNameAsync(userName);
+                var profile = await _repo.UpdateProfileAsync(user.Id, entryParams);
+                return profile == null ? NotFound("Not found") : Ok(profile);
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest("An error when edit account info!");
+                return BadRequest(ex.Message.ToString());
+            }
+        }
+
+        [HttpPut("account/{id}")]
+        [Authorize]
+        public async Task<ActionResult<UserModel>> Account(AccountParams entryParams)
+        {
+            try
+            {
+                string userName = _userManager.GetUserName(HttpContext.User);
+                var user = await _userManager.FindByNameAsync(userName);
+                var account = await _repo.UpdateAccountAsync(user.Id, entryParams);
+                return account == null ? NotFound("Not found") : Ok(account);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
             }
         }
     }
