@@ -1,4 +1,5 @@
 <script setup>
+
 const themeOverrides = {
   common: {
     baseColor: '#e60023',
@@ -19,11 +20,13 @@ const themeOverrides = {
     paddingSingle: '8px 36px 8px 12px',
     borderFocus: '#e60023',
     borderHover: '#e60023',
+  },
+  Radio: {
+    dotColorDisabled: '#D7DAE0',
+    buttonColorActive: '#4FB233',
+    buttonTextColorActive: '#FFF',
+    color:"#fff"
   }
-  // Select:{
-  //   border: '#e60023',
-  //   borderHover:'#e60023'
-  // }
 };
 </script>
 
