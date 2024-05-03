@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -67,6 +68,15 @@ use Tymon\JWTAuth\Facades\JWTAuth;
  *     @OA\Response(response=403, description="Forbidden"),
  *     @OA\Response(response=405, description="Method Not Allowed")
  * )
+ * @OA\Get(
+ *     path="/api/me/",
+ *     tags={"User"},
+  *    security={{ "bearerAuth": {} }},
+ *     summary="Xem thông tin",
+ *     description="Xem thông tin người dùng",
+ *     @OA\Response(response=200, description="Logged out successfully"),
+ *     @OA\Response(response=400, description="Bad request"),
+ * )
  **/
 
 
@@ -113,18 +123,25 @@ class AuthController extends Controller
     }
     public function me(){
         $user = auth()->user();
-        return response()->json([
-            'user' => [
-                'FirstName' => $user->FirstName,
-                'LastName'  => $user->LastName,
-                'ImageUrl'  => $user ->AvatarId,
-                'Introduction'=> $user ->Introduction,
-                'Birthday'  => $user ->Birthday,
-                'Gender'    => $user -> Gender,
-                'Country'   => $user -> Country,
-                'Email'     => $user -> Email,
-             ],
-        ],200);
+        if($user){
+            return response()->json([
+                'user' => [
+                    'FirstName' => $user->FirstName,
+                    'LastName'  => $user->LastName,
+                    'ImageUrl'  => $user ->AvatarId,
+                    'Introduction'=> $user ->Introduction,
+                    'Birthday'  => $user ->Birthday,
+                    'Gender'    => $user -> Gender,
+                    'Country'   => $user -> Country,
+                    'Email'     => $user -> Email,
+                 ],
+            ],200);
+        }else{
+            return response()->json([
+               'success' => false,
+               'message' => 'Bạn chưa đăng nhập'
+            ],200);
+        }
     }
 
     public function logout()

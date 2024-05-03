@@ -7,7 +7,41 @@ use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
-
+/**
+ * @OA\Post(
+ *     path="/api/comments/{PostId}",
+ *     operationId="Comment",
+ *     tags={"Comment"},
+ *     summary="Comment",
+ *     security={{ "bearerAuth": {} }},
+ *     description="Comment id bài viết",
+ *     @OA\Parameter(
+ *         name="PostId",
+ *         in="path",
+ *         description="ID của comment",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="integer",
+ *             format="int64"
+ *         )
+ *     ),
+*    @OA\RequestBody(
+ *         @OA\JsonContent(
+ *             allOf = {
+ *                  @OA\Schema(
+ *                      @OA\Property(property="CommentId",type="string"),
+ *                      @OA\Property(property="Content",type="string"),
+ *                      example={"Content": "test","CommentId": ""}
+ *                  )
+ *              }
+ *         )
+ *     ),
+ *     @OA\Response(response=200,description="Comment successfully"),
+ *     @OA\Response(response=400,description="Không thể follow bản thân"),
+ *     @OA\Response(response=404,description="Không tồn tại bài viết"),
+ *     @OA\Response(response=502,description="Không tồn tại bình luận đã phản hồi trong bài viết này"),
+ * )
+ */
 class CommentController extends Controller
 {
     public function sendcomment(Request $request){
@@ -19,11 +53,11 @@ class CommentController extends Controller
             ]);
         }
         $post = Post::where('Id', $request -> PostId)-> get();
-        if($post){
+        if(count($post)){
             $comment = new Comment();
             $comment -> UserId = $user -> Id;
             $comment -> CreatedAt = date_format(date_create(),"Y-m-d H:i:s");
-            $comment -> LikeAmount = 0;
+            // $comment -> LikeAmount = 0;
             $comment -> PostId = $request -> PostId;
             $comment -> Content = $request -> Content;
             if($request -> CommentId){

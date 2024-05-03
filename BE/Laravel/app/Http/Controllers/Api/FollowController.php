@@ -13,15 +13,15 @@ use Illuminate\Support\Facades\Auth;
 use function PHPSTORM_META\type;
 /**
  * @OA\Post(
- *     path="/api/follow/",
+ *     path="/api/follow/{UserId}",
  *     operationId="Follow",
  *     tags={"Follow user"},
  *     summary="Follow",
  *     security={{ "bearerAuth": {} }},
  *     description="Theo dõi người khác sau khi đăng nhập",
  *     @OA\Parameter(
- *         name="Id",
- *         in="query",
+ *         name="UserId",
+ *         in="path",
  *         required=true,
  *     ),
  *     @OA\Response(response=200,description="Đã follow/bỏ follow"),
