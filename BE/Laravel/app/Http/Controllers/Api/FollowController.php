@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Events\FollowPublished;
 use App\Http\Controllers\Controller;
 use App\Models\Follow;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -57,7 +58,12 @@ class FollowController extends Controller
 
             if(is_null($follow -> checkFollow($FollowerUser,$FollowingUser))){
                 $follow -> follow($FollowerUser,$FollowingUser);
-
+                $notification = new Notification();
+                $data = [
+                    'message' =>  $FollowerUser -> FirstName . " đang theo dõi bạn",
+                    'FollowingUserId' => $FollowerUser -> Id
+                ];
+                $notification -> createNotification($FollowingUser,json_encode($data, JSON_UNESCAPED_UNICODE));
                 event(new FollowPublished($FollowingUser,[
                     'id_user' => $FollowingUser -> Id,
                     'id_user_followed' => $FollowerUser -> Id,
