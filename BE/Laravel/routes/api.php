@@ -33,10 +33,9 @@ Route::group(['middleware' => 'api',], function ($router) {
     //     return auth() -> user();
     // });
     Route::middleware("auth:api")->group(function(){
-    Route::post('user', [AuthController::class,'user']) -> name('user');
+    Route::get('me', [AuthController::class,'me']) -> name('me');
     Route::post('logout', [AuthController::class,'logout']) -> name('logout');
-    Route::post('follow/{UserId?}', [FollowController::class,'follow']) -> name('follow');;
-    Route::post('notifications', [NotificationController::class,'notification']) -> name('notification');;
+    Route::post('follow/{UserId?}', [FollowController::class,'follow']) -> name('follow');
     Route::post('comments/{PostId?}', [CommentController::class,'sendcomment']) -> name('comment');
 });
 Route::get('get-comment/{PostId?}', [CommentController::class,'getComments']) -> name('getComment');

@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Models\User;
+use BeyondCode\LaravelWebSockets\WebSockets\Channels\PrivateChannel as ChannelsPrivateChannel;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -34,7 +35,7 @@ class FollowPublished implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new Channel('follow'),
+            new PrivateChannel('follow'),
         ];
     }
     public function broadcastWith(){

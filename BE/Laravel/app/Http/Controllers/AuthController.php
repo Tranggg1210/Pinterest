@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -67,6 +68,15 @@ use Tymon\JWTAuth\Facades\JWTAuth;
  *     @OA\Response(response=403, description="Forbidden"),
  *     @OA\Response(response=405, description="Method Not Allowed")
  * )
+ * @OA\Get(
+ *     path="/api/me/",
+ *     tags={"User"},
+  *    security={{ "bearerAuth": {} }},
+ *     summary="Xem thông tin",
+ *     description="Xem thông tin người dùng",
+ *     @OA\Response(response=200, description="Logged out successfully"),
+ *     @OA\Response(response=400, description="Bad request"),
+ * )
  **/
 
 
@@ -86,14 +96,14 @@ class AuthController extends Controller
     public function login(Request $request)
     {
 
-        $user = User::where('Email',$request -> Email) ->first();
+        $user = User::where('Email',$request -> email) ->first();
         if(!isset($user)){
             return response()->json([
                'success' => false,
                'message' => 'Tài khoản hoặc mật khẩu không chính xác !',
             ]);
         }
-        $check = Hash::check($request->Password, $user->PasswordHash); // check password
+        $check = Hash::check($request->password, $user->PasswordHash); // check password
 
         $user -> save();
         if(isset($user) && $check){
@@ -101,16 +111,6 @@ class AuthController extends Controller
             $user -> Token = $token;
             return response()->json([
              'success' => true,
-             'user' => [
-                'FirstName' => $user->FirstName,
-                'LastName'  => $user->LastName,
-                'ImageUrl'  => $user ->AvatarId,
-                'Introduction'=> $user ->Introduction,
-                'Birthday'  => $user ->Birthday,
-                'Gender'    => $user -> Gender,
-                'Country'   => $user -> Country,
-                'Email'     => $user -> Email,
-             ],
              'access_token' => $token,
              'type' => 'Bearer'
             ],200);
@@ -118,6 +118,28 @@ class AuthController extends Controller
             return response()->json([
               'success' => false,
               'message' => 'Tài khoản hoặc mật khẩu không chính xác !'
+            ],200);
+        }
+    }
+    public function me(){
+        $user = auth()->user();
+        if($user){
+            return response()->json([
+                'user' => [
+                    'FirstName' => $user->FirstName,
+                    'LastName'  => $user->LastName,
+                    'ImageUrl'  => $user ->AvatarId,
+                    'Introduction'=> $user ->Introduction,
+                    'Birthday'  => $user ->Birthday,
+                    'Gender'    => $user -> Gender,
+                    'Country'   => $user -> Country,
+                    'Email'     => $user -> Email,
+                 ],
+            ],200);
+        }else{
+            return response()->json([
+               'success' => false,
+               'message' => 'Bạn chưa đăng nhập'
             ],200);
         }
     }

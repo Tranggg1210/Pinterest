@@ -6,6 +6,108 @@
     },
     "paths": {
         "/api/": {},
+        "/api/comments/{PostId}": {
+            "post": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Comment",
+                "description": "Comment id bài viết",
+                "operationId": "Comment",
+                "parameters": [
+                    {
+                        "name": "PostId",
+                        "in": "path",
+                        "description": "ID của comment",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "CommentId": {
+                                                "type": "string"
+                                            },
+                                            "Content": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object",
+                                        "example": {
+                                            "Content": "test",
+                                            "CommentId": ""
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Comment successfully"
+                    },
+                    "400": {
+                        "description": "Không thể follow bản thân"
+                    },
+                    "404": {
+                        "description": "Không tồn tại bài viết"
+                    },
+                    "502": {
+                        "description": "Không tồn tại bình luận đã phản hồi trong bài viết này"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/follow/{UserId}": {
+            "post": {
+                "tags": [
+                    "Follow user"
+                ],
+                "summary": "Follow",
+                "description": "Theo dõi người khác sau khi đăng nhập",
+                "operationId": "Follow",
+                "parameters": [
+                    {
+                        "name": "UserId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Đã follow/bỏ follow"
+                    },
+                    "400": {
+                        "description": "Không thể follow bản thân"
+                    },
+                    "403": {
+                        "description": "Không tồn tại người dùng này"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/forgot": {
             "post": {
                 "tags": [
@@ -273,6 +375,40 @@
                         "description": "Method Not Allowed"
                     }
                 }
+            }
+        },
+        "/api/me/": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Xem thông tin",
+                "description": "Xem thông tin người dùng",
+                "operationId": "63385b4473b6c3ddf073d5b842b73d32",
+                "responses": {
+                    "200": {
+                        "description": "Logged out successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "name": "Token based Based",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
             }
         }
     }
