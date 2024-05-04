@@ -72,7 +72,7 @@ const registerHandler = () => {
         <n-form-item path="firstName" label="Tên">
           <n-input
             v-model:value="account.firstName"
-            placeholder="Họ"
+            placeholder="Tên"
             class="form-input"
           />
         </n-form-item>
@@ -106,7 +106,7 @@ const registerHandler = () => {
     <div class="note">
       <p>Bằng cách tiếp tục, bạn đồng ý với</p>
       <p>
-        <span>Điều khoản dịch vụ</span> của Pinterest và xác nhận rằng bạn đã đọc
+        <span>Điều khoản dịch vụ</span> của PixelPalette và xác nhận rằng bạn đã đọc
         <span>Chính sách quyền riêng tư </span>của chúng tôi.
       </p>
       <p class="pointer"><span>Thông báo khi thu thập</span></p>
@@ -120,22 +120,25 @@ const registerHandler = () => {
 
 <style lang="scss" scoped>
 .container {
-  width: 500px;
+  width: 40%;
   border-radius: 25px;
   margin: 10px auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   color: #111111;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%);
+  @include mobile{
+    width: 80% !important;
+  }
+  @include small-tablet{
+    width: 60% !important;
+  }
 }
 
 .signup-title {
   line-height: 1.5;
   font-weight: 500;
+  text-align: center
 }
 .sign-up {
   height: 100%;
@@ -161,6 +164,9 @@ const registerHandler = () => {
     margin: 30px 0px 40px;
   }
   margin-top: 20px;
+  @include mobile{
+    width: 90%;
+  }
 }
 
 .pointer {
@@ -176,6 +182,9 @@ const registerHandler = () => {
     margin-bottom: 2px;
     width: 100%;
     min-width: 280px;
+    @include mobile{
+      min-width: unset;
+    }
 }
 
 .btn-submit {
@@ -199,6 +208,7 @@ const registerHandler = () => {
 
 span {
   color: #333333;
+  width: 80;
 }
 </style>
 <route lang="yaml">

@@ -54,7 +54,8 @@
         position: relative;
         z-index: 40;
         @include mobile{
-            word-wrap: break-word;
+            font-size: 2.75rem;
+            width: 90%;
         }
     }
     p{

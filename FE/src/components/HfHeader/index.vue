@@ -35,6 +35,7 @@ const goToPage = (key) => {
     router.push(key);
   }
 };
+
 </script>
 
 <template>
