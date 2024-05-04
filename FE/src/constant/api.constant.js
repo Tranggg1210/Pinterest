@@ -1,6 +1,6 @@
 export const ApiConstant = {
   auth: {
-    login:'/auth/login',
-    register: 'auth/register'
+    login:'/api/Accounts/signIn',
+    register: '/api/Accounts/signUp',
   }
 };
