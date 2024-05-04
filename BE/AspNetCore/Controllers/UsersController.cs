@@ -118,7 +118,7 @@ namespace PixelPalette.Controllers
             }
         }
 
-        [HttpPut("avatar/{id}")]
+        [HttpPut("avatar")]
         [Authorize]
         public async Task<ActionResult> Avatar(IFormFile file)
         {
@@ -137,7 +137,7 @@ namespace PixelPalette.Controllers
             }
         }
 
-        [HttpPut("profile/{id}")]
+        [HttpPut("profile")]
         [Authorize]
         public async Task<ActionResult<UserModel>> Profile(ProfileParams entryParams)
         {
@@ -154,7 +154,7 @@ namespace PixelPalette.Controllers
             }
         }
 
-        [HttpPut("account/{id}")]
+        [HttpPut("account")]
         [Authorize]
         public async Task<ActionResult<UserModel>> Account(AccountParams entryParams)
         {

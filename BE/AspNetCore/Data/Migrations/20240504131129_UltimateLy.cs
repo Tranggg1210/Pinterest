@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace PixelPalette.Data.Migrations
+namespace PixelPalette.Migrations
 {
-    public partial class Initial : Migration
+    public partial class UltimateLy : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -65,7 +65,6 @@ namespace PixelPalette.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     CreatorId = table.Column<int>(type: "int", nullable: false),
                     ConnectorId = table.Column<int>(type: "int", nullable: false)
@@ -282,11 +281,6 @@ namespace PixelPalette.Data.Migrations
                 name: "IX_Conversation_ConnectorId",
                 table: "Conversation",
                 column: "ConnectorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Conversation_CreatedByUserId",
-                table: "Conversation",
-                column: "Name");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Conversation_CreatorId",

@@ -10,7 +10,7 @@ namespace PixelPalette.Entities
         public int SenderId { get; set; }
         public int RecipientId { get; set; }
         public string Content { get; set; } = null!;
-        public DateTime DateSent { get; set; } = DateTime.UtcNow;
+        public DateTime DateSent { get; set; }
         public DateTime? DateRead { get; set; }
 
         public virtual Conversation Conversation { get; set; } = null!;

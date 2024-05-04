@@ -11,8 +11,7 @@ namespace PixelPalette.Entities
         }
 
         public int Id { get; set; }
-        public string Name { get; set; } = null!;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; }
         public int CreatorId { get; set; }
         public int ConnectorId { get; set; }
 
