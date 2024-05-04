@@ -1,10 +1,13 @@
 <script setup>
 import axios from 'axios';
 import { onBeforeMount } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import HfFeature from '@/components/HfFeature/HfFeature.vue';
 const posts = ref([]);
+const user = useAuthStore();
 const loadPosts = async() => {
   try {
-    const {data} = await axios.get('https://picsum.photos/v2/list?page=2&limit=100');
+    const {data} = await axios.get('https://picsum.photos/v2/list?page=2&limit=40');
     posts.value = data;
   } catch (err) {
     console.log(err);
@@ -18,10 +21,16 @@ const loadPosts = async() => {
 onBeforeMount(loadPosts);
 </script>
 <template>
-  <div class="container">
+  <div class="container" v-if="user.loggedIn">
     <div class="wide posts-container" >
       <HfPost  v-for="post in posts" :key="post.id" :postInfor="post"/>
     </div>
+  </div>
+  <div v-else>
+    <HfBanner/>
+    <HfFeature/>
+    <HfShowCase/>
+    <HfFooter/>
   </div>
 </template>
 
