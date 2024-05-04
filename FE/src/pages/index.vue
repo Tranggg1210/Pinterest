@@ -1,45 +1,33 @@
-<script setup></script>
-
+<script setup>
+import axios from 'axios';
+import { onBeforeMount } from 'vue';
+const posts = ref([]);
+const loadPosts = async() => {
+  try {
+    const {data} = await axios.get('https://picsum.photos/v2/list?page=2&limit=100');
+    posts.value = data;
+  } catch (err) {
+    console.log(err);
+    if (!!err.response) {
+      message.error(err.response.data.message);
+    } else {
+      message.error(err.message);
+    }
+  }
+}
+onBeforeMount(loadPosts);
+</script>
 <template>
-  <div class="post__container">
-    <HfPost></HfPost>
-    <HfPost></HfPost>
-    <HfPost></HfPost>
-    <HfPost></HfPost>
-    <HfPost></HfPost>
-    <HfPost></HfPost>
-    <HfPost></HfPost>
-    <HfPost></HfPost>
-    <HfPost></HfPost>
-    <HfPost></HfPost>
-    <HfPost></HfPost>
-    <HfPost></HfPost>
-    <HfPost></HfPost>
-    <HfPost></HfPost>
-    <HfPost></HfPost>
-    <HfPost></HfPost>
-    <HfPost></HfPost>
-    <HfPost></HfPost>
-    <HfPost></HfPost>
-    <HfPost></HfPost>
+  <div class="container">
+    <div class="wide posts-container" >
+      <HfPost  v-for="post in posts" :key="post.id" :postInfor="post"/>
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.post__container {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-column-gap: 20px;
-  padding: 0 5%;
-  padding-top: 30px;
-
-  @include mobile {
-    grid-template-columns: repeat(1, 1fr);
-  }
-
-  @include small-tablet {
-    grid-template-columns: repeat(3, 1fr);
-  }
+.posts-container {
+  margin: 30px 0;
 }
 </style>
 

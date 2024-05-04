@@ -24,6 +24,26 @@ use Laravel\Scout\Searchable;
  *         response=200,
  *         description="Success"
  *     )
+ * ),
+  * @OA\Post(
+ *     path="/api/search-user/{keyword}",
+ *     summary="Tìm kiếm người dùng",
+ *     description="Tìm kiếm người dùng trong phần tin nhắn",
+ *     tags={"Search"},
+ *     @OA\Parameter(
+ *         name="keyword",
+ *         in="header",
+ *         description="Điền email hoặc tên",
+ *         required=true,
+ *         @OA\Schema(
+ *             type="string"
+ *         )
+ *     ),
+ *     @OA\Response(response=200, description="Logged out successfully"),
+ *     @OA\Response(response=400, description="Bad request"),
+ *     @OA\Response(response=401, description="Unauthenticated"),
+ *     @OA\Response(response=403, description="Forbidden"),
+ *     @OA\Response(response=405, description="Method Not Allowed")
  * )
  */
 
@@ -48,5 +68,16 @@ class SearchController extends Controller
     {
         return $this->isPublished();
     }
-
+    public function searchUser(Request $request){
+        $keyword = $request -> keyword;
+        $users = User::search($keyword)->get()->map(function ($user) {
+            return $user->only('Id','FirstName', 'LastName','Email');
+        });
+        return response()->json([
+            'status' =>'success',
+            'data' => [
+                'users' => $users,
+            ]
+        ],200);
+    }
 }

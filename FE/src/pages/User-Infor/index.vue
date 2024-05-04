@@ -177,7 +177,7 @@ const scrollToTarget = (hash) => {
             <br />
             <n-form :label-width="80" :model="userForm" :rules="rules" ref="formRef" size="large">
               <n-form-item label="Họ tên:" path="fullName" style="margin-bottom: 8px">
-                <n-input v-model:value="userForm.fullName" placeholder="" type="text" />
+                <n-input v-model:value="userForm.fullName" placeholder="" type="text" class="form-input" />
               </n-form-item>
               <n-form-item label="Ngày sinh:" path="dob" style="margin-bottom: 8px">
                 <n-date-picker
@@ -185,13 +185,14 @@ const scrollToTarget = (hash) => {
                   v-model:value="userForm.dob"
                   placeholder="2003-10-27"
                   type="date"
+                  class="form-input"
                 />
               </n-form-item>
               <n-form-item label="Giới tính" path="userForm.gender">
                 <n-checkbox-group v-model:value="userForm.gender">
                   <n-space>
-                    <n-radio value="Male"> Nam </n-radio>
-                    <n-radio value="Female"> Nữ </n-radio>
+                    <n-radio value="Male" class="form-radio"> Nam </n-radio>
+                    <n-radio value="Female" class="form-radio"> Nữ </n-radio>
                   </n-space>
                 </n-checkbox-group>
               </n-form-item>
@@ -200,6 +201,7 @@ const scrollToTarget = (hash) => {
                   v-model:value="userForm.introduction"
                   placeholder=""
                   type="textarea"
+                  class="form-input"
                   :autosize="{ minRows: 1, maxRows: 3 }"
                 />
               </n-form-item>
@@ -208,6 +210,7 @@ const scrollToTarget = (hash) => {
                   :value="userForm.address"
                   type="textarea"
                   placeholder=""
+                  class="form-input"
                   :autosize="{ minRows: 1, maxRows: 3 }"
                 />
               </n-form-item>
@@ -230,24 +233,25 @@ const scrollToTarget = (hash) => {
               size="large"
             >
               <n-form-item label="Tên đăng nhập:" path="username" style="margin-bottom: 8px">
-                <n-input readonly v-model:value="account.username" placeholder="" type="text" />
+                <n-input readonly v-model:value="account.username" placeholder="" type="text" class="form-input" />
               </n-form-item>
               <n-form-item label="Mật khẩu cũ:" path="oldPassword" style="margin-bottom: 8px">
                 <n-input
                   v-model:value="account.oldPassword"
                   placeholder="Chú ý nhập đúng mật khẩu mới thay được"
                   type="text"
+                  class="form-input"
                 />
               </n-form-item>
               <n-form-item label="Mật khẩu mới:" path="password" style="margin-bottom: 8px">
-                <n-input v-model:value="account.password" placeholder="" type="text" />
+                <n-input v-model:value="account.password" placeholder="" type="text" class="form-input"/>
               </n-form-item>
               <n-form-item
                 label="Nhập lại mật khẩu mới:"
                 path="repeatPassword"
                 style="margin-bottom: 8px"
               >
-                <n-input v-model:value="account.repeatPassword" placeholder="" type="text" />
+                <n-input v-model:value="account.repeatPassword" placeholder="" type="text" class="form-input"/>
               </n-form-item>
               <n-form-item style="display: flex; justify-content: center; margin-top: 12px">
                 <HfButton @click="handleChangePassword">Thay đổi mật khẩu</HfButton>

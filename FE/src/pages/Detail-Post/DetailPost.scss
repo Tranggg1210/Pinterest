@@ -1,0 +1,107 @@
+.detail-post{
+    margin: 40px 0 0;
+    @include flex(center, center);
+}
+.icon {
+    width: 28px;
+    height: 28px;
+}
+.icon-back{
+    position: fixed;
+    top: 106px;
+    left: 52px;
+    width: 44px;
+    height: 44px;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.3s linear;
+    background-color: #fff;
+    z-index: 100;
+    &:hover{
+        background-color: #ccc;
+    }
+}
+.detail-post-container {
+    display: flex;
+    box-shadow: 4px 4px 12px 4px #ededed;
+    width: 70%;
+    border-radius: 36px;
+    .detail-post-left {
+        width: 50%;
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 35px 0 0 35px;
+        }
+    }
+    .detail-post-right {
+        width: 50%;
+        padding: 28px;
+        .detail-right-option {
+            @include flex(space-between, center);
+        }
+    }
+}
+
+.option-left {
+    display: flex;
+.icon {
+    margin-right: 13px;
+}
+}
+
+.btn-post-save {
+    background-color: red;
+    color: white;
+    font-weight: 700;
+    font-size: 15px;
+    border-radius: 20px;
+    padding: 14px 18px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.detail-right-title {
+    font-size: 28px;
+    font-weight: 600;
+    margin: 10px 0;
+}
+.detail-right-des {
+    font-size: 17px;
+    margin-top: 10px;
+}
+.detail-right-user {
+    @include flex(space-between, center);
+    margin-top: 30px;
+.user-avatar {
+    @include flex(center, center);
+    img {
+        width: 40px;
+        height: 40px;
+        object-fit: cover;
+        border-radius: 100rem;
+    }
+    p{
+        margin-left: 8px;
+        font-size: large;
+    }
+}
+}
+.detail-right-comment {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 50px;
+    width: 100%;
+    font-size: 18px;
+    font-weight: 600;
+}
+.relate-posts{
+    h3{
+        text-align: center;
+        margin: 32px 0 40px;
+        font-size: 20px;
+    }
+}

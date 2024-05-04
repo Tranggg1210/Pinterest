@@ -1,29 +1,34 @@
 <script setup>
-import { ref } from 'vue';
+import { defineProps, onBeforeMount, ref } from 'vue';
+const {postInfor} = defineProps(['postInfor']);
+const imageURL = ref('')
+
+const handleURLImage = async (url) => {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    imageURL.value =  URL.createObjectURL(blob);
+  } catch (error) {
+    console.error('Lỗi khi tải ảnh:', error);
+  }
+};
+onBeforeMount(() => handleURLImage(postInfor.download_url))
 </script>
 
 <template>
   <div class="post__item">
     <div class="post-image">
-      <img src="../../assets//images//test6.jpg" alt="" />
-
+      <img :src="postInfor.download_url" alt="image" loading="lazy" />
       <div class="model">
         <div class="model__header">
-          <p class="colection-name">Miss girl <IconChevronDown class="icon"></IconChevronDown></p>
           <button class="btn-post-save">Lưu</button>
         </div>
         <div class="model__footer">
-          <IconShare2 class="icon"></IconShare2>
-          <IconDownload class="icon"></IconDownload>
+          <IconShare2 class="icon" size="12"></IconShare2>
+          <a download :href="imageURL" title="ImageName">
+            <IconDownload class="icon" size="12" ></IconDownload>
+          </a>
         </div>
-      </div>
-    </div>
-
-    <div class="post__info">
-      <div class="post__info-top">Thu Hà cutee (✿◕‿◕✿) 🐰 🌷☘️ 🌷</div>
-      <div class="post__info-bottom">
-        <div class="post-avatar"><img src="../../assets//images//logo.png" alt="" /></div>
-        <div class="post-username">haniekid</div>
       </div>
     </div>
   </div>
@@ -36,10 +41,9 @@ import { ref } from 'vue';
 .post__item {
   z-index: 1;
   min-height: 100px;
-  margin-bottom: 30px;
   .post-image {
     position: relative;
-    height: 80%;
+    height: 100%;
     width: 100%;
 
     img {
@@ -69,26 +73,6 @@ import { ref } from 'vue';
     }
   }
 
-  .post__info {
-    height: 20%;
-    .post__info-bottom {
-      display: flex;
-      .post-avatar {
-        width: 50px;
-        height: 50px;
-        border-radius: 100%;
-      }
-      .post-username {
-        line-height: 50px;
-      }
-    }
-
-    .post__info-top {
-      margin-top: 10px;
-      margin-bottom: -4px;
-      font-weight: 600;
-    }
-  }
 }
 img {
   width: 100%;
@@ -131,8 +115,8 @@ img {
   .icon {
     padding: 5px 5px;
     color: #000;
-    width: 35px;
-    height: 35px;
+    width: 32px;
+    height: 32px;
     background-color: #f7f7f7;
     border-radius: 100%;
   }

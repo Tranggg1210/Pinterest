@@ -60,21 +60,24 @@ class RegisterController extends Controller
             ]);
         }else{
             $user = new User();
-            $user->UserName = $request->Email;
-            $user->FirstName = $request->FirstName;
-            $user->LastName = $request->LastName;
-            $user->Birthday = $request->Birthday;
-            $user->Gender = $request->Gender;
-            $user->AvatarId = $request->AvatarId;
-            $user -> Introduction = $request->Introduction;
-            $user -> Country = $request->Country;
-            $user -> Email = $request -> Email;
-            $user->PasswordHash = Hash::make($request->Password);
+            $user->UserName = $request->email;
+            // $user->FirstName = $request->firstname;
+            // $user->LastName = $request->lastname;
+            $user->Birthday = $request->birthday;
+            // $user->Gender = $request->gender;
+            // $user->AvatarId = $request->avatarId;
+            // $user -> Introduction = $request->introduction;
+            // $user -> Country = $request->country;
+            $user -> Email = $request -> email;
+            $user->PasswordHash = Hash::make($request->password);
             $user->save();
             return response()->json([
               'status' => 200,
               'message' => 'Đăng ký thành công!',
-
+                'user' => [
+                    'id' => $user -> Id,
+                    'email' => $user -> Email,
+                ]
             ]);
         }
     }

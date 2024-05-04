@@ -1,189 +1,191 @@
 .user-infor {
-    margin-top: 20px;
+  margin-top: 0px;
 
-    h1 {
-        margin: 20px 0 40px;
-        font-weight: 400;
-        text-decoration: underline;
+  h1 {
+    margin: 20px 0 40px;
+    font-weight: 400;
+    text-decoration: underline;
 
-        @include mobile {
-            text-align: center;
-            margin-top: 0px;
-        }
-
-        @include small-tablet {
-            text-align: center;
-        }
+    @include mobile {
+      text-align: center;
+      margin-top: 0px;
     }
 
-    .infor {
-        @include flex();
-        margin-bottom: 40px;
+    @include small-tablet {
+      text-align: center;
+    }
+  }
 
-        @include mobile {
-            flex-direction: column;
-        }
+  .infor {
+    @include flex();
+    margin-bottom: 40px;
 
-        @include small-tablet {
-            flex-direction: column;
-        }
-
-        &-basic {
-            width: 25%;
-            @include flex($align: center);
-            flex-direction: column;
-            background-color: $white-color;
-            box-shadow: 0 0px 4px rgba(0 0 0/10%) !important;
-            padding: 16px 20px 44px;
-            border-radius: 0.625rem;
-            height: max-content;
-
-            @include mobile {
-                width: 100%;
-                margin-bottom: 20px;
-            }
-
-            @include small-tablet {
-                width: 100%;
-                margin-bottom: 20px;
-            }
-        }
-
-        &-detail {
-            margin-left: 20px;
-            padding: 2px;
-            flex-grow: 1;
-
-            @include mobile {
-                margin-left: 0;
-                height: max-content;
-            }
-
-            @include small-tablet {
-                margin-left: 0;
-                height: max-content;
-            }
-        }
+    @include mobile {
+      flex-direction: column;
     }
 
-    .avatar {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        overflow: hidden;
-        margin: 28px auto 24px;
-        transition: all 0.3s linear;
-
-        >img {
-            width: 100%;
-        }
-
-        &:hover {
-            scale: 1.2;
-        }
+    @include small-tablet {
+      flex-direction: column;
     }
 
-    .user-bio {
-        h2 {
-            color: $primary-color;
-            margin-bottom: 16px;
-            font-weight: 500;
-            text-align: center;
-        }
+    &-basic {
+      width: 25%;
+      @include flex($align: center);
+      flex-direction: column;
+      background-color: $white-color;
+      box-shadow: 0 0px 4px rgba(0 0 0/10%) !important;
+      padding: 16px 20px 44px;
+      border-radius: 0.625rem;
+      height: max-content;
 
-        p {
-            @include flex(center, $align: center);
-
-            >svg {
-                width: 20px;
-                color: $primary-color;
-            }
-        }
-
-        .infor-active {
-            margin-top: 30px;
-            @include flex(center);
-            flex-direction: column;
-
-            >button {
-                margin-bottom: 20px;
-                color: $white-color;
-
-                @include small-tablet {
-                    margin: 0 8px 20px 8px;
-                }
-            }
-
-            @include small-tablet {
-                flex-direction: row;
-            }
-        }
-
-    }
-
-    .user-profile,
-    .user-account {
-        background-color: #fff;
-        box-shadow: 0 0px 4px rgba(0 0 0/10%) !important;
-        padding: 16px 20px 44px;
-        border-radius: 0.625rem;
-        z-index: 200;
-
-        h3 {
-            font: {
-                size: 20px;
-                weight: 400;
-            }
-
-            margin: 8px 0 12px;
-        }
-
-        hr {
-            border-top: 1px solid #ccc;
-            border-bottom: transparent;
-        }
-
-        .btn-active {
-            @include flex(center);
-            margin-top: 12px;
-
-            @include mobile {
-                flex-direction: column !important;
-                align-items: center;
-            }
-        }
-
-        .btn-update {
-            margin-right: 20px;
-            background-color: cornflowerblue;
-
-            &:hover {
-                background-color: $secondary-color;
-            }
-
-            @include mobile {
-                margin-bottom: 12px;
-                margin-right: 0;
-            }
-        }
-    }
-
-    .user-account {
-        margin-top: 32px;
-    }
-
-    .btn-delete {
-        margin: 32px 0;
+      @include mobile {
         width: 100%;
-        background-color: red;
-        color: #fff;
+        margin-bottom: 20px;
+      }
 
-        &:hover {
-            background-color: $black-color;
+      @include small-tablet {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+    }
+
+    &-detail {
+      margin-left: 20px;
+      padding: 2px;
+      flex-grow: 1;
+
+      @include mobile {
+        margin-left: 0;
+        height: max-content;
+      }
+
+      @include small-tablet {
+        margin-left: 0;
+        height: max-content;
+      }
+    }
+  }
+
+  .avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 28px auto 24px;
+    transition: all 0.3s linear;
+
+    > img {
+      width: 100%;
+    }
+
+    &:hover {
+      scale: 1.2;
+    }
+  }
+
+  .user-bio {
+    h2 {
+      color: $primary-color;
+      margin-bottom: 16px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    p {
+      @include flex(center, $align: center);
+
+      > svg {
+        width: 20px;
+        color: $primary-color;
+      }
+    }
+
+    .infor-active {
+      margin-top: 30px;
+      @include flex(center);
+      flex-direction: column;
+
+      > button {
+        margin-bottom: 20px;
+        color: $white-color;
+
+        @include small-tablet {
+          margin: 0 8px 20px 8px;
         }
+      }
+
+      @include small-tablet {
+        flex-direction: row;
+      }
+    }
+  }
+
+  .user-profile,
+  .user-account {
+    background-color: #fff;
+    box-shadow: 0 0px 4px rgba(0 0 0/10%) !important;
+    padding: 16px 20px 44px;
+    border-radius: 0.625rem;
+    z-index: 200;
+
+    h3 {
+      font: {
+        size: 20px;
+        weight: 400;
+      }
+
+      margin: 8px 0 12px;
     }
 
-    .n-button__content {
-        color: #fff !important;
+    hr {
+      border-top: 1px solid #ccc;
+      border-bottom: transparent;
     }
+
+    .btn-active {
+      @include flex(center);
+      margin-top: 12px;
+
+      @include mobile {
+        flex-direction: column !important;
+        align-items: center;
+      }
+    }
+
+    .btn-update {
+      margin-right: 20px;
+      background-color: cornflowerblue;
+
+      &:hover {
+        background-color: $secondary-color;
+      }
+
+      @include mobile {
+        margin-bottom: 12px;
+        margin-right: 0;
+      }
+    }
+  }
+
+  .user-account {
+    margin-top: 32px;
+  }
+
+  .btn-delete {
+    margin: 32px 0;
+    width: 100%;
+    background-color: red;
+    color: #fff;
+
+    &:hover {
+      background-color: $black-color;
+    }
+  }
+
+  .n-button__content {
+    color: #fff !important;
+  }
+  .form-input{
+    border: 1px solid #ccc;
+  }
 }
