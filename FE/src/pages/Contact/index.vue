@@ -44,9 +44,12 @@
         z-index: 40;
         @include mobile{
             word-wrap: break-word;
+            margin: 0;
+            line-height: 6rem;
         }
     }
     .btn{
+        margin-top: 12px;
         position: relative;
         z-index: 20;
         &:hover a{

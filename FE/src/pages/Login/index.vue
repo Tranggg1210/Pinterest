@@ -61,7 +61,7 @@ const loginHandler = () => {
       <IconBrandPinterest size="36" style="color: red" />
     </div>
     <div class="login__title">
-      <p class="login__title-heading">Chào mừng bạn đến với Pinterest</p>
+      <p class="login__title-heading">Chào mừng bạn đến với PixelPalette</p>
     </div>
     <n-form class="login__wrapper" ref="formRef" :model="account" :rules="rules" size="large">
       <n-form-item path="email" label="Email">
@@ -89,7 +89,7 @@ const loginHandler = () => {
       <div class="login__wrapper-infor">
         <p>
           Bằng cách tiếp tục, bạn đồng ý với <br />
-          <a href="#" class="login__strong-infor">Điều khoản dịch vụ</a> của Pinterest và xác nhận
+          <a href="#" class="login__strong-infor">Điều khoản dịch vụ</a> của PixelPalette và xác nhận
           rằng <br />
           bạn đã đọc <a href="#" class="login__strong-infor">Chính sách quyền riêng tư</a> của chúng
           tôi. <br />
@@ -114,31 +114,49 @@ button {
   border: none;
 }
 
+.login__logo{
+  @include mobile{
+    display: none;
+  }
+  @include small-tablet{
+    display: none;
+  }
+}
+
 .login {
-  width: 484px;
+  width: 40%;
   background: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px 10px 24px 10px;
-  border-radius: 35px;
   margin: 0 auto;
 
-  &__wrapper {
-    width: 268px;
+  @include mobile{
+    width: 80%;
+    padding-top: 0;
   }
-
-  &__title {
-    width: 400px;
-    height: 80px;
-    margin-bottom: 60px;
+  @include small-tablet{
+    width: 60%;
+    padding-top: 0;
   }
 
   &__title-heading {
+    width: 60%;
     font-size: 32px;
     color: #333333;
     text-align: center;
     font-weight: 600;
+    margin:16px auto 36px;
+    @include mobile{
+      width: 100%;
+    }
+    @include small-tablet{
+      width: 100%;
+    }
+    @include tablet{
+      width: 100%;
+    }
   }
 
   &__wrapper-forgotpass {
