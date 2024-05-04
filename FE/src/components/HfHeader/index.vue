@@ -13,7 +13,7 @@ const options = ref([
   { label: 'Hồ sơ của bạn', key: '/profile-favorite' },
   { label: 'Đăng xuất', key: 'logout' }
 ]);
-
+console.log(user.loggedIn);
 const handleScroll = () => {
   isScrolled.value = window.scrollY >= 160;
 };

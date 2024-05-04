@@ -5,6 +5,7 @@ import {login} from '../../api/auth.api';
 import { validateEmail, validatePassword } from '@/utils/validator';
 import { useAuthStore } from '@/stores/auth';
 import { useRoute } from 'vue-router';
+import { c } from 'naive-ui';
 
 const message = useMessage();
 const authStore = useAuthStore();
@@ -37,15 +38,20 @@ const loginHandler = () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       try {
-        const { data } = await login({userName: account.email, passowrd: account.passowrd});
+        const user = {
+          userName: account.email,
+          password: account.password
+        }
+        const { data } = await login(user);
         authStore.save({
           ...data
         });
         message.success('Đăng nhập thành công. Xin chào ' + account.email);
         router.push(route.query.redirect || '/');
       } catch (err) {
+        console.log(err);
         if (!!err.response) {
-          message.error(err.response.data.message);
+          message.error(err.response.data.title);
         } else {
           message.error(err.message);
         }
@@ -81,7 +87,7 @@ const loginHandler = () => {
         />
       </n-form-item>
       <div class="login__wrapper-forgotpass" v-if="showForgotPassword">
-        <RouterLink to="/forgot-password">Quên mật khẩu?</RouterLink>
+        <!-- <RouterLink to="/forgot-password">Quên mật khẩu?</RouterLink> -->
       </div>
       <n-form-item>
         <button type="submit" class="login__wrapper-button button-login" @click="loginHandler">Đăng nhập</button>

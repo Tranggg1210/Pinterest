@@ -1,6 +1,6 @@
 <script setup>
 import { ref, reactive } from 'vue';
-import { register } from '@/api/auth.api';
+import { login, register } from '@/api/auth.api';
 import { useAuthStore } from '@/stores/auth';
 import { validateLastName,validateFirstName, validateEmail, validatePassword} from '@/utils/validator';
 import { useRouter } from 'vue-router';
@@ -44,9 +44,14 @@ const registerHandler = () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       try {
-        const { data } = await register(account);
+        await register(account);
+        const user = {
+          userName: account.email, 
+          password: account.password 
+        }
+        const result = await login(user)
         authStore.save({
-          ...data
+          ...result.data
         });
         message.success('Đăng nhập thành công. Xin chào ' + account.email);
         router.push(route.query.redirect || '/');
