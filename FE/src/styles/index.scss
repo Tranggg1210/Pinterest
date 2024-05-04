@@ -34,6 +34,10 @@ p {
   margin: 10px 0;
 }
 
+ul{
+  list-style: none;
+}
+
 .icon {
   cursor: pointer;
 }
@@ -68,4 +72,18 @@ p {
 
 svg {
   margin-right: 6px;
+}
+
+
+.h1-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0.75rem 0 0;
+  color: #212529;
+}
+.p-desc {
+  font-size: 1.25rem;
+  font-weight: 100;
+  color: #656769;
+  text-align: center;
 }

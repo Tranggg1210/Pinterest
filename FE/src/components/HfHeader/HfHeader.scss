@@ -37,109 +37,117 @@
     }
   }
   
-  .active button {
-    background-color: $black-color !important;
-    color: $white-color !important;
-  }
-  .btn-home {
-    @include mobile {
-      display: none;
-    }
-    @include small-tablet {
-      display: none;
-    }
-    @include tablet {
-      display: none;
-    }
-  }
-  .header-search {
-    width: 60%;
-    border: none;
-    background-color: $secondary-color;
-    padding: 8px 16px;
-    @include flex(center, center);
-    border-radius: 32px;
-  
-    input {
-      width: 98%;
-      border: none;
-      outline: none;
-      font-size: 16px;
-      padding: 3px 4px;
-      background-color: transparent;
-    }
-    @include tablet {
-      width: 50%;
-    }
-  }
-  .btn-container {
-    @include flex(center, center);
-    .btn-signup {
-      background-color: $primary-color;
-      color: $white-color;
-      margin: 0;
-    }
-    @include mobile {
-      display: none;
-    }
-    @include small-tablet {
-      display: none;
-    }
-  }
-  .mobile-menu-icon {
+.active button {
+  background-color: $black-color !important;
+  color: $white-color !important;
+}
+.btn-home {
+  @include mobile {
     display: none;
-    cursor: pointer;
-    transition: all 0.4s linear;
-  
-    &:hover {
-      color: $primary-color;
-    }
-    @include mobile {
-      display: block;
-    }
+  }
+  @include small-tablet {
+    display: none;
+  }
+  @include tablet {
+    display: none;
+  }
+}
+.header-search {
+  width: 60%;
+  border: none;
+  background-color: $secondary-color;
+  padding: 8px 16px;
+  @include flex(center, center);
+  border-radius: 32px;
+
+  input {
+    width: 98%;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    padding: 3px 4px;
+    background-color: transparent;
+  }
+  @include tablet {
+    width: 50%;
+  }
+}
+.btn-container {
+  @include flex(center, center);
+  .btn-signup {
+    background-color: $primary-color;
+    color: $white-color;
+    margin: 0;
+  }
+  @include mobile {
+    display: none;
+  }
+  @include small-tablet {
+    display: none;
+  }
+}
+.mobile-menu-icon {
+  display: none;
+  cursor: pointer;
+  transition: all 0.4s linear;
+
+  &:hover {
+    color: $primary-color;
+  }
+  @include mobile {
+    display: block;
+  }
+  @include small-tablet {
+    display: block;
+  }
+}
+.mobile-menu {
+  button {
+    border-radius: 0;
+    background-color: transparent;
+    margin-left: -6px;
+    width: 106%;
+    text-align: left;
     @include small-tablet {
-      display: block;
+      width: 103%;
     }
   }
-  .mobile-menu {
-    button {
-      border-radius: 0;
-      background-color: transparent;
-      margin-left: -6px;
-      width: 106%;
-      text-align: left;
-      @include small-tablet {
-        width: 103%;
-      }
-    }
+}
+.cushion {
+  height: 76px;
+}
+.menu-logined{
+  @include flex(center, center);
+  @include mobile{
+    display: none;
   }
-  .cushion {
-    height: 76px;
+  @include small-tablet{
+    display: none;
   }
-  .menu-logined{
-    @include flex(center, center);
-    @include mobile{
-      display: none;
-    }
-    @include small-tablet{
-      display: none;
-    }
+}
+.menu-logined-icon{
+  width: 42px;
+  height: 42px;
+  margin: 0 8px;
+  padding: 8px;
+  transition: all 0.3s linear;
+  border-radius: 50%;
+  cursor: pointer;
+  &:hover{
+    background-color: #ccc;
   }
-  .menu-logined-icon{
-    width: 42px;
-    height: 42px;
-    margin: 0 8px;
-    padding: 8px;
-    transition: all 0.3s linear;
-    border-radius: 50%;
-    cursor: pointer;
-    &:hover{
-      background-color: #ccc;
-    }
+}
+.user-avatar{
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  margin:0 4px 0 16px;
+}
+.header-link{
+  font-weight: 600;
+  font-size: 16px;
+  padding: 0 16px;
+  &:hover{
+    color: $primary-color;
   }
-  .user-avatar{
-    cursor: pointer;
-    width: 28px;
-    height: 28px;
-    margin:0 4px 0 16px;
-  }
+}
