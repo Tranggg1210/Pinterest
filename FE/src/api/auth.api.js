@@ -3,12 +3,12 @@ import { ApiConstant } from '@/constant/api.constant';
 
 const authApi = () => ({
   login: async({email, passowrd}) => apiDefault.post(ApiConstant.auth.login, {email, passowrd}),
-  register: async ({ email, password, birthday }) => {
+  register: async ({firstName, lastName, email, password}) => {
     return apiDefault.post(ApiConstant.auth.register, {
+      firstName,
+      lastName,
       email,
-      password,
-      repeatPassword,
-      birthday
+      password
     });
   }
 });

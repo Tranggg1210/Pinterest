@@ -85,24 +85,24 @@ const goToPage = (key) => {
           <div class="mobile-menu">
             <div v-if="!user.loggedIn">
               <router-link to="/introduce" exact-active-class="active">
-                <HfButton>Giới thiệu</HfButton>
+                <HfButton @click="show=false">Giới thiệu</HfButton>
               </router-link>
               <router-link to="/about-us" exact-active-class="active">
-                <HfButton> Về chúng tôi </HfButton>
+                <HfButton @click="show=false"> Về chúng tôi </HfButton>
               </router-link>
               <router-link to="/contact" exact-active-class="active">
-                <HfButton> Liên hệ </HfButton>
+                <HfButton @click="show=false"> Liên hệ </HfButton>
               </router-link>
               <router-link to="/login" exact-active-class="active" >
-                <HfButton class="btn-login"> Đăng nhập </HfButton>
+                <HfButton @click="show=false" class="btn-login"> Đăng nhập </HfButton>
               </router-link>
               <router-link to="/sign-up" exact-active-class="active">
-                <HfButton class="btn-signup"> Đăng ký </HfButton>
+                <HfButton @click="show=false" class="btn-signup"> Đăng ký </HfButton>
               </router-link>
             </div>
             <div v-else>
               <router-link v-for="option in options" :key="option.key" :to="option.key" exact-active-class="active">
-                <HfButton> {{ option.label }} </HfButton>
+                <HfButton @click="show=false"> {{ option.label }} </HfButton>
               </router-link>
             </div>
           </div>

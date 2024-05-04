@@ -51,34 +51,44 @@ function validatePassword(_,password) {
   if (password.trim() === '') {
     return new Error('Vui lòng nhập mật khẩu!');
   }
-  // Regex
-  // const regex = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,}$/;
-  // if (!regex.test(password)) {
-  //   // Chữ cái
-  //   if (!/[a-zA-Z]/.test(password)) {
-  //     return new Error('Mật khẩu phải chứa ít nhất một chữ cái!');
-  //   }
-  //   // Chữ số
-  //   if (!/\d/.test(password)) {
-  //     return new Error('Mật khẩu phải chứa ít nhất một chữ số!');
-  //   }
-  //   // Chiều dài
-  //   if (password.length < 6) {
-  //     return new Error('Mật khẩu phải dài ít nhất 6 ký tự!');
-  //   }
-  //   return new Error('Mật khẩu không hợp lệ!');
-  // }
+  const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{10,}$/;
+  if (!regex.test(password)) {
+    // Chữ cái
+    if (!/[a-zA-Z]/.test(password)) {
+      return new Error('Mật khẩu phải chứa ít nhất một chữ cái!');
+    }
+    // Chữ số
+    if (!/\d/.test(password)) {
+      return new Error('Mật khẩu phải chứa ít nhất một chữ số!');
+    }
+    // Chiều dài
+    if (password.length < 10) {
+      return new Error('Mật khẩu phải dài ít nhất 10 ký tự!');
+    }
+    return new Error('Mật khẩu không hợp lệ!');
+  }
   // Mật khẩu hợp lệ
   return true;
 }
 
-function validateFullName(fullname) {
-  if (fullname === null || typeof fullname === 'undefined') {
-    return new Error('Vui lòng nhập họ tên!');
+function validateFirstName(_,firstName) {
+  if (firstName === null || typeof firstName === 'undefined') {
+    return new Error('Vui lòng nhập tên của bạn!');
   }
 
-  if (fullname.trim() === '') {
-    return new Error('Vui lòng nhập họ tên!');
+  if (firstName.trim() === '') {
+    return new Error('Vui lòng nhập tên của bạn!');
+  }
+}
+
+
+function validateLastName(_,lastName) {
+  if (lastName === null || typeof lastName === 'undefined') {
+    return new Error('Vui lòng nhập họ đệm của bạn!');
+  }
+
+  if (lastName.trim() === '') {
+    return new Error('Vui lòng nhập họ đệm của bạn!');
   }
 }
 
@@ -103,7 +113,8 @@ export {
   validateUsername,
   validateEmail,
   validatePassword,
-  validateFullName,
   validateDOB,
-  validataPhoneNumber
+  validataPhoneNumber,
+  validateLastName,
+  validateFirstName
 };

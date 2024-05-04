@@ -3,7 +3,6 @@ import { computed, reactive } from 'vue';
 import { RouterLink } from 'vue-router';
 import {login} from '../../api/auth.api';
 import { validateEmail, validatePassword } from '@/utils/validator';
-import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
 import { useRoute } from 'vue-router';
 
@@ -38,7 +37,7 @@ const loginHandler = () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       try {
-        const { data } = await axios.post("https://api.escuelajs.co/api/v1/auth/login",account);
+        const { data } = await login({userName: account.email, passowrd: account.passowrd});
         authStore.save({
           ...data
         });
