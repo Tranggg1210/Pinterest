@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\FollowController;
 use App\Http\Controllers\Api\ForgotController;
@@ -25,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/search/{keyword?}',[SearchController::class,'search']) -> name('search');
 Route::post('/register',[RegisterController::class,'register']) -> name('register');
 Route::post('/forgot',[ForgotController::class,'forgot']) -> name('forgot');
-
+Route::post('search-user/{keyword?}',[SearchController::class,'searchUser']) ;
 Route::group(['middleware' => 'api',], function ($router) {
     Route::post('login', [AuthController::class,'login']) -> name('login');
 });
@@ -37,5 +38,7 @@ Route::group(['middleware' => 'api',], function ($router) {
     Route::post('logout', [AuthController::class,'logout']) -> name('logout');
     Route::post('follow/{UserId?}', [FollowController::class,'follow']) -> name('follow');
     Route::post('comments/{PostId?}', [CommentController::class,'sendcomment']) -> name('comment');
+    Route::post('/chat/{id?}', [ChatController::class,'createConversation']);
+    Route::get('/get-conversation', [ChatController::class,'getConversations']);
 });
 Route::get('get-comment/{PostId?}', [CommentController::class,'getComments']) -> name('getComment');

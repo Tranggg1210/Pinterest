@@ -15,7 +15,7 @@ class User extends Authenticatable implements JWTSubject
     protected $table = 'User';
     protected $primaryKey = 'Id';
     public $timestamps = false;
-    // protected $fillable = 
+    protected $hidden = ['PasswordHash'];
     use HasFactory,Searchable,HasApiTokens  ;
     const SEARCHABLE_FIELDS = ['UserName', 'FirstName', 'LastName', 'Email', 'Country'];
 

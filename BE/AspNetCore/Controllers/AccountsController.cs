@@ -16,13 +16,11 @@ namespace PixelPalette.Controllers
     {
         private readonly IAccountRepository _repo;
         private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
 
-        public AccountsController(IAccountRepository repo, UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountsController(IAccountRepository repo, UserManager<User> userManager)
         {
             _repo = repo;
             _userManager = userManager;
-            _signInManager = signInManager;
         }
         [HttpPost("signUp")]
         public async Task<ActionResult> SignUp(SignUpModel signUpModel)
@@ -30,20 +28,16 @@ namespace PixelPalette.Controllers
             var result = await _repo.SignUpAsync(signUpModel);
             if (result.Succeeded)
             {
-                return Ok(result.Succeeded);
+                return Ok(true);
             }
-            return StatusCode(500, false);
+            return BadRequest(false);
         }
         [HttpPost("signIn")]
         public async Task<ActionResult> SignIn(SignInModel signInModel)
         {
             if (!await _repo.SignInAsync(signInModel))
                 return Unauthorized("Unauthorised");
-            var token = new
-            {
-                token = await _repo.CreateToken()
-            };
-            string tokenJson = JsonConvert.SerializeObject(token);
+            var token = await _repo.CreateToken();
             var cookieOptions = new CookieOptions
             {
                 Path = "/",
@@ -51,8 +45,8 @@ namespace PixelPalette.Controllers
                 Secure = true,
                 SameSite = SameSiteMode.Strict
             };
-            Response.Cookies.Append("Token", tokenJson, cookieOptions);
-            return Ok(token);
+            Response.Cookies.Append("Token", token, cookieOptions);
+            return Ok(new { token = token });
         }
         [HttpPut("changePassword")]
         [Authorize]

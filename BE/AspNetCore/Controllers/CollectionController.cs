@@ -116,7 +116,5 @@ namespace PixelPalette.Controllers
                 return BadRequest(ex.Message.ToString());
             }
         }
-
-
     }
 }

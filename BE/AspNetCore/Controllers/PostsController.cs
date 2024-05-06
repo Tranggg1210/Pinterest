@@ -65,7 +65,7 @@ namespace PixelPalette.Controllers
             }
         }
 
-        [HttpGet("getByUserId/{userId}")]
+        [HttpGet("getByUserId")]
         [Authorize]
         public async Task<ActionResult<IEnumerable<PostModel>>> GetByUserId()
         {

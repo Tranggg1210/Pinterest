@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using PixelPalette.Extensions;
 using PixelPalette.Helpers;
 using PixelPalette.Interfaces;
@@ -11,6 +12,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger();
+builder.Services.ConfigureIISIntegration();
 builder.Services.ConfigureIdentity();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 builder.Services.ConfigureSqlContext(builder.Configuration);
@@ -21,6 +23,8 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<ICollectionRepository, CollectionRepository>();
+
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<ITool, ApplicationTool>();
 
@@ -36,11 +40,27 @@ if (app.Environment.IsDevelopment())
         s.SwaggerEndpoint("/swagger/v1/swagger.json", "PixelPaletteAPI");
     });
 }
+else
+{
+    app.Use(async (context, next) =>
+    {
+        await next();
+        if (context.Response.StatusCode == 404 && !Path.HasExtension(context.Request.Path.Value))
+        {
+            context.Request.Path = "/index.html"; await next();
+        }
+    });
+    app.UseHsts();
+}
 
 app.UseHttpsRedirection();
-
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.All
+});
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors();
 
 app.MapControllers();
 

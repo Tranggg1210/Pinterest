@@ -10,7 +10,7 @@ namespace PixelPalette.Entities
         public int UserId { get; set; }
         public int PostId { get; set; }
         public string Content { get; set; } = null!;
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; }
         public long Like { get; set; }
 
         public virtual Post Post { get; set; } = null!;
