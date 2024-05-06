@@ -46,7 +46,7 @@ namespace PixelPalette.Repositories
         {
             var key = Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]);
             var secret = new SymmetricSecurityKey(key);
-            return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256Signature);
+            return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
 
         private List<Claim> GetClaims() => new List<Claim> { new Claim(ClaimTypes.Name, _user!.UserName) };

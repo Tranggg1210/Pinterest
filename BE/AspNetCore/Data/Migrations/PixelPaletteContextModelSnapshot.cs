@@ -8,7 +8,7 @@ using PixelPalette.Data;
 
 #nullable disable
 
-namespace PixelPalette.Data.Migrations
+namespace PixelPalette.Migrations
 {
     [DbContext(typeof(PixelPaletteContext))]
     partial class PixelPaletteContextModelSnapshot : ModelSnapshot
@@ -111,18 +111,11 @@ namespace PixelPalette.Data.Migrations
                     b.Property<int>("CreatorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ConnectorId");
+                    b.HasIndex(new[] { "ConnectorId" }, "IX_Conversation_ConnectorId");
 
-                    b.HasIndex("CreatorId");
-
-                    b.HasIndex(new[] { "Name" }, "IX_Conversation_CreatedByUserId");
+                    b.HasIndex(new[] { "CreatorId" }, "IX_Conversation_CreatorId");
 
                     b.ToTable("Conversation", (string)null);
                 });
@@ -233,7 +226,7 @@ namespace PixelPalette.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "UserId" }, "IX_Notification_UserId");
 
                     b.ToTable("Notification", (string)null);
                 });

@@ -85,11 +85,11 @@ namespace PixelPalette.Data
             {
                 entity.ToTable("Conversation");
 
-                entity.HasIndex(e => e.Name, "IX_Conversation_CreatedByUserId");
+                entity.HasIndex(e => e.ConnectorId, "IX_Conversation_ConnectorId");
+
+                entity.HasIndex(e => e.CreatorId, "IX_Conversation_CreatorId");
 
                 entity.Property(e => e.CreatedAt).HasColumnType("datetime");
-
-                entity.Property(e => e.Name).HasMaxLength(255);
 
                 entity.HasOne(d => d.Connector)
                     .WithMany(p => p.ConversationConnectors)
@@ -184,6 +184,8 @@ namespace PixelPalette.Data
             modelBuilder.Entity<Notification>(entity =>
             {
                 entity.ToTable("Notification");
+
+                entity.HasIndex(e => e.UserId, "IX_Notification_UserId");
 
                 entity.Property(e => e.CreatedAt).HasColumnType("datetime");
 

@@ -9,11 +9,11 @@ using PixelPalette.Data;
 
 #nullable disable
 
-namespace PixelPalette.Data.Migrations
+namespace PixelPalette.Migrations
 {
     [DbContext(typeof(PixelPaletteContext))]
-    [Migration("20240422145143_Initial")]
-    partial class Initial
+    [Migration("20240504131129_UltimateLy")]
+    partial class UltimateLy
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -113,18 +113,11 @@ namespace PixelPalette.Data.Migrations
                     b.Property<int>("CreatorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ConnectorId");
+                    b.HasIndex(new[] { "ConnectorId" }, "IX_Conversation_ConnectorId");
 
-                    b.HasIndex("CreatorId");
-
-                    b.HasIndex(new[] { "Name" }, "IX_Conversation_CreatedByUserId");
+                    b.HasIndex(new[] { "CreatorId" }, "IX_Conversation_CreatorId");
 
                     b.ToTable("Conversation", (string)null);
                 });
@@ -235,7 +228,7 @@ namespace PixelPalette.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "UserId" }, "IX_Notification_UserId");
 
                     b.ToTable("Notification", (string)null);
                 });
