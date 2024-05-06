@@ -14,32 +14,42 @@ use Illuminate\Http\Request;
  *     tags={"Comment"},
  *     summary="Comment",
  *     security={{ "bearerAuth": {} }},
- *     description="Comment id bài viết",
+ *     description="Comment id bài viết.Nếu reply lại comment người khác thì điền CommentId cần rep lại",
+*    @OA\RequestBody(
+ *         @OA\JsonContent(
+ *             allOf = {
+ *                  @OA\Schema(
+ *                      @OA\Property(property="PostId",type="interger"),
+ *                      @OA\Property(property="CommentId",type="string"),
+ *                      @OA\Property(property="Content",type="string"),
+ *                      example={"PostId":"Id bài post","Content": "test","CommentId": ""}
+ *                  )
+ *              }
+ *         )
+ *     ),
+ *     @OA\Response(response=200,description="Comment successfully"),
+ *     @OA\Response(response=400,description="Không thể comment"),
+ *     @OA\Response(response=404,description="Không tồn tại bài viết"),
+ *     @OA\Response(response=502,description="Không tồn tại bình luận đã phản hồi trong bài viết này"),
+ * ),
+ * @OA\Post(
+ *     path="/api/get-comment/{PostId}",
+ *     tags={"Comment"},
+ *     summary="Lấy toàn bộ comment của bài viết",
+ *     security={{ "bearerAuth": {} }},
+ *     description="Lấy toàn bộ comment của bài viết",
  *     @OA\Parameter(
  *         name="PostId",
  *         in="path",
- *         description="ID của comment",
+ *         description="ID của bài post",
  *         required=true,
  *         @OA\Schema(
  *             type="integer",
  *             format="int64"
  *         )
  *     ),
-*    @OA\RequestBody(
- *         @OA\JsonContent(
- *             allOf = {
- *                  @OA\Schema(
- *                      @OA\Property(property="CommentId",type="string"),
- *                      @OA\Property(property="Content",type="string"),
- *                      example={"Content": "test","CommentId": ""}
- *                  )
- *              }
- *         )
- *     ),
- *     @OA\Response(response=200,description="Comment successfully"),
- *     @OA\Response(response=400,description="Không thể follow bản thân"),
+ *     @OA\Response(response=200,description="Successfully"),
  *     @OA\Response(response=404,description="Không tồn tại bài viết"),
- *     @OA\Response(response=502,description="Không tồn tại bình luận đã phản hồi trong bài viết này"),
  * )
  */
 class CommentController extends Controller
@@ -94,8 +104,8 @@ class CommentController extends Controller
         // $listComments = $comment->orderBy('CreatedAt', 'desc')->take(10)->get();;
         if(count($listComments)){
             return response()->json([
-                'status' => 200,
-                'data_comment' => $listComments
+                'status' => 200 ,
+                'data' => $listComments
             ]);
         }else{
             return response()->json([
