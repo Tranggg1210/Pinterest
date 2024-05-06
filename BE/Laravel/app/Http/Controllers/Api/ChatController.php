@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
  *     operationId="create-chat",
  *     tags={"Chat"},
  *     summary="Tạo conversation",
- *     security={{ "bearerAuth": {} }},
  *     description="Tạo conversation khi chat tin đầu tiên.Id của người dùng sẽ được trả về khi tìm kiếm ở phần tìm kiếm trong chat ",
 *    @OA\RequestBody(
  *         @OA\JsonContent(
@@ -37,7 +36,6 @@ use Illuminate\Http\Request;
  *     operationId="get-chat",
  *     tags={"Chat"},
  *     summary="Lấy toàn bộ conversation của người dùng",
- *     security={{ "bearerAuth": {} }},
  *     description="Lấy toàn bộ hội thoại của người dùng",
  *     @OA\Response(response=200,description="Thành công"),
  *     @OA\Response(response=404,description="Không tồn tại người dùng"),
@@ -47,7 +45,6 @@ use Illuminate\Http\Request;
  *     operationId="send-message",
  *     tags={"Chat"},
  *     summary="Gửi tin nhắn tới conversation",
- *     security={{ "bearerAuth": {} }},
  *     description="",
 *    @OA\RequestBody(
  *         @OA\JsonContent(
@@ -68,7 +65,6 @@ use Illuminate\Http\Request;
  *     operationId="get-message",
  *     tags={"Chat"},
  *     summary="Lấy toàn bộ tin nhắn của hội thoại",
- *     security={{ "bearerAuth": {} }},
  *     description="Lấy toàn bộ tin nhắn của hội thoại",
  *     @OA\Parameter(
  *         name="id",
@@ -85,7 +81,8 @@ use Illuminate\Http\Request;
 class ChatController extends Controller
 {
     public function sendMessage(Request $request,$data = []){
-        $auth = auth()-> user();
+        // $auth = auth()-> user();
+        $auth = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> get('Id','UserName', 'FirstName', 'LastName', 'Email', 'Country');
         $message = new Message();
         // Nếu có data thì là vừa tạo cuộc hội thoại,không có data thì cuộc hội thoại đã được tạo
         if($data){
@@ -156,7 +153,8 @@ class ChatController extends Controller
 
     public function getConversations(Request $request){
         // $content = $request-> content; //Nội dung tin nhắn
-        $user = auth() -> user();
+        // $user = auth() -> user();
+        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> get('Id','UserName', 'FirstName', 'LastName', 'Email', 'Country');
         if(!isset($user)){
             return response()-> json(
                 [
@@ -176,7 +174,8 @@ class ChatController extends Controller
         );
     }
     public function createConversation(Request $request){
-        $user = auth() -> user();
+        // $user = auth() -> user();
+        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> get('Id','UserName', 'FirstName', 'LastName', 'Email', 'Country');
         $connector = User::find($request-> id);
         if(!isset($user) || !isset($connector)){
             return response()-> json(

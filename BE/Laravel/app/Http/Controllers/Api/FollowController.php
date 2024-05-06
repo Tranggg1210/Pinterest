@@ -17,7 +17,6 @@ use function PHPSTORM_META\type;
  *     operationId="Follow",
  *     tags={"Follow user"},
  *     summary="Follow",
- *     security={{ "bearerAuth": {} }},
  *     description="Theo dõi người khác khi truyền id",
  *     @OA\Parameter(
  *         name="UserId",
@@ -34,7 +33,6 @@ use function PHPSTORM_META\type;
  *     operationId="get-follower",
  *     tags={"Follow user"},
  *     summary="Lấy toàn bộ danh sách người đang follow mình",
- *     security={{ "bearerAuth": {} }},
  *     description="Lấy toàn bộ hội thoại của người dùng",
  *     @OA\Response(response=200,description="Thành công"),
  *     @OA\Response(response=404,description="Không tồn tại người dùng"),
@@ -50,7 +48,8 @@ class FollowController extends Controller
             ]);
         }
         $follow = new Follow;
-        $FollowerUser = auth() -> user();
+        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> get('Id','UserName', 'FirstName', 'LastName', 'Email', 'Country');
+        $FollowerUser = $user;
         $FollowingUser = User::where('Id',$request -> UserId) -> first();
         if(!$FollowingUser){
             return response()->json([
@@ -112,7 +111,8 @@ class FollowController extends Controller
         }
     }
     public function getAllFollowers(){
-        $user = auth()->user();
+        // $user = auth()->user();
+        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> get('Id','UserName', 'FirstName', 'LastName', 'Email', 'Country');
         if($user){
             $follow = new Follow();
             $followers = $follow -> getAllFollowers($user);

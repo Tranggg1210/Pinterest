@@ -6,6 +6,7 @@ use App\Events\CommentPublished;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 /**
  * @OA\Post(
@@ -13,7 +14,6 @@ use Illuminate\Http\Request;
  *     operationId="Comment",
  *     tags={"Comment"},
  *     summary="Comment",
- *     security={{ "bearerAuth": {} }},
  *     description="Comment id bài viết.Nếu reply lại comment người khác thì điền CommentId cần rep lại",
 *    @OA\RequestBody(
  *         @OA\JsonContent(
@@ -36,7 +36,6 @@ use Illuminate\Http\Request;
  *     path="/api/get-comment/{PostId}",
  *     tags={"Comment"},
  *     summary="Lấy toàn bộ comment của bài viết",
- *     security={{ "bearerAuth": {} }},
  *     description="Lấy toàn bộ comment của bài viết",
  *     @OA\Parameter(
  *         name="PostId",
@@ -55,7 +54,8 @@ use Illuminate\Http\Request;
 class CommentController extends Controller
 {
     public function sendcomment(Request $request){
-        $user = auth() -> user();
+        // $user = auth() -> user();
+        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> get('Id','UserName', 'FirstName', 'LastName', 'Email', 'Country');
         if($request -> PostId == null){
             return response()->json([
                'status' => 403 ,

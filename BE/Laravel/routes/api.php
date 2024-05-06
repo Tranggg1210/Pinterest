@@ -33,7 +33,7 @@ Route::group(['middleware' => 'api',], function ($router) {
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
     //     return auth() -> user();
     // });
-    Route::middleware("auth:api")->group(function(){
+    // Route::middleware("auth:api")->group(function(){
     Route::get('/me', [AuthController::class,'me']) -> name('me');
     Route::post('logout', [AuthController::class,'logout']) -> name('logout');
     Route::post('follow/{UserId?}', [FollowController::class,'follow']) -> name('follow');
@@ -43,5 +43,5 @@ Route::group(['middleware' => 'api',], function ($router) {
     Route::get('/get-conversation', [ChatController::class,'getConversations']);
     Route::post('/send-message', [ChatController::class,'sendMessage']);
     Route::get('/get-message/{id}', [ChatController::class,'getConversations']);
-});
+// });
 Route::get('get-comment/{PostId?}', [CommentController::class,'getComments']) -> name('getComment');
