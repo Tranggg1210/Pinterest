@@ -18,7 +18,7 @@ onBeforeMount(() => handleURLImage(postInfor.download_url))
 <template>
   <div class="post__item">
     <div class="post-image">
-      <img :src="postInfor.download_url" alt="image" loading="lazy" />
+      <img :src="postInfor.thumbnailUrl" alt="image" loading="lazy" />
       <div class="model">
         <div class="model__header">
           <button class="btn-post-save">Lưu</button>

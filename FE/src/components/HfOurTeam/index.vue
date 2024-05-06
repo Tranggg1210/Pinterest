@@ -4,7 +4,7 @@
 <template>
     <section className='testimonials container'>
       <div className='wide'>
-        <h1 className='h1-title'>Nhóm 6</h1>
+        <h1 className='h1-title'>Nhóm 3</h1>
         <div className='testimonials-container'>
           <div className='testimonial-item'>
             <div className='avatar'>

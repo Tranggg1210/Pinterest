@@ -3,18 +3,21 @@ import axios from 'axios';
 import { onBeforeMount } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import HfFeature from '@/components/HfFeature/HfFeature.vue';
+import { getAllPost } from '@/api/post.api';
 const posts = ref([]);
 const user = useAuthStore();
 const loadPosts = async() => {
   try {
-    const {data} = await axios.get('https://picsum.photos/v2/list?page=2&limit=40');
+    const {data} = await getAllPost();
+    // console.log(result);
+    // const {data} = await axios.get("https://jsonplaceholder.typicode.com/photos");
     posts.value = data;
   } catch (err) {
     console.log(err);
     if (!!err.response) {
-      message.error(err.response.data.message);
+      message.error(err.response.data.title);
     } else {
-      message.error(err.message);
+      message.error(err.title);
     }
   }
 }

@@ -53,7 +53,7 @@ const loginHandler = () => {
         if (!!err.response) {
           message.error(err.response.data.title);
         } else {
-          message.error(err.message);
+          message.error(err.title);
         }
       }
     }
