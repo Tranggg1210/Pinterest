@@ -1,8 +1,10 @@
 <script setup>
 import { onBeforeMount, reactive } from 'vue';
-import { validateFullName, validateDOB, validatePassword } from '@/utils/validator';
+import { validateDOB, validatePassword } from '@/utils/validator';
 import router from '@/router';
 import { useAuthStore } from '@/stores/auth';
+import { getCurrentUser } from '@/api/user.api';
+
 
 const message = useMessage();
 const auth = useAuthStore();
@@ -23,7 +25,6 @@ const formRefAccount = ref(null);
 const rules = {
   fullName: {
     required: true,
-    validator: validateFullName,
     trigger: 'blur'
   },
   dob: {
@@ -54,6 +55,17 @@ const rulesAccount = {
     trigger: ['blur', 'password-input']
   }
 };
+const loadUser = async() => {
+  try {
+    const {data} = await getCurrentUser();
+    console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+onBeforeMount(loadUser)
+
 const handleUpdateUserInformation = async () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
@@ -124,19 +136,6 @@ const handleDeleteAccount = async () => {
   }
 };
 
-const scrollBehavior = (to, from, savedPosition) => {
-  if (to.hash) {
-    return {
-      el: to.hash,
-      top: 100,
-      behavior: 'smooth'
-    };
-  }
-};
-router.options.scrollBehavior = scrollBehavior;
-const scrollToTarget = (hash) => {
-  router.push({ hash: `#${hash}` });
-};
 </script>
 <template>
   <div class="container user-infor">
@@ -157,17 +156,6 @@ const scrollToTarget = (hash) => {
                 {{ user.phoneNumber ? user.phoneNumber : 'Không xác định' }}
               </span>
             </p>
-            <div class="infor-active">
-              <n-button type="info" @click="() => scrollToTarget('user-profile')">
-                Thông tin chi tiết
-              </n-button>
-              <n-button type="success" @click="() => scrollToTarget('user-account')">
-                Thông tin tài khoản
-              </n-button>
-              <n-button type="error" @click="() => scrollToTarget('user-delete')">
-                Xóa tài khoản
-              </n-button>
-            </div>
           </div>
         </div>
         <div class="infor-detail">

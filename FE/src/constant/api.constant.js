@@ -4,6 +4,10 @@ export const ApiConstant = {
     register: 'Accounts/signUp',
   },
   post: {
-    postAll: 'Posts/getAll'
+    postAll: 'Posts/getAll',
+    createPost: 'Posts/create'
+  },
+  user: {
+    currentUser: 'Users/getLoginUser'
   }
 };

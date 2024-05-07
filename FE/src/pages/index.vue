@@ -1,16 +1,14 @@
 <script setup>
-import axios from 'axios';
 import { onBeforeMount } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import HfFeature from '@/components/HfFeature/HfFeature.vue';
 import { getAllPost } from '@/api/post.api';
 const posts = ref([]);
 const user = useAuthStore();
+const message = useMessage();
 const loadPosts = async() => {
   try {
     const {data} = await getAllPost();
-    // console.log(result);
-    // const {data} = await axios.get("https://jsonplaceholder.typicode.com/photos");
     posts.value = data;
   } catch (err) {
     console.log(err);

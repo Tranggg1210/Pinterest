@@ -1,5 +1,9 @@
 .user-infor {
   margin-top: 0px;
+  padding: 0 2rem;
+  @include mobile{
+    padding: 0;
+  }
 
   h1 {
     margin: 20px 0 40px;
@@ -17,7 +21,7 @@
   }
 
   .infor {
-    @include flex();
+    @include flex(center, start);
     margin-bottom: 40px;
 
     @include mobile {
