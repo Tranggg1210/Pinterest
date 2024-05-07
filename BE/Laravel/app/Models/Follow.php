@@ -31,6 +31,6 @@ class Follow extends Model
         return $this->where('FollowingUserId',$Id)->count();
     }
     public function getAllFollowingUsers(User $Auth){
-        return $this->where('FollowerUserId', $Auth -> Id)->orderBy('FollowingUserId','desc') -> get('FollowingUserId'); // giảm dần để tối thời gian tìm bài post
+        return $this->where('FollowerUserId', $Auth -> Id)->orderBy('FollowingUserId','desc') -> get('FollowingUserId'); // giảm dần để tối ưu thời gian tìm bài post
     }
 }
