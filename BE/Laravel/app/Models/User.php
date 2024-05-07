@@ -31,5 +31,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return 'PixelPalette_user';
     }
+    public function getInformationUser($id){
+        return $this->where('Id', $id)->latest()->first('Id','UserName', 'FirstName', 'LastName', 'Email', 'Country');
+    }
 }
 

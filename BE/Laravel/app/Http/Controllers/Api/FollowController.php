@@ -17,8 +17,7 @@ use function PHPSTORM_META\type;
  *     operationId="Follow",
  *     tags={"Follow user"},
  *     summary="Follow",
- *     security={{ "bearerAuth": {} }},
- *     description="Theo dõi người khác sau khi đăng nhập",
+ *     description="Theo dõi người khác khi truyền id",
  *     @OA\Parameter(
  *         name="UserId",
  *         in="path",
@@ -28,7 +27,16 @@ use function PHPSTORM_META\type;
  *     @OA\Response(response=400,description="Không thể follow bản thân"),
  *     @OA\Response(response=403,description="Không tồn tại người dùng này"),
  *     @OA\Response(response=404,description="Not found"),
- * )
+ * ),
+ * @OA\Get(
+ *     path="/api/get-follower",
+ *     operationId="get-follower",
+ *     tags={"Follow user"},
+ *     summary="Lấy toàn bộ danh sách người đang follow mình",
+ *     description="Lấy toàn bộ hội thoại của người dùng",
+ *     @OA\Response(response=200,description="Thành công"),
+ *     @OA\Response(response=404,description="Không tồn tại người dùng"),
+ * ),
  */
 class FollowController extends Controller
 {
@@ -40,7 +48,8 @@ class FollowController extends Controller
             ]);
         }
         $follow = new Follow;
-        $FollowerUser = auth() -> user();
+        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> get('Id','UserName', 'FirstName', 'LastName', 'Email', 'Country');
+        $FollowerUser = $user;
         $FollowingUser = User::where('Id',$request -> UserId) -> first();
         if(!$FollowingUser){
             return response()->json([
@@ -99,6 +108,28 @@ class FollowController extends Controller
                     ]);
                 }
             }
+        }
+    }
+    public function getAllFollowers(){
+        // $user = auth()->user();
+        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> get('Id','UserName', 'FirstName', 'LastName', 'Email', 'Country');
+        if($user){
+            $follow = new Follow();
+            $followers = $follow -> getAllFollowers($user);
+            $data = [];
+            foreach($followers as $follower){
+                $user = (new User()) -> getInformationUser($follower['FollowingUserId']);
+                array_push($data,$user);
+            }
+            return response()->json([
+               'status' => 200,
+                'data' => $data,
+            ]);
+        }else{
+            return response()->json([
+               'status' => 404,
+               'message' => 'Not found',
+            ]);
         }
     }
 }
