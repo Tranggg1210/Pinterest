@@ -1,8 +1,14 @@
-import { ApiConstant } from "@/constant/api.constant";
-import { api } from ".";
+import { ApiConstant } from '@/constant/api.constant';
+import { api, apiUpload } from '.';
 
 const userApi = () => ({
-    getCurrentUser: async() => api.get(ApiConstant.user.currentUser),
-})
+  getCurrentUser: async () => api.get(ApiConstant.user.currentUser),
+  changeAvatar: async ({file}) => apiUpload.put(ApiConstant.user.changeAvatar, {file}),
+  changeInforUser: async ({ firstName, lastName, introduction, birthday, gender, country }) =>
+    api.put(ApiConstant.user.changeInfor, { firstName, lastName, introduction, birthday, gender, country }),
+  changePassword: async({oldPassword, newPassword, comfirmPassword}) => 
+    api.put(ApiConstant.auth.changePassword, {oldPassword, newPassword, comfirmPassword}),
+  deleteUser: async(id) => api.delete(`${ApiConstant.user.deleteAccount}/${id}`)
+});
 
-export const {getCurrentUser} = userApi();
+export const { getCurrentUser, changeAvatar,changeInforUser, changePassword, deleteUser } = userApi();

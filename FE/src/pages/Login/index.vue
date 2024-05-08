@@ -1,11 +1,10 @@
 <script setup>
 import { computed, reactive } from 'vue';
 import { RouterLink } from 'vue-router';
-import {login} from '../../api/auth.api';
+import { login } from '../../api/auth.api';
 import { validateEmail, validatePassword } from '@/utils/validator';
 import { useAuthStore } from '@/stores/auth';
 import { useRoute } from 'vue-router';
-import { c } from 'naive-ui';
 
 const message = useMessage();
 const authStore = useAuthStore();
@@ -29,8 +28,8 @@ const rules = {
   }
 };
 const showForgotPassword = computed(() => {
-  if(!account.password) return true;
-  else{
+  if (!account.password) return true;
+  else {
     return true;
   }
 });
@@ -41,7 +40,7 @@ const loginHandler = () => {
         const user = {
           userName: account.email,
           password: account.password
-        }
+        };
         const { data } = await login(user);
         authStore.save({
           ...data
@@ -50,11 +49,7 @@ const loginHandler = () => {
         router.push(route.query.redirect || '/');
       } catch (err) {
         console.log(err);
-        if (!!err.response) {
-          message.error(err.response.data.title);
-        } else {
-          message.error(err.title);
-        }
+          message.error("Lỗi đăng nhập, kiểm tra mật khẩu");
       }
     }
   });
@@ -71,13 +66,9 @@ const loginHandler = () => {
     </div>
     <n-form class="login__wrapper" ref="formRef" :model="account" :rules="rules" size="large">
       <n-form-item path="email" label="Email">
-        <n-input
-          v-model:value="account.email"
-          placeholder="Email"
-          class="form-input"
-        />
+        <n-input v-model:value="account.email" placeholder="Email" class="form-input" />
       </n-form-item>
-      <n-form-item path="password" label="Mật khẩu" style="margin-top: 4px;">
+      <n-form-item path="password" label="Mật khẩu" style="margin-top: 4px">
         <n-input
           v-model:value="account.password"
           placeholder="Mật khẩu"
@@ -90,13 +81,15 @@ const loginHandler = () => {
         <!-- <RouterLink to="/forgot-password">Quên mật khẩu?</RouterLink> -->
       </div>
       <n-form-item>
-        <button type="submit" class="login__wrapper-button button-login" @click="loginHandler">Đăng nhập</button>
+        <button type="submit" class="login__wrapper-button button-login" @click="loginHandler">
+          Đăng nhập
+        </button>
       </n-form-item>
       <div class="login__wrapper-infor">
         <p>
           Bằng cách tiếp tục, bạn đồng ý với <br />
-          <a href="#" class="login__strong-infor">Điều khoản dịch vụ</a> của PixelPalette và xác nhận
-          rằng <br />
+          <a href="#" class="login__strong-infor">Điều khoản dịch vụ</a> của PixelPalette và xác
+          nhận rằng <br />
           bạn đã đọc <a href="#" class="login__strong-infor">Chính sách quyền riêng tư</a> của chúng
           tôi. <br />
           <a href="#" class="login__strong-infor">Thông báo khi thu thập.</a>
@@ -120,11 +113,11 @@ button {
   border: none;
 }
 
-.login__logo{
-  @include mobile{
+.login__logo {
+  @include mobile {
     display: none;
   }
-  @include small-tablet{
+  @include small-tablet {
     display: none;
   }
 }
@@ -138,11 +131,11 @@ button {
   padding: 20px 10px 24px 10px;
   margin: 0 auto;
 
-  @include mobile{
+  @include mobile {
     width: 80%;
     padding-top: 0;
   }
-  @include small-tablet{
+  @include small-tablet {
     width: 60%;
     padding-top: 0;
   }
@@ -153,14 +146,14 @@ button {
     color: #333333;
     text-align: center;
     font-weight: 600;
-    margin:16px auto 36px;
-    @include mobile{
+    margin: 16px auto 36px;
+    @include mobile {
       width: 100%;
     }
-    @include small-tablet{
+    @include small-tablet {
       width: 100%;
     }
-    @include tablet{
+    @include tablet {
       width: 100%;
     }
   }

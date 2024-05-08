@@ -28,7 +28,7 @@ function validateUsername(username) {
   return true;
 }
 
-function validateEmail(_,email) {
+function validateEmail(_, email) {
   if (email === null || typeof email === 'undefined') {
     return new Error('Vui lòng nhập email!');
   }
@@ -42,7 +42,7 @@ function validateEmail(_,email) {
   return true;
 }
 
-function validatePassword(_,password) {
+function validatePassword(_, password) {
   // Chuỗi rỗng
   if (password === null || typeof password === 'undefined') {
     return new Error('Vui lòng nhập password!');
@@ -71,7 +71,7 @@ function validatePassword(_,password) {
   return true;
 }
 
-function validateFirstName(_,firstName) {
+function validateFirstName(_, firstName) {
   if (firstName === null || typeof firstName === 'undefined') {
     return new Error('Vui lòng nhập tên của bạn!');
   }
@@ -81,8 +81,7 @@ function validateFirstName(_,firstName) {
   }
 }
 
-
-function validateLastName(_,lastName) {
+function validateLastName(_, lastName) {
   if (lastName === null || typeof lastName === 'undefined') {
     return new Error('Vui lòng nhập họ đệm của bạn!');
   }

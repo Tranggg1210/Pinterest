@@ -6,32 +6,39 @@ import { getAllPost } from '@/api/post.api';
 const posts = ref([]);
 const user = useAuthStore();
 const message = useMessage();
-const loadPosts = async() => {
+const loadPosts = async () => {
   try {
-    const {data} = await getAllPost();
-    posts.value = data;
+    const result = await getAllPost();
+    posts.value = result;
   } catch (err) {
     console.log(err);
     if (!!err.response) {
-      message.error(err.response.data.title);
+      message.error(err.response.data.message);
     } else {
-      message.error(err.title);
+      message.error(err.message);
     }
   }
-}
-onBeforeMount(loadPosts);
+};
+onBeforeMount(() => {
+  if (user.loggedIn) {
+    loadPosts();
+  }
+});
 </script>
 <template>
   <div class="container" v-if="user.loggedIn">
-    <div class="wide posts-container" >
-      <HfPost  v-for="post in posts" :key="post.id" :postInfor="post"/>
+    <div class="wide posts-container" v-if="posts">
+      <HfPost v-for="post in posts" :key="post.id" :postInfor="post" />
+    </div>
+    <div v-else>
+      <HfNoData />
     </div>
   </div>
   <div v-else>
-    <HfBanner/>
-    <HfFeature/>
-    <HfShowCase/>
-    <HfFooter/>
+    <HfBanner />
+    <HfFeature />
+    <HfShowCase />
+    <HfFooter />
   </div>
 </template>
 

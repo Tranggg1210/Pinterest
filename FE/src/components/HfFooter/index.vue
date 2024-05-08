@@ -1,34 +1,33 @@
 <template>
-    <footer className='footer container'>
-      <div className='wide'>
-        <div>
-          <ul className='footer-nav'>
-            <li>
-              <RouterLink to='/about-us'>Về chúng tôi</RouterLink>
-            </li>
-            <li>
-              <RouterLink to='/contact'>Liên hệ</RouterLink>
-            </li>
-            <li>
-              <RouterLink to='/login'>Đăng nhập</RouterLink>
-            </li>
-            <li>
-              <RouterLink to='/sign-up'>Đăng ký</RouterLink>
-            </li>
-          </ul>
-          <p className='p-desc'>© Your Website 2024. All Rights Reserved.</p>
-        </div>
-        <div className='footer-socials'>
-          <IconBrandFacebook class="icon"/>
-          <IconBrandTwitter class="icon"/>
-          <IconBrandInstagram class="icon"/>
-        </div>
+  <footer className="footer container">
+    <div className="wide">
+      <div>
+        <ul className="footer-nav">
+          <li>
+            <RouterLink to="/about-us">Về chúng tôi</RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/contact">Liên hệ</RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/login">Đăng nhập</RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/sign-up">Đăng ký</RouterLink>
+          </li>
+        </ul>
+        <p className="p-desc">© Your Website 2024. All Rights Reserved.</p>
       </div>
-    </footer>
+      <div className="footer-socials">
+        <IconBrandFacebook class="icon" />
+        <IconBrandTwitter class="icon" />
+        <IconBrandInstagram class="icon" />
+      </div>
+    </div>
+  </footer>
 </template>
 
-<script setup>
-</script>
+<script setup></script>
 
 <style lang="scss" scoped>
 .footer {

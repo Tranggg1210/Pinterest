@@ -1,42 +1,42 @@
 .header {
-    background-color: $white-color;
-    box-shadow: 1px 1px 20px rgba(0 0 0/2%);
-    padding: 16px 24px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    @include mobile{
-      padding: 16px 0px;
+  background-color: $white-color;
+  box-shadow: 1px 1px 20px rgba(0 0 0/2%);
+  padding: 16px 24px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  @include mobile {
+    padding: 16px 0px;
+  }
+}
+.header-shadow {
+  box-shadow: 1px 2px 12px rgba(0 0 0/10%);
+}
+.header > .wide {
+  @include flex(space-between, center);
+}
+.header-logo {
+  @include flex(center, center);
+  color: $primary-color;
+  margin-right: 6px;
+  svg {
+    margin-right: 2px !important;
+  }
+
+  @include mobile {
+    h2 {
+      display: none;
     }
   }
-  .header-shadow {
-    box-shadow: 1px 2px 12px rgba(0 0 0/10%);
-  }
-  .header > .wide {
-    @include flex(space-between, center);
-  }
-  .header-logo {
-    @include flex(center, center);
-    color: $primary-color;
-    margin-right: 6px;
-    svg {
-      margin-right: 2px !important;
-    }
-  
-    @include mobile {
-      h2 {
-        display: none;
-      }
-    }
-    @include small-tablet {
-      h2 {
-        font-size: 18px;
-      }
+  @include small-tablet {
+    h2 {
+      font-size: 18px;
     }
   }
-  
+}
+
 .active button {
   background-color: $black-color !important;
   color: $white-color !important;
@@ -116,16 +116,16 @@
 .cushion {
   height: 76px;
 }
-.menu-logined{
+.menu-logined {
   @include flex(center, center);
-  @include mobile{
+  @include mobile {
     display: none;
   }
-  @include small-tablet{
+  @include small-tablet {
     display: none;
   }
 }
-.menu-logined-icon{
+.menu-logined-icon {
   width: 42px;
   height: 42px;
   margin: 0 8px;
@@ -133,21 +133,21 @@
   transition: all 0.3s linear;
   border-radius: 50%;
   cursor: pointer;
-  &:hover{
+  &:hover {
     background-color: #ccc;
   }
 }
-.user-avatar{
+.user-avatar {
   cursor: pointer;
   width: 28px;
   height: 28px;
-  margin:0 4px 0 16px;
+  margin: 0 4px 0 16px;
 }
-.header-link{
+.header-link {
   font-weight: 600;
   font-size: 16px;
   padding: 0 16px;
-  &:hover{
+  &:hover {
     color: $primary-color;
   }
 }
