@@ -3,7 +3,7 @@ import { defineStore, acceptHMRUpdate } from 'pinia';
 
 export const useAuthStore = defineStore('auth', () => {
   const auth = ref(JSON.parse(localStorage.getItem(LocalStorage.auth)) || {});
-  const loggedIn = computed(() => !!auth.value.access_token);
+  const loggedIn = computed(() => !!auth.value.token);
   const save = (_auth) => {
     auth.value = _auth;
     localStorage.setItem(LocalStorage.auth, JSON.stringify(auth.value));

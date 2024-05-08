@@ -1,17 +1,27 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth';
+import { useMessage } from 'naive-ui';
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
 
 const user = useAuthStore();
+const message = useMessage();
 const router = useRouter();
 const show = ref(false);
 const showSearchModel = ref(false);
 const isScrolled = ref(false);
-const options = ref([
+const loggedInRouters = ref([
   { label: 'Thông tin cá nhân', key: '/user-infor' },
   { label: 'Hồ sơ của bạn', key: '/profile-favorite' },
   { label: 'Đăng xuất', key: 'logout' }
+]);
+
+const loginRedirectRouters = ref([
+  { label: 'Giới thiệu', key: '/introduce' },
+  { label: 'Về chúng tôi', key: '/about-us' },
+  { label: 'Liên hệ', key: '/contact' },
+  { label: 'Đăng nhập', key: '/login' },
+  { label: 'Đăng ký', key: '/sign-up' }
 ]);
 
 const handleScroll = () => {
@@ -35,7 +45,6 @@ const goToPage = (key) => {
     router.push(key);
   }
 };
-
 </script>
 
 <template>
@@ -74,7 +83,12 @@ const goToPage = (key) => {
           <HfButton class="btn-signup"> Đăng ký </HfButton>
         </router-link>
       </div>
-      <IconMenu2 size="28" class="mobile-menu-icon" @click="show = true" style="margin-left: 12px;" />
+      <IconMenu2
+        size="28"
+        class="mobile-menu-icon"
+        @click="show = true"
+        style="margin-left: 12px"
+      />
       <n-drawer v-model:show="show" width="70%">
         <n-drawer-content closable>
           <template #header>
@@ -85,35 +99,61 @@ const goToPage = (key) => {
           </template>
           <div class="mobile-menu">
             <div v-if="!user.loggedIn">
-              <router-link to="/introduce" exact-active-class="active">
-                <HfButton @click="show=false">Giới thiệu</HfButton>
-              </router-link>
-              <router-link to="/about-us" exact-active-class="active">
-                <HfButton @click="show=false"> Về chúng tôi </HfButton>
-              </router-link>
-              <router-link to="/contact" exact-active-class="active">
-                <HfButton @click="show=false"> Liên hệ </HfButton>
-              </router-link>
-              <router-link to="/login" exact-active-class="active" >
-                <HfButton @click="show=false" class="btn-login"> Đăng nhập </HfButton>
-              </router-link>
-              <router-link to="/sign-up" exact-active-class="active">
-                <HfButton @click="show=false" class="btn-signup"> Đăng ký </HfButton>
+              <router-link
+                v-for="option in loginRedirectRouters"
+                :key="option.key"
+                :to="option.key"
+                exact-active-class="active"
+              >
+                <HfButton @click="show = false"> {{ option.label }} </HfButton>
               </router-link>
             </div>
             <div v-else>
-              <router-link v-for="option in options" :key="option.key" :to="option.key" exact-active-class="active">
-                <HfButton @click="show=false"> {{ option.label }} </HfButton>
+              <router-link
+                v-for="option in loggedInRouters"
+                :key="option.key"
+                :to="option.key === 'logout' ? '/' : option.key"
+                exact-active-class="active"
+              >
+                <HfButton
+                  @click="
+                    () => {
+                      show = false;
+                      if (option.key === 'logout') user.clear();
+                    }
+                  "
+                >
+                  {{ option.label }}
+                </HfButton>
               </router-link>
             </div>
           </div>
         </n-drawer-content>
       </n-drawer>
       <div class="menu-logined" v-if="user.loggedIn">
-        <img src="@/assets/images/notification.png" alt="notification" title="notification" class="menu-logined-icon" @click="() => goToPage('/notification')" />
-        <img src="@/assets/images/messenger.png" alt="message" title="message" class="menu-logined-icon" />
-        <n-dropdown v-if="user.loggedIn" :options="options" show-arrow @select="goToPage">
-          <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" @click="() => goToPage('/profile-favorite')">
+        <img
+          src="@/assets/images/notification.png"
+          alt="notification"
+          title="notification"
+          class="menu-logined-icon"
+          @click="() => goToPage('/notification')"
+        />
+        <img
+          src="@/assets/images/messenger.png"
+          alt="message"
+          title="message"
+          class="menu-logined-icon"
+        />
+        <n-dropdown v-if="user.loggedIn" :options="loggedInRouters" show-arrow @select="goToPage">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              cursor: pointer;
+            "
+            @click="() => goToPage('/profile-favorite')"
+          >
             <img src="@/assets/images/user-avatar.png" alt="avatar" class="user-avatar" />
             <IconChevronDown />
           </div>

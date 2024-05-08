@@ -1,27 +1,28 @@
-<script setup>
-</script>
+<script setup></script>
 <template>
-    <section className='features container-center'>
-      <div className='width-page'>
-        <div className='feature-item'>
-            <IconBulb class="feature-icon" size="60"/>
-          <h1 className='h1-title'>Tìm kiếm ý tưởng</h1>
-          <p className='p-desc'>Thông qua website này các designer có thể tìm được cảm hứng sáng tác!</p>
-        </div>
-        <div className='feature-item'>
-          <IconDownload class="feature-icon" size="60"/>
-          <h1 className='h1-title'>Lưu ý tưởng bạn yêu thích</h1>
-          <p className='p-desc'>Thu thập nội dung bạn yêu thích để bạn có thể quay lại xem sau.</p>
-        </div>
-        <div className='feature-item'>
-          <IconRadioactive class="feature-icon" size="60"/>
-          <h1 className='h1-title'>Xem, làm, thử, thực hiện</h1>
-          <p className='p-desc'>
-            Điều tuyệt nhất là khám phá những nội dung và ý tưởng mới từ mọi người khắp thế giới.
-          </p>
-        </div>
+  <section className="features container-center">
+    <div className="width-page">
+      <div className="feature-item">
+        <IconBulb class="feature-icon" size="60" />
+        <h1 className="h1-title">Tìm kiếm ý tưởng</h1>
+        <p className="p-desc">
+          Thông qua website này các designer có thể tìm được cảm hứng sáng tác!
+        </p>
       </div>
-    </section>
+      <div className="feature-item">
+        <IconDownload class="feature-icon" size="60" />
+        <h1 className="h1-title">Lưu ý tưởng bạn yêu thích</h1>
+        <p className="p-desc">Thu thập nội dung bạn yêu thích để bạn có thể quay lại xem sau.</p>
+      </div>
+      <div className="feature-item">
+        <IconRadioactive class="feature-icon" size="60" />
+        <h1 className="h1-title">Xem, làm, thử, thực hiện</h1>
+        <p className="p-desc">
+          Điều tuyệt nhất là khám phá những nội dung và ý tưởng mới từ mọi người khắp thế giới.
+        </p>
+      </div>
+    </div>
+  </section>
 </template>
 
 <style lang="scss" scoped>

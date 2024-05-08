@@ -1,5 +1,9 @@
 .user-infor {
   margin-top: 0px;
+  padding: 0 2rem;
+  @include mobile {
+    padding: 0;
+  }
 
   h1 {
     margin: 20px 0 40px;
@@ -17,7 +21,7 @@
   }
 
   .infor {
-    @include flex();
+    @include flex(center, start);
     margin-bottom: 40px;
 
     @include mobile {
@@ -56,11 +60,13 @@
 
       @include mobile {
         margin-left: 0;
+        width: 100%;
         height: max-content;
       }
 
       @include small-tablet {
         margin-left: 0;
+        width: 100%;
         height: max-content;
       }
     }
@@ -170,22 +176,10 @@
   .user-account {
     margin-top: 32px;
   }
-
-  .btn-delete {
-    margin: 32px 0;
-    width: 100%;
-    background-color: red;
-    color: #fff;
-
-    &:hover {
-      background-color: $black-color;
-    }
-  }
-
   .n-button__content {
     color: #fff !important;
   }
-  .form-input{
+  .form-input {
     border: 1px solid #ccc;
   }
 }

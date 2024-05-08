@@ -1,14 +1,13 @@
 <script setup>
 import { useRouter } from 'vue-router';
-const router = useRouter()
-
+const router = useRouter();
 </script>
 <template>
   <div class="container">
     <div class="wide">
       <div class="detail-post">
         <RouterLink to="/">
-          <IconArrowLeft class="icon icon-back"/>
+          <IconArrowLeft class="icon icon-back" />
         </RouterLink>
         <div class="detail-post-container">
           <div class="detail-post-left">
@@ -49,28 +48,25 @@ const router = useRouter()
       <div class="relate-posts">
         <h3>Thêm nội dung để khám phá</h3>
         <div class="posts-container">
-          <HfPost/>
-          <HfPost/>
-          <HfPost/>
-          <HfPost/>
-          <HfPost/>
-          <HfPost/>
-          <HfPost/>
-          <HfPost/>
-          <HfPost/>
-          <HfPost/>
-          <HfPost/>
-          <HfPost/>
+          <HfPost />
+          <HfPost />
+          <HfPost />
+          <HfPost />
+          <HfPost />
+          <HfPost />
+          <HfPost />
+          <HfPost />
+          <HfPost />
+          <HfPost />
+          <HfPost />
+          <HfPost />
         </div>
       </div>
     </div>
   </div>
- 
 </template>
 
-<style scoped lang="scss" src="./DetailPost.scss">
-
-</style>
+<style scoped lang="scss" src="./DetailPost.scss"></style>
 
 <route lang="yaml">
 path: '/detail-post/:id'

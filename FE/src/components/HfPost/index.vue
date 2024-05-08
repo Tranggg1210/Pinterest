@@ -1,24 +1,24 @@
 <script setup>
 import { defineProps, onBeforeMount, ref } from 'vue';
-const {postInfor} = defineProps(['postInfor']);
-const imageURL = ref('')
+const { postInfor } = defineProps(['postInfor']);
+const imageURL = ref('');
 
 const handleURLImage = async (url) => {
   try {
     const response = await fetch(url);
     const blob = await response.blob();
-    imageURL.value =  URL.createObjectURL(blob);
+    imageURL.value = URL.createObjectURL(blob);
   } catch (error) {
     console.error('Lỗi khi tải ảnh:', error);
   }
 };
-onBeforeMount(() => handleURLImage(postInfor.download_url))
+onBeforeMount(() => handleURLImage(postInfor.download_url));
 </script>
 
 <template>
   <div class="post__item">
     <div class="post-image">
-      <img :src="postInfor.download_url" alt="image" loading="lazy" />
+      <img :src="postInfor.thumbnailUrl" alt="image" loading="lazy" />
       <div class="model">
         <div class="model__header">
           <button class="btn-post-save">Lưu</button>
@@ -26,7 +26,7 @@ onBeforeMount(() => handleURLImage(postInfor.download_url))
         <div class="model__footer">
           <IconShare2 class="icon" size="12"></IconShare2>
           <a download :href="imageURL" title="ImageName">
-            <IconDownload class="icon" size="12" ></IconDownload>
+            <IconDownload class="icon" size="12"></IconDownload>
           </a>
         </div>
       </div>
@@ -72,7 +72,6 @@ onBeforeMount(() => handleURLImage(postInfor.download_url))
       border-radius: 25px;
     }
   }
-
 }
 img {
   width: 100%;

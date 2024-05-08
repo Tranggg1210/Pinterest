@@ -1,9 +1,8 @@
 <script setup>
-
 const themeOverrides = {
   common: {
     baseColor: '#e60023',
-    primaryColor: '#e60023',
+    primaryColor: '#e60023'
   },
   Button: {
     textColorWarning: '#fff',
@@ -12,20 +11,20 @@ const themeOverrides = {
     textColorPressedWarning: '#fff'
   },
   Input: {
-    border:'#e60023',
+    border: '#e60023',
     borderFocus: '#e60023',
-    borderHover: '#e60023',
+    borderHover: '#e60023'
   },
   InternalSelection: {
     paddingSingle: '8px 36px 8px 12px',
     borderFocus: '#e60023',
-    borderHover: '#e60023',
+    borderHover: '#e60023'
   },
   Radio: {
     dotColorDisabled: '#D7DAE0',
     buttonColorActive: '#4FB233',
     buttonTextColorActive: '#FFF',
-    color:"#fff"
+    color: '#fff'
   }
 };
 </script>

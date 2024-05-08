@@ -1,44 +1,42 @@
-<script setup>
-
-</script>
+<script setup></script>
 <template>
-    <section className='testimonials container'>
-      <div className='wide'>
-        <h1 className='h1-title'>Nhóm 6</h1>
-        <div className='testimonials-container'>
-          <div className='testimonial-item'>
-            <div className='avatar'>
-              <img src="@/assets/images/ha.jpg" alt='avatar' />
-            </div>
-            <h3>Trịnh Thu Hà</h3>
+  <section className="testimonials container">
+    <div className="wide">
+      <h1 className="h1-title">Nhóm 3</h1>
+      <div className="testimonials-container">
+        <div className="testimonial-item">
+          <div className="avatar">
+            <img src="@/assets/images/ha.jpg" alt="avatar" />
           </div>
-          <div className='testimonial-item'>
-            <div className='avatar'>
-              <img src="@/assets/images/hoang.png" alt='avatar' />
-            </div>
-            <h3>Cao Sỹ Minh Hoàng</h3>
+          <h3>Trịnh Thu Hà</h3>
+        </div>
+        <div className="testimonial-item">
+          <div className="avatar">
+            <img src="@/assets/images/hoang.png" alt="avatar" />
           </div>
-          <div className='testimonial-item'>
-            <div className='avatar'>
-              <img src="@/assets/images/nhat.png" alt='avatar' />
-            </div>
-            <h3>Cao Đình Nhật</h3>
+          <h3>Cao Sỹ Minh Hoàng</h3>
+        </div>
+        <div className="testimonial-item">
+          <div className="avatar">
+            <img src="@/assets/images/nhat.png" alt="avatar" />
           </div>
-          <div className='testimonial-item'>
-            <div className='avatar'>
-              <img src="@/assets/images/trang.png" alt='avatar' />
-            </div>
-            <h3>Nguyễn Thị Trang</h3>
+          <h3>Cao Đình Nhật</h3>
+        </div>
+        <div className="testimonial-item">
+          <div className="avatar">
+            <img src="@/assets/images/trang.png" alt="avatar" />
           </div>
-          <div className='testimonial-item'>
-            <div className='avatar'>
-              <img src="@/assets/images/quan.png" alt='avatar' />
-            </div>
-            <h3>Nguyễn Trung Quân</h3>
+          <h3>Nguyễn Thị Trang</h3>
+        </div>
+        <div className="testimonial-item">
+          <div className="avatar">
+            <img src="@/assets/images/quan.png" alt="avatar" />
           </div>
+          <h3>Nguyễn Trung Quân</h3>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 </template>
 
 <style lang="scss" scoped>

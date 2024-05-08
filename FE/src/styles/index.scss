@@ -34,7 +34,7 @@ p {
   margin: 10px 0;
 }
 
-ul{
+ul {
   list-style: none;
 }
 
@@ -58,14 +58,14 @@ ul{
   @include small-tablet {
     grid-template-columns: repeat(3, 1fr);
   }
-  @include tablet{
+  @include tablet {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
 .wide {
   width: 96%;
-  @include mobile{
+  @include mobile {
     width: 90%;
   }
 }
@@ -73,7 +73,6 @@ ul{
 svg {
   margin-right: 6px;
 }
-
 
 .h1-title {
   font-size: 1.75rem;

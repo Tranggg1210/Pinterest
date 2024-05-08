@@ -1,8 +1,13 @@
 <script setup>
 import { ref, reactive } from 'vue';
-import { register } from '@/api/auth.api';
+import { login, register } from '@/api/auth.api';
 import { useAuthStore } from '@/stores/auth';
-import { validateLastName,validateFirstName, validateEmail, validatePassword} from '@/utils/validator';
+import {
+  validateLastName,
+  validateFirstName,
+  validateEmail,
+  validatePassword
+} from '@/utils/validator';
 import { useRouter } from 'vue-router';
 
 const message = useMessage();
@@ -37,25 +42,26 @@ const rules = {
     required: true,
     validator: validatePassword,
     trigger: 'blur'
-  },
+  }
 };
 
 const registerHandler = () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       try {
-        const { data } = await register(account);
+        await register(account);
+        const user = {
+          userName: account.email,
+          password: account.password
+        };
+        const result = await login(user);
         authStore.save({
-          ...data
+          ...result.data
         });
         message.success('Đăng nhập thành công. Xin chào ' + account.email);
         router.push(route.query.redirect || '/');
       } catch (err) {
-        if (!!err.response) {
-          message.error(err.response.data.message);
-        } else {
-          message.error(err.message);
-        }
+        message.error("Đăng ký không thành công");
       }
     }
   });
@@ -67,30 +73,18 @@ const registerHandler = () => {
       <IconBrandPinterest size="40" class="logo" />
       <h1 class="signup-title">Chào mừng bạn đến với</h1>
       <h1 class="signup-title">PixelPalette</h1>
-      <br><br>
+      <br /><br />
       <n-form class="login__wrapper" ref="formRef" :model="account" :rules="rules" size="large">
         <n-form-item path="firstName" label="Tên">
-          <n-input
-            v-model:value="account.firstName"
-            placeholder="Tên"
-            class="form-input"
-          />
+          <n-input v-model:value="account.firstName" placeholder="Tên" class="form-input" />
         </n-form-item>
         <n-form-item path="lastName" label="Họ">
-          <n-input
-            v-model:value="account.lastName"
-            placeholder="Họ"
-            class="form-input"
-          />
+          <n-input v-model:value="account.lastName" placeholder="Họ" class="form-input" />
         </n-form-item>
         <n-form-item path="email" label="Email">
-          <n-input
-            v-model:value="account.email"
-            placeholder="Email"
-            class="form-input"
-          />
+          <n-input v-model:value="account.email" placeholder="Email" class="form-input" />
         </n-form-item>
-        <n-form-item path="password" label="Mật khẩu" style="margin-top: 4px;">
+        <n-form-item path="password" label="Mật khẩu" style="margin-top: 4px">
           <n-input
             v-model:value="account.password"
             placeholder="Mật khẩu"
@@ -102,18 +96,18 @@ const registerHandler = () => {
         <n-form-item>
           <button type="submit" class="btn-submit" @click="registerHandler">Đăng ký</button>
         </n-form-item>
-    </n-form>
-    <div class="note">
-      <p>Bằng cách tiếp tục, bạn đồng ý với</p>
-      <p>
-        <span>Điều khoản dịch vụ</span> của PixelPalette và xác nhận rằng bạn đã đọc
-        <span>Chính sách quyền riêng tư </span>của chúng tôi.
-      </p>
-      <p class="pointer"><span>Thông báo khi thu thập</span></p>
-      <p class="confirm pointer">
-        Bạn đã là thành viên? <router-link to="/login">Đăng nhập</router-link>
-      </p>
-    </div>
+      </n-form>
+      <div class="note">
+        <p>Bằng cách tiếp tục, bạn đồng ý với</p>
+        <p>
+          <span>Điều khoản dịch vụ</span> của PixelPalette và xác nhận rằng bạn đã đọc
+          <span>Chính sách quyền riêng tư </span>của chúng tôi.
+        </p>
+        <p class="pointer"><span>Thông báo khi thu thập</span></p>
+        <p class="confirm pointer">
+          Bạn đã là thành viên? <router-link to="/login">Đăng nhập</router-link>
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -127,10 +121,10 @@ const registerHandler = () => {
   flex-direction: column;
   align-items: center;
   color: #111111;
-  @include mobile{
+  @include mobile {
     width: 80% !important;
   }
-  @include small-tablet{
+  @include small-tablet {
     width: 60% !important;
   }
 }
@@ -138,7 +132,7 @@ const registerHandler = () => {
 .signup-title {
   line-height: 1.5;
   font-weight: 500;
-  text-align: center
+  text-align: center;
 }
 .sign-up {
   height: 100%;
@@ -164,7 +158,7 @@ const registerHandler = () => {
     margin: 30px 0px 40px;
   }
   margin-top: 20px;
-  @include mobile{
+  @include mobile {
     width: 90%;
   }
 }
@@ -174,17 +168,17 @@ const registerHandler = () => {
 }
 
 .form-input {
-    border-radius: 12px;
-    border: 1px solid #ccc;
-    outline: none;
-    padding: 5px;
-    position: relative;
-    margin-bottom: 2px;
-    width: 100%;
-    min-width: 280px;
-    @include mobile{
-      min-width: unset;
-    }
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  outline: none;
+  padding: 5px;
+  position: relative;
+  margin-bottom: 2px;
+  width: 100%;
+  min-width: 280px;
+  @include mobile {
+    min-width: unset;
+  }
 }
 
 .btn-submit {

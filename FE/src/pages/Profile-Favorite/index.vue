@@ -19,7 +19,7 @@ const router = useRouter();
         </p>
         <div class="btn-container">
           <HfButton>Tạo ghim</HfButton>
-          <HfButton @click="router('/')">Chỉnh sửa hồ sơ</HfButton>
+          <HfButton @click="router('/user-infor')">Chỉnh sửa hồ sơ</HfButton>
           <HfButton class="active">Đã lưu</HfButton>
           <HfButton>Đã tạo</HfButton>
         </div>
