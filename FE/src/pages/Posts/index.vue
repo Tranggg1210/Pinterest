@@ -5,9 +5,7 @@ import { useRouter } from 'vue-router';
 
 const message = useMessage();
 const loadingBar = useLoadingBar();
-const disabledRef = ref(true);
 const router = useRouter()
-const loading = ref(false);
 const posts = reactive({
   link: null,
   caption: null,
@@ -34,16 +32,15 @@ const rules = {
 const beforeUpload = async(data) => {
   try {
     loadingBar.start();
-    disabledRef.value = false;
     if (
       data.file.file?.type === 'image/png' ||
       data.file.file?.type === 'image/jpg' ||
       data.file.file?.type === 'image/jpeg' ||
-      data.file.file?.type === 'image/gif'
+      data.file.file?.type === 'image/gif' ||
+      data.file.file?.type === 'image/webp'
     ) {
-      posts.file = data.file;
+      posts.file = data.file.file;
       loadingBar.finish();
-      disabledRef.value = true;
       return true;
     }
     message.error('Vui lòng nhập đúng định dạng ảnh');
@@ -53,7 +50,6 @@ const beforeUpload = async(data) => {
     message.error("Cập nhập ảnh người dùng không thành công!");
   }finally{
     loadingBar.finish();
-    disabledRef.value = true;
   }
 };
 
@@ -65,23 +61,18 @@ const handleCreatePost = async() => {
         message.error("Vui lòng upload ảnh của bài viết");
         return;
       }
-      loading.value = true;
+      loadingBar.start();
       try {
-        loadingBar.start();
-        disabledRef.value = false;
-        loadingBar.finish();
-        await createPost(posts)
-        disabledRef.value = true;
+        await createPost(posts);
         message.success('Tạo bài viết thành công!!!');
         setTimeout(() => {
           router.push('/');
         }, 1000)
       } catch (err) {
-        disabledRef.value = true
         loadingBar.error()
         message.error("Tạo bài viết thất bại");
       }
-      loading.value = false;
+      loadingBar.finish();
     }
   });
 }
@@ -91,6 +82,7 @@ const handleCreatePost = async() => {
   <div class="container posts">
     <div class="wide">
       <div class="handle-posts">
+        <h1 class="mobile-title">Tạo bài viết</h1>
         <div class="image-uploaded">
           <n-upload
             multiple
@@ -104,7 +96,7 @@ const handleCreatePost = async() => {
               </div>
               <n-text style="font-size: 16px"> Chọn một tệp hoặc kéo thả ở đây </n-text>
               <n-p depth="3" style="margin: 8px 0 0 0">
-                Bạn nên sử dụng các ảnh có đuôi là .jpg, .png, .jpeg, .gif
+                Bạn nên sử dụng các ảnh có đuôi là .jpg, .png, .jpeg, .gif, .webp
               </n-p>
             </n-upload-dragger>
           </n-upload>
@@ -138,19 +130,12 @@ const handleCreatePost = async() => {
               <n-input v-model:value="posts.link" placeholder="Thêm nguồn cho bài viết" class="posts-input" />
             </n-form-item>
             <n-form-item class="btn-container">
-              <n-button
-                attr-type="submit"
-                block
-                :bordered="false"
-                text-color="white"
-                icon-placement="left"
-                size="large"
-                :loading="loading"
+              <HfButton
+                type="submit"
                 @click="handleCreatePost"
-                class="btn-create"
               >
                 Đăng
-              </n-button>
+              </HfButton>
             </n-form-item>
           </n-form>
         </div>

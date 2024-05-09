@@ -94,7 +94,6 @@ const beforeUpload = async(data) => {
       data.file.file?.type === 'image/jpeg' ||
       data.file.file?.type === 'image/gif'
     ) {
-      console.log(data);
       await changeAvatar(data.file);
       await loadUser();
       loadingBar.finish();

@@ -11,6 +11,14 @@ const show = ref(false);
 const showSearchModel = ref(false);
 const isScrolled = ref(false);
 const loggedInRouters = ref([
+  { label: 'Trang chủ', key: '/' },
+  { label: 'Tạo bài viết', key: '/posts' },
+  { label: 'Thông tin cá nhân', key: '/user-infor' },
+  { label: 'Hồ sơ của bạn', key: '/profile-favorite' },
+  { label: 'Đăng xuất', key: 'logout' }
+]);
+
+const loggedInRoutersDropdown = ref([
   { label: 'Thông tin cá nhân', key: '/user-infor' },
   { label: 'Hồ sơ của bạn', key: '/profile-favorite' },
   { label: 'Đăng xuất', key: 'logout' }
@@ -60,6 +68,9 @@ const goToPage = (key) => {
         </router-link>
         <router-link class="btn-home" to="/posts" exact-active-class="active" v-if="user.loggedIn">
           <HfButton> Tạo </HfButton>
+        </router-link>
+        <router-link class="btn-create-mobile" to="/posts" exact-active-class="active" v-if="user.loggedIn">
+          <HfButton> <IconPlus/> </HfButton>
         </router-link>
       </div>
       <div class="header-search" @click="showSearchModel = true" v-if="user.loggedIn">
@@ -113,7 +124,7 @@ const goToPage = (key) => {
                 v-for="option in loggedInRouters"
                 :key="option.key"
                 :to="option.key === 'logout' ? '/' : option.key"
-                exact-active-class="active"
+                :exact-active-class="option.key === 'logout' ? '' : 'active'"
               >
                 <HfButton
                   @click="
@@ -144,7 +155,7 @@ const goToPage = (key) => {
           title="message"
           class="menu-logined-icon"
         />
-        <n-dropdown v-if="user.loggedIn" :options="loggedInRouters" show-arrow @select="goToPage">
+        <n-dropdown v-if="user.loggedIn" :options="loggedInRoutersDropdown" show-arrow @select="goToPage">
           <div
             style="
               display: flex;
