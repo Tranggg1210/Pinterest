@@ -1,6 +1,6 @@
 <script setup>
 import { onBeforeMount, reactive } from 'vue';
-import { validateDOB, validatePassword } from '@/utils/validator';
+import { validateDOB, validateFirstName, validateLastName, validatePassword } from '@/utils/validator';
 import router from '@/router';
 import { useAuthStore } from '@/stores/auth';
 import { changeAvatar, changeInforUser, changePassword, deleteUser, getCurrentUser } from '@/api/user.api';
@@ -20,11 +20,17 @@ const account = reactive({
   comfirmPassword: ''
 });
 const rules = {
-  fullName: {
+  firstName: {
     required: true,
+    validator: validateFirstName,
     trigger: 'blur'
   },
-  dob: {
+  lastName: {
+    required: true,
+    validator: validateLastName,
+    trigger: 'blur'
+  },
+  birthday: {
     required: true,
     validator: validateDOB,
     trigger: ['input', 'blur']
@@ -55,7 +61,7 @@ const rulesAccount = {
 const loadUser = async () => {
   try {
     const result = await getCurrentUser();
-    user.value = result;
+    user.value = {...result};
     userForm.value = result;
     userForm.value.birthday = new Date(userForm.value.birthday).getTime();
     userForm.value.gender = userForm.value.gender ? 'Male'.toString() : 'Female';

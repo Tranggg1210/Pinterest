@@ -12,6 +12,8 @@ import { useRouter } from 'vue-router';
 
 const message = useMessage();
 const authStore = useAuthStore();
+const loadingBar = useLoadingBar()
+const disabledRef = ref(true)
 const router = useRouter();
 const route = useRoute();
 const account = reactive({
@@ -49,6 +51,8 @@ const registerHandler = () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       try {
+        loadingBar.start()
+        disabledRef.value = false
         await register(account);
         const user = {
           userName: account.email,
@@ -58,9 +62,13 @@ const registerHandler = () => {
         authStore.save({
           ...result.data
         });
+        loadingBar.finish()
+        disabledRef.value = true
         message.success('Đăng nhập thành công. Xin chào ' + account.email);
         router.push(route.query.redirect || '/');
       } catch (err) {
+        disabledRef.value = true
+        loadingBar.error()
         message.error("Đăng ký không thành công");
       }
     }
