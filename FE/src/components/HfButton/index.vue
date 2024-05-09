@@ -21,6 +21,7 @@
   &:hover {
     background-color: $black-color;
     color: $white-color;
+    opacity: 0.8;
   }
 }
 </style>

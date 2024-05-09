@@ -38,7 +38,8 @@ ul {
   list-style: none;
 }
 
-.icon {
+
+.icon, button {
   cursor: pointer;
 }
 .container {
@@ -64,7 +65,7 @@ ul {
 }
 
 .wide {
-  width: 96%;
+  width: 94%;
   @include mobile {
     width: 90%;
   }
