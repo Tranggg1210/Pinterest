@@ -13,19 +13,19 @@ namespace PixelPalette.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(GroupName = "v1")]
-    public class CollectionController : ControllerBase
+    public class CollectionsController : ControllerBase
     {
         private readonly ICollectionRepository _repo;
         private readonly UserManager<User> _userManager;
 
-        public CollectionController(ICollectionRepository repo, UserManager<User> userManager)
+        public CollectionsController(ICollectionRepository repo, UserManager<User> userManager)
         {
             _repo = repo;
             _userManager = userManager;
         }
 
         [HttpGet("getAll")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult<IEnumerable<CollectionModel>>> GetAll()
         {
             try
@@ -39,7 +39,7 @@ namespace PixelPalette.Controllers
         }
 
         [HttpGet("getById/{id}")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult<CollectionModel>> GetById(int id)
         {
             try
@@ -53,8 +53,38 @@ namespace PixelPalette.Controllers
             }
         }
 
+        [HttpGet("getByUserId")]
+        [Authorize(Roles = "Member")]
+        public async Task<ActionResult<IEnumerable<CollectionModel>>> GetByUserId()
+        {
+            try
+            {
+                string userName = _userManager.GetUserName(HttpContext.User);
+                var user = await _userManager.FindByNameAsync(userName);
+                return Ok(await _repo.GetCollectionByUserIdAsync(user.Id));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
+            }
+        }
+
+        [HttpGet("getByPostId/{postId}")]
+        [Authorize(Roles = "Member")]
+        public async Task<ActionResult<IEnumerable<PostModel>>> GetByCollectionId(int postId)
+        {
+            try
+            {
+                return Ok(await _repo.GetCollectionByPostIdAsync(postId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
+            }
+        }
+
         [HttpPost("create")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult<CollectionModel>> Create(CollectCreateParams entryParams)
         {
             try
@@ -71,7 +101,7 @@ namespace PixelPalette.Controllers
         }
 
         [HttpDelete("delete/{id}")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult> Delete(int id)
         {
             try
@@ -86,7 +116,7 @@ namespace PixelPalette.Controllers
         }
 
         [HttpPut("update/{id}")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult<CollectionModel>> Update(int id, CollectUpdateParams entryParams)
         {
             try
@@ -101,7 +131,7 @@ namespace PixelPalette.Controllers
         }
 
         [HttpPost("background/{id}")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult> Background(int id, IFormFile file)
         {
             try

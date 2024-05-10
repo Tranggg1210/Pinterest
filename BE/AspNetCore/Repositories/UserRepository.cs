@@ -85,20 +85,6 @@ namespace PixelPalette.Repositories
             return null!;
         }
 
-        public async Task<UserModel> UpdateAccountAsync(int id, AccountParams entryParams)
-        {
-            var updateAccount = await _context.Users!.FindAsync(id);
-            if (updateAccount != null)
-            {
-                _tools.Duplicate(entryParams, ref updateAccount);
-                updateAccount.UserName = updateAccount.Email;
-                _context.Users!.Update(updateAccount);
-                await _context.SaveChangesAsync();
-                return _mapper.Map<UserModel>(updateAccount);
-            }
-            return null!;
-        }
-
         public async Task<bool> FollowHandleAsync(int id, int followingId)
         {
             if (id != followingId)

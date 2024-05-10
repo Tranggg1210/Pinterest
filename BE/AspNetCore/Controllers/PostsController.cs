@@ -16,7 +16,6 @@ namespace PixelPalette.Controllers
     {
         private readonly IPostRepository _repo;
         private readonly UserManager<User> _userManager;
-        private Thumbnail? _thumbnail = null;
 
         public PostsController(IPostRepository repo, UserManager<User> userManager)
         {
@@ -24,7 +23,7 @@ namespace PixelPalette.Controllers
             _userManager = userManager;
         }
         [HttpGet("getAll")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult<IEnumerable<PostModel>>> GetAll()
         {
             try
@@ -37,7 +36,7 @@ namespace PixelPalette.Controllers
             }
         }
         [HttpGet("getById/{id}")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult<PostModel>> GetById(int id)
         {
             try
@@ -52,7 +51,7 @@ namespace PixelPalette.Controllers
         }
 
         [HttpGet("getByCollectionId/{collectionId}")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult<IEnumerable<PostModel>>> GetByCollectionId(int collectionId)
         {
             try
@@ -66,7 +65,7 @@ namespace PixelPalette.Controllers
         }
 
         [HttpGet("getByUserId")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult<IEnumerable<PostModel>>> GetByUserId()
         {
             try
@@ -82,15 +81,16 @@ namespace PixelPalette.Controllers
         }
 
         [HttpPost("create")]
-        [Authorize]
-        public async Task<ActionResult<PostModel>> Create(PostCreateParams entryParams)
+        [Authorize(Roles = "Member")]
+        public async Task<ActionResult<PostModel>> Create([FromQuery] PostCreateParams entryParams, IFormFile file)
         {
             try
             {
                 string userName = _userManager.GetUserName(HttpContext.User);
                 var user = await _userManager.FindByNameAsync(userName);
-                var post = await _repo.AddPostAsync(user.Id, entryParams);
-                return Ok(post);
+                var post = await _repo.AddPostAsync(user.Id, entryParams, file);
+                if (post != null) return Ok(post);
+                return BadRequest(false);
             }
             catch (Exception ex)
             {
@@ -99,7 +99,7 @@ namespace PixelPalette.Controllers
         }
 
         [HttpPost("toggleCollection")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult> ToggleCollection(int postId, int collectionId)
         {
             try
@@ -114,7 +114,7 @@ namespace PixelPalette.Controllers
         }
 
         [HttpPost("toggleLike")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult> ToggleLike(int postId)
         {
             try
@@ -131,7 +131,7 @@ namespace PixelPalette.Controllers
         }
 
         [HttpDelete("delete/{id}")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult> Delete(int id)
         {
             try
@@ -146,18 +146,13 @@ namespace PixelPalette.Controllers
         }
 
         [HttpPut("update/{id}")]
-        [Authorize]
-        public async Task<ActionResult<PostModel>> Update(PostUpdateParams entryParams)
+        [Authorize(Roles = "Member")]
+        public async Task<ActionResult<PostModel>> Update(int id, PostUpdateParams entryParams)
         {
             try
             {
-                if (_thumbnail != null)
-                {
-                    string userName = _userManager.GetUserName(HttpContext.User);
-                    var user = await _userManager.FindByNameAsync(userName);
-                    var post = await _repo.UpdatePostAsync(user.Id, entryParams, _thumbnail);
-                    if (post != null) return Ok(post);
-                }
+                var post = await _repo.UpdatePostAsync(id, entryParams);
+                if (post != null) return Ok(post);
                 return BadRequest(false);
             }
             catch (Exception ex)
@@ -165,31 +160,5 @@ namespace PixelPalette.Controllers
                 return BadRequest(ex.Message.ToString());
             }
         }
-
-        [HttpPost("upload")]
-        [Authorize]
-        public async Task<ActionResult<Thumbnail>> Upload(IFormFile file)
-        {
-            var result = await _repo.UploadThumbnailAsync(file);
-            if (result != null)
-            {
-                _thumbnail = new Thumbnail
-                {
-                    PublicId = result.PublicId,
-                    Url = result.SecureUrl.AbsoluteUri
-                };
-                return Ok(_thumbnail);
-            }
-            return BadRequest(false);
-        }
-
-        [HttpDelete("cancel")]
-        [Authorize]
-        public async Task<ActionResult> Cancel(string publicId)
-        {
-            var result = await _repo.DeleteThumbnailAsync(publicId);
-            return !result ? BadRequest(false) : Ok(true);
-        }
-
     }
 }

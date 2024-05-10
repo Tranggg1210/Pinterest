@@ -8,6 +8,8 @@ namespace PixelPalette.Interfaces
     {
         Task<CollectionModel> AddCollectionAsync(int userId, CollectCreateParams entryParams);
         Task<IEnumerable<CollectionModel>> GetAllCollectionAsync();
+        Task<IEnumerable<CollectionModel>> GetCollectionByUserIdAsync(int userId);
+        Task<IEnumerable<CollectionModel>> GetCollectionByPostIdAsync(int postId);
         Task<CollectionModel> GetCollectionByIdAsync(int id);
         Task<bool> DeleteCollectionAsync(int id);
         Task<CollectionModel> UpdateCollectionAsync(int id, CollectUpdateParams entryParams);

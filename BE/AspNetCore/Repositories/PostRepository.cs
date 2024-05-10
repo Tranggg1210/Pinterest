@@ -23,10 +23,14 @@ namespace PixelPalette.Repositories
             _photoService = photoService;
             _tools = tools;
         }
-        public async Task<PostModel> AddPostAsync(int userId, PostCreateParams entryParams)
+        public async Task<PostModel> AddPostAsync(int userId, PostCreateParams entryParams, IFormFile file)
         {
             var model = new PostModel();
             model.UserId = userId;
+            var addResult = await _photoService.AddPhotoAsync(file);
+            if (addResult.Error != null) return null!;
+            model.ThumbnailId = addResult.PublicId;
+            model.ThumbnailUrl = addResult.SecureUrl.AbsoluteUri;
             _tools.Duplicate(entryParams, ref model);
             var post = _mapper.Map<Post>(model);
             _context.Posts.Add(post);
@@ -78,27 +82,19 @@ namespace PixelPalette.Repositories
             return false;
         }
 
-        public async Task<bool> DeleteThumbnailAsync(string publicId)
-        {
-            var deleteResult = await _photoService.DeletePhotoAsync(publicId);
-            if (deleteResult.Error != null || deleteResult.Result == "not found")
-                return false;
-            return true;
-        }
-
         public async Task<IEnumerable<PostModel>> GetAllPostAsync()
         {
             var posts = await _context.Posts!.ToListAsync();
             return _mapper.Map<IEnumerable<PostModel>>(posts);
         }
 
-        public async Task<PostModel> GetPostByCollectionIdAsync(int collectionId)
+        public async Task<IEnumerable<PostModel>> GetPostByCollectionIdAsync(int collectionId)
         {
             var posts = await _context.Ownerships!
                 .Where(o => o.CollectionId == collectionId)
                 .Join(_context.Posts, o => o.PostId, p => p.Id, (o, p) => p)
                 .ToListAsync();
-            return _mapper.Map<PostModel>(posts);
+            return _mapper.Map<IEnumerable<PostModel>>(posts);
         }
 
         public async Task<PostModel> GetPostByIdAsync(int id)
@@ -107,22 +103,19 @@ namespace PixelPalette.Repositories
             return _mapper.Map<PostModel>(post);
         }
 
-        public async Task<PostModel> GetPostByUserIdAsync(int userId)
+        public async Task<IEnumerable<PostModel>> GetPostByUserIdAsync(int userId)
         {
             var posts = await _context.Posts
                 .Where(p => p.UserId == userId)
                 .ToListAsync();
-            return _mapper.Map<PostModel>(posts);
+            return _mapper.Map<IEnumerable<PostModel>>(posts);
         }
 
-        public async Task<PostModel> UpdatePostAsync(int id, PostUpdateParams entryParams, Thumbnail thumbnail)
+        public async Task<PostModel> UpdatePostAsync(int id, PostUpdateParams entryParams)
         {
             var updatePost = await _context.Posts!.FindAsync(id);
             if (updatePost != null)
             {
-                var deleteResult = await _photoService.DeletePhotoAsync(updatePost.ThumbnailId);
-                if (deleteResult.Error != null) return null!;
-
                 _tools.Duplicate(entryParams, ref updatePost);
                 _context.Posts!.Update(updatePost);
                 await _context.SaveChangesAsync();
@@ -130,13 +123,6 @@ namespace PixelPalette.Repositories
                 return _mapper.Map<PostModel>(updatePost);
             }
             return null!;
-        }
-
-        public async Task<ImageUploadResult> UploadThumbnailAsync(IFormFile file)
-        {
-            var addResult = await _photoService.AddPhotoAsync(file);
-            if (addResult.Error != null) return null!;
-            return addResult;
         }
 
         public async Task<bool> LikePostAsync(int postId, int userId)
@@ -163,7 +149,7 @@ namespace PixelPalette.Repositories
                         UserId = userId
                     };
                     await _context.LikePosts.AddAsync(likePost);
-                    if (post!.Like > 0) post!.Like++;
+                    post!.Like++;
                     _context.Posts.Update(post);
                     await _context.SaveChangesAsync();
                     return true;

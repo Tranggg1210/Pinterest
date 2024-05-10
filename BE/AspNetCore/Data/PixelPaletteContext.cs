@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using PixelPalette.Entities;
@@ -27,6 +28,7 @@ namespace PixelPalette.Data
         public virtual DbSet<Ownership> Ownerships { get; set; } = null!;
         public virtual DbSet<Post> Posts { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<Role> Roles { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -50,7 +52,7 @@ namespace PixelPalette.Data
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Collections)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("Collection_UserId_foreign");
             });
 
@@ -71,13 +73,13 @@ namespace PixelPalette.Data
                 entity.HasOne(d => d.Post)
                     .WithMany(p => p.Comments)
                     .HasForeignKey(d => d.PostId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("Comment_PostId_foreign");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Comments)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("Comment_UserId_foreign");
             });
 
@@ -136,13 +138,13 @@ namespace PixelPalette.Data
                 entity.HasOne(d => d.Post)
                     .WithMany(p => p.LikePosts)
                     .HasForeignKey(d => d.PostId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_LikePost_Post");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.LikePosts)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_LikePost_User");
             });
 
@@ -192,7 +194,7 @@ namespace PixelPalette.Data
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Notifications)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Notification_User");
             });
 
@@ -207,13 +209,13 @@ namespace PixelPalette.Data
                 entity.HasOne(d => d.Collection)
                     .WithMany(p => p.Ownerships)
                     .HasForeignKey(d => d.CollectionId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Ownership_Collection");
 
                 entity.HasOne(d => d.Post)
                     .WithMany(p => p.Ownerships)
                     .HasForeignKey(d => d.PostId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Ownership_Post");
             });
 
@@ -242,13 +244,28 @@ namespace PixelPalette.Data
                     .HasConstraintName("Post_UserId_foreign");
             });
 
+            modelBuilder.Entity<Role>(entity =>
+            {
+                entity.ToTable("Role");
+
+                entity.HasIndex(e => e.NormalizedName, "IX_Role_NormalizedName").IsUnique();
+
+            });
+
+            modelBuilder.Entity<IdentityUserRole<int>>(entity =>
+            {
+                entity.ToTable("UserRole");
+
+                entity.HasKey(ur => new { ur.UserId, ur.RoleId });
+            });
+
             modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("User");
 
                 entity.HasIndex(e => e.Email, "IX_User_Email");
 
-                entity.HasIndex(e => e.UserName, "IX_User_UserName");
+                entity.HasIndex(e => e.UserName, "IX_User_UserName").IsUnique();
 
                 entity.Property(e => e.Birthday).HasColumnType("date");
 
@@ -275,8 +292,6 @@ namespace PixelPalette.Data
                 entity.Ignore("PhoneNumber");
 
                 entity.Ignore("PhoneNumberConfirmed");
-
-                entity.Ignore("SecurityStamp");
 
                 entity.Ignore("TwoFactorEnabled");
             });

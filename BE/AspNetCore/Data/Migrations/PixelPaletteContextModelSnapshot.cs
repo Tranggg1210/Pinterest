@@ -8,7 +8,7 @@ using PixelPalette.Data;
 
 #nullable disable
 
-namespace PixelPalette.Migrations
+namespace PixelPalette.Data.Migrations
 {
     [DbContext(typeof(PixelPaletteContext))]
     partial class PixelPaletteContextModelSnapshot : ModelSnapshot
@@ -21,6 +21,21 @@ namespace PixelPalette.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRole", (string)null);
+                });
 
             modelBuilder.Entity("PixelPalette.Entities.Collection", b =>
                 {
@@ -304,6 +319,32 @@ namespace PixelPalette.Migrations
                     b.ToTable("Post", (string)null);
                 });
 
+            modelBuilder.Entity("PixelPalette.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "NormalizedName" }, "IX_Role_NormalizedName")
+                        .IsUnique()
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("Role", (string)null);
+                });
+
             modelBuilder.Entity("PixelPalette.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -361,6 +402,9 @@ namespace PixelPalette.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Token")
                         .HasColumnType("nvarchar(max)");
 
@@ -371,9 +415,26 @@ namespace PixelPalette.Migrations
 
                     b.HasIndex(new[] { "Email" }, "IX_User_Email");
 
-                    b.HasIndex(new[] { "UserName" }, "IX_User_UserName");
+                    b.HasIndex(new[] { "UserName" }, "IX_User_UserName")
+                        .IsUnique()
+                        .HasFilter("[UserName] IS NOT NULL");
 
                     b.ToTable("User", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.HasOne("PixelPalette.Entities.Role", null)
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PixelPalette.Entities.User", null)
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PixelPalette.Entities.Collection", b =>
@@ -381,6 +442,7 @@ namespace PixelPalette.Migrations
                     b.HasOne("PixelPalette.Entities.User", "User")
                         .WithMany("Collections")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("Collection_UserId_foreign");
 
@@ -392,12 +454,14 @@ namespace PixelPalette.Migrations
                     b.HasOne("PixelPalette.Entities.Post", "Post")
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("Comment_PostId_foreign");
 
                     b.HasOne("PixelPalette.Entities.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("Comment_UserId_foreign");
 
@@ -449,12 +513,14 @@ namespace PixelPalette.Migrations
                     b.HasOne("PixelPalette.Entities.Post", "Post")
                         .WithMany("LikePosts")
                         .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_LikePost_Post");
 
                     b.HasOne("PixelPalette.Entities.User", "User")
                         .WithMany("LikePosts")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_LikePost_User");
 
@@ -495,6 +561,7 @@ namespace PixelPalette.Migrations
                     b.HasOne("PixelPalette.Entities.User", "User")
                         .WithMany("Notifications")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Notification_User");
 
@@ -506,12 +573,14 @@ namespace PixelPalette.Migrations
                     b.HasOne("PixelPalette.Entities.Collection", "Collection")
                         .WithMany("Ownerships")
                         .HasForeignKey("CollectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Ownership_Collection");
 
                     b.HasOne("PixelPalette.Entities.Post", "Post")
                         .WithMany("Ownerships")
                         .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK_Ownership_Post");
 
@@ -550,6 +619,11 @@ namespace PixelPalette.Migrations
                     b.Navigation("Ownerships");
                 });
 
+            modelBuilder.Entity("PixelPalette.Entities.Role", b =>
+                {
+                    b.Navigation("UserRoles");
+                });
+
             modelBuilder.Entity("PixelPalette.Entities.User", b =>
                 {
                     b.Navigation("Collections");
@@ -573,6 +647,8 @@ namespace PixelPalette.Migrations
                     b.Navigation("Notifications");
 
                     b.Navigation("Posts");
+
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

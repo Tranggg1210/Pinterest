@@ -33,8 +33,8 @@ Route::group(['middleware' => 'api',], function ($router) {
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
     //     return auth() -> user();
     // });
-    Route::middleware("auth:api")->group(function(){
     Route::get('me', [AuthController::class,'me']) -> name('me');
+    Route::middleware("auth:api")->group(function(){
     Route::post('logout', [AuthController::class,'logout']) -> name('logout');
     Route::post('follow/{UserId?}', [FollowController::class,'follow']) -> name('follow');
     Route::post('comments/{PostId?}', [CommentController::class,'sendcomment']) -> name('comment');

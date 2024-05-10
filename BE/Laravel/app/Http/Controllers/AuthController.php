@@ -87,10 +87,7 @@ class AuthController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['login']]);
-    }
+
 
 
     public function login(Request $request)
@@ -105,24 +102,28 @@ class AuthController extends Controller
         }
         $check = Hash::check($request->password, $user->PasswordHash); // check password
 
-        $user -> save();
         if(isset($user) && $check){
             $token = JWTAuth::fromUser($user);
             $user -> Token = $token;
+            $user -> save();
             return response()->json([
-             'success' => true,
-             'access_token' => $token,
-             'type' => 'Bearer'
+                'success' => true,
+                'access_token' => $token,
+                'type' => 'Bearer'
             ],200);
         }else{
             return response()->json([
-              'success' => false,
+                'success' => false,
               'message' => 'Tài khoản hoặc mật khẩu không chính xác !'
             ],200);
         }
     }
-    public function me(){
-        $user = auth()->user();
+    public function me(Request $request){
+        // $user = auth()->user();
+        
+        $user = $request->header("Authorization");
+        $user = explode(' ',$user)[1];
+        $user = User::where('Token',$user) -> first();
         if($user){
             return response()->json([
                 'user' => [

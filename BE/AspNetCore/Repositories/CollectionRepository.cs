@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CloudinaryDotNet.Actions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using PixelPalette.Data;
 using PixelPalette.Entities;
 using PixelPalette.Helpers;
@@ -10,7 +11,7 @@ using System.Collections.ObjectModel;
 
 namespace PixelPalette.Repositories
 {
-    public class CollectionRepository: ICollectionRepository
+    public class CollectionRepository : ICollectionRepository
     {
         private readonly PixelPaletteContext _context;
         private readonly IMapper _mapper;
@@ -30,7 +31,7 @@ namespace PixelPalette.Repositories
             var model = new CollectionModel();
             _tools.Duplicate(entryParams, ref model);
             model.UserId = userId;
-            var colection = _mapper.Map<Collection>(model);
+            var colection = _mapper.Map<Entities.Collection>(model);
             _context.Collections.Add(colection);
             await _context.SaveChangesAsync();
             return _mapper.Map<CollectionModel>(colection);
@@ -94,6 +95,23 @@ namespace PixelPalette.Repositories
                 return Url;
             }
             return string.Empty;
+        }
+
+        public async Task<IEnumerable<CollectionModel>> GetCollectionByUserIdAsync(int userId)
+        {
+            var collections = await _context.Collections
+                .Where(p => p.UserId == userId)
+                .ToListAsync();
+            return _mapper.Map<IEnumerable<CollectionModel>>(collections);
+        }
+
+        public async Task<IEnumerable<CollectionModel>> GetCollectionByPostIdAsync(int postId)
+        {
+            var collections = await _context.Ownerships!
+                .Where(o => o.PostId == postId)
+                .Join(_context.Collections, o => o.CollectionId, c => c.Id, (o, c) => c)
+                .ToListAsync();
+            return _mapper.Map<IEnumerable<CollectionModel>>(collections);
         }
     }
 }
