@@ -71,7 +71,6 @@ use Tymon\JWTAuth\Facades\JWTAuth;
  * @OA\Get(
  *     path="/api/me/",
  *     tags={"User"},
-  *    security={{ "bearerAuth": {} }},
  *     summary="Xem thông tin",
  *     description="Xem thông tin người dùng",
  *     @OA\Response(response=200, description="Logged out successfully"),
@@ -118,12 +117,9 @@ class AuthController extends Controller
             ],200);
         }
     }
-    public function me(Request $request){
+    public function me(){
         // $user = auth()->user();
-        
-        $user = $request->header("Authorization");
-        $user = explode(' ',$user)[1];
-        $user = User::where('Token',$user) -> first();
+        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> get('Id','UserName', 'FirstName', 'LastName', 'Email', 'Country');
         if($user){
             return response()->json([
                 'user' => [

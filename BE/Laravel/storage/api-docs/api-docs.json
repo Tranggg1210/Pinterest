@@ -6,26 +6,14 @@
     },
     "paths": {
         "/api/": {},
-        "/api/comments/{PostId}": {
+        "/api/create-chat/{id}": {
             "post": {
                 "tags": [
-                    "Comment"
+                    "Chat"
                 ],
-                "summary": "Comment",
-                "description": "Comment id bài viết",
-                "operationId": "Comment",
-                "parameters": [
-                    {
-                        "name": "PostId",
-                        "in": "path",
-                        "description": "ID của comment",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
+                "summary": "Tạo conversation",
+                "description": "Tạo conversation khi chat tin đầu tiên.Id của người dùng sẽ được trả về khi tìm kiếm ở phần tìm kiếm trong chat ",
+                "operationId": "create-chat",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -33,6 +21,167 @@
                                 "allOf": [
                                     {
                                         "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "content": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object",
+                                        "example": {
+                                            "id": "Id của người mình đang chat",
+                                            "content": "Nội dung tin nhắn"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Comment successfully"
+                    },
+                    "202": {
+                        "description": "Không thể tạo cuộc trò chuyện"
+                    },
+                    "404": {
+                        "description": "Không tồn tại bài viết"
+                    },
+                    "414": {
+                        "description": "Hội thoại đã tồn tại"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/get-conversation": {
+            "get": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "Lấy toàn bộ conversation của người dùng",
+                "description": "Lấy toàn bộ hội thoại của người dùng",
+                "operationId": "get-chat",
+                "responses": {
+                    "200": {
+                        "description": "Thành công"
+                    },
+                    "404": {
+                        "description": "Không tồn tại người dùng"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/send-message": {
+            "post": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "Gửi tin nhắn tới conversation",
+                "description": "",
+                "operationId": "send-message",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "content": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object",
+                                        "example": {
+                                            "id": "Id của conversation",
+                                            "content": "Nội dung tin nhắn"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Gửi tin nhắn thành công"
+                    },
+                    "404": {
+                        "description": "Không tồn tại hội thoại"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/get-message/{id}": {
+            "get": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "Lấy toàn bộ tin nhắn của hội thoại",
+                "description": "Lấy toàn bộ tin nhắn của hội thoại",
+                "operationId": "get-message",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Điền id conversation",
+                        "schema": {
+                            "type": "interger"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Thành công"
+                    },
+                    "404": {
+                        "description": "Không tồn tại hội thoại"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/comments/{PostId}": {
+            "post": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Comment",
+                "description": "Comment id bài viết.Nếu reply lại comment người khác thì điền CommentId cần rep lại",
+                "operationId": "Comment",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "PostId": {
+                                                "type": "interger"
+                                            },
                                             "CommentId": {
                                                 "type": "string"
                                             },
@@ -42,6 +191,7 @@
                                         },
                                         "type": "object",
                                         "example": {
+                                            "PostId": "Id bài post",
                                             "Content": "test",
                                             "CommentId": ""
                                         }
@@ -56,7 +206,7 @@
                         "description": "Comment successfully"
                     },
                     "400": {
-                        "description": "Không thể follow bản thân"
+                        "description": "Không thể comment"
                     },
                     "404": {
                         "description": "Không tồn tại bài viết"
@@ -72,13 +222,48 @@
                 ]
             }
         },
+        "/api/get-comment/{PostId}": {
+            "post": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Lấy toàn bộ comment của bài viết",
+                "description": "Lấy toàn bộ comment của bài viết",
+                "operationId": "effec46c1cdb0a7e11bd87f4c866bde5",
+                "parameters": [
+                    {
+                        "name": "PostId",
+                        "in": "path",
+                        "description": "ID của bài post",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully"
+                    },
+                    "404": {
+                        "description": "Không tồn tại bài viết"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/follow/{UserId}": {
             "post": {
                 "tags": [
                     "Follow user"
                 ],
                 "summary": "Follow",
-                "description": "Theo dõi người khác sau khi đăng nhập",
+                "description": "Theo dõi người khác khi truyền id",
                 "operationId": "Follow",
                 "parameters": [
                     {
@@ -99,6 +284,29 @@
                     },
                     "404": {
                         "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/get-follower": {
+            "get": {
+                "tags": [
+                    "Follow user"
+                ],
+                "summary": "Lấy toàn bộ danh sách người đang follow mình",
+                "description": "Lấy toàn bộ hội thoại của người dùng",
+                "operationId": "get-follower",
+                "responses": {
+                    "200": {
+                        "description": "Thành công"
+                    },
+                    "404": {
+                        "description": "Không tồn tại người dùng"
                     }
                 },
                 "security": [
