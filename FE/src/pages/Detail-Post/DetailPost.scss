@@ -3,8 +3,13 @@
   @include flex(center, center);
 }
 .icon {
-  width: 28px;
-  height: 28px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  padding: 8px;
+  &:hover {
+    background-color: #ccc;
+  }
 }
 .icon-back {
   position: fixed;
@@ -23,8 +28,9 @@
 }
 .detail-post-container {
   display: flex;
-  box-shadow: 4px 4px 12px 4px #ededed;
-  width: 70%;
+  box-shadow: 4px 4px 12px 4px #ededed, -2px -2px 12px 4px #ededed;
+  width: 76%;
+  max-width: max-content;
   border-radius: 36px;
   .detail-post-left {
     width: 50%;
@@ -37,7 +43,7 @@
   }
   .detail-post-right {
     width: 50%;
-    padding: 28px;
+    padding: 28px 40px;
     .detail-right-option {
       @include flex(space-between, center);
     }

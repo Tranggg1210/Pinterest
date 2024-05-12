@@ -8,7 +8,17 @@ const userApi = () => ({
     api.put(ApiConstant.user.changeInfor, { firstName, lastName, introduction, birthday, gender, country }),
   changePassword: async({oldPassword, newPassword, comfirmPassword}) => 
     api.put(ApiConstant.auth.changePassword, {oldPassword, newPassword, comfirmPassword}),
-  deleteUser: async(id) => api.delete(`${ApiConstant.user.deleteAccount}/${id}`)
+  deleteUser: async(id) => api.delete(`${ApiConstant.user.deleteAccount}/${id}`),
+  getUserById: async(id) => api.get(`${ApiConstant.user.getUserById}/${id}`),
+  followerByUserId: async(id) => api.post(`${ApiConstant.user.followUser}/${id}`)
 });
 
-export const { getCurrentUser, changeAvatar,changeInforUser, changePassword, deleteUser } = userApi();
+export const { 
+  getCurrentUser, 
+  changeAvatar,
+  changeInforUser, 
+  changePassword, 
+  deleteUser, 
+  getUserById,
+  followerByUserId
+} = userApi();
