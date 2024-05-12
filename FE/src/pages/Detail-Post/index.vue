@@ -99,7 +99,7 @@ console.log(post);
         <div class="detail-post-container">
           <div class="detail-post-left">
             <img :src="post.thumbnailUrl" alt="" v-if="post && post.thumbnailUrl" />
-            <img src="@/assets/images/test94.jpg" v-else alt="" />
+            <img src="@/assets/images/no-data.jpg" v-else alt="" />
           </div>
           <div class="detail-post-right">
             <div class="detail-right-option">
@@ -124,7 +124,7 @@ console.log(post);
                 <img :src="post.user.avatarUrl" alt="" v-if="post && post.user && post.user.avatarUrl" />
                 <img src="@/assets/images/user-avatar.png" v-else alt="" />
                 <p class="user-name">
-                  {{ post && post.user && post.user.userName && post.user.userName }}
+                  {{ (post && post.user && post.user.userName) ? post.user.userName : "Không xác định"}}
                 </p>
               </div>
               <HfButton class="btn-follow" @click="handleFollowUser" v-if="!post.isFollowUser">Theo dõi</HfButton>
@@ -133,7 +133,7 @@ console.log(post);
 
             <div class="detail-right-comment">
               <div class="title">Nhận xét</div>
-              <IconChevronUp class="icon"></IconChevronUp>
+              <IconChevronUp class="icon" size="24"></IconChevronUp>
             </div>
             <div class="user-comment"></div>
           </div>
@@ -160,4 +160,5 @@ path: '/detail-post/:id'
 name: DetailPost
 meta:
   layout: default
+  requiresAuth: true
 </route>
