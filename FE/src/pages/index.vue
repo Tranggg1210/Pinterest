@@ -3,6 +3,7 @@ import { onBeforeMount } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import HfFeature from '@/components/HfFeature/HfFeature.vue';
 import { getAllPost } from '@/api/post.api';
+import router from '@/router';
 const posts = ref([]);
 const user = useAuthStore();
 const message = useMessage();
@@ -24,11 +25,15 @@ onBeforeMount(() => {
     loadPosts();
   }
 });
+console.log(posts);
+const goToDetailProduct = (id) => {
+  router.push(`/detail-post/${id}`)
+}
 </script>
 <template>
   <div class="container" v-if="user.loggedIn">
-    <div class="wide posts-container" v-if="posts">
-      <HfPost v-for="post in posts" :key="post.id" :postInfor="post" />
+    <div class="wide posts-container" v-if="posts.length > 0">
+      <HfPost v-for="post in posts" :key="post.id" :postInfor="post" @click="() => goToDetailProduct(post.id)" />
     </div>
     <div v-else>
       <HfNoData />

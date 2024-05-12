@@ -12,19 +12,18 @@ const handleURLImage = async (url) => {
     console.error('Lỗi khi tải ảnh:', error);
   }
 };
-onBeforeMount(() => handleURLImage(postInfor.download_url));
+onBeforeMount(() => handleURLImage(postInfor?.thumbnailUrl));
 </script>
 
 <template>
   <div class="post__item">
     <div class="post-image">
-      <img :src="postInfor.thumbnailUrl" alt="image" loading="lazy" />
+      <img :src="postInfor?.thumbnailUrl" alt="image" loading="lazy" />
       <div class="model">
         <div class="model__header">
           <button class="btn-post-save">Lưu</button>
         </div>
         <div class="model__footer">
-          <IconShare2 class="icon" size="12"></IconShare2>
           <a download :href="imageURL" title="ImageName">
             <IconDownload class="icon" size="12"></IconDownload>
           </a>
