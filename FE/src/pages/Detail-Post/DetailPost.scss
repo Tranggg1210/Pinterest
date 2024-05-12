@@ -1,6 +1,12 @@
 .detail-post {
   margin: 40px 0 0;
   @include flex(center, center);
+  @include mobile{
+    margin-top: 20px;
+  }
+  @include small-tablet{
+    margin-top: 20px;
+  }
 }
 .icon {
   width: 48px;
@@ -14,7 +20,7 @@
 .icon-back {
   position: fixed;
   top: 106px;
-  left: 52px;
+  left: 44px;
   width: 44px;
   height: 44px;
   padding: 8px;
@@ -25,13 +31,39 @@
   &:hover {
     background-color: #ccc;
   }
+  @include mobile{
+    top: 86px;
+    left: 12px;
+  }
+  @include small-tablet{
+    top: 86px;
+    left: 16px;
+  }
+  @include tablet{
+    left: 24px;
+  }
 }
 .detail-post-container {
   display: flex;
   box-shadow: 4px 4px 12px 4px #ededed, -2px -2px 12px 4px #ededed;
   width: 76%;
-  max-width: max-content;
   border-radius: 36px;
+  min-height: 80vh;
+  overflow: hidden;
+  @include mobile{
+    width: 100%;
+    flex-direction: column;
+    border-radius: 12px;
+  }
+
+  @include small-tablet{
+    width: 100%;
+    flex-direction: column;
+    border-radius: 12px;
+  }
+  @include tablet{
+    width: 100%;
+  }
   .detail-post-left {
     width: 50%;
     img {
@@ -39,6 +71,18 @@
       height: 100%;
       object-fit: cover;
       border-radius: 35px 0 0 35px;
+      @include mobile{
+        border-radius: 0;
+      }
+      @include small-tablet{
+        border-radius: 0;
+      }
+    }
+    @include mobile{
+      width: 100%;
+    }
+    @include small-tablet{
+      width: 100%;
     }
   }
   .detail-post-right {
@@ -46,6 +90,13 @@
     padding: 28px 40px;
     .detail-right-option {
       @include flex(space-between, center);
+    }
+    @include mobile{
+      width: 100%;
+      padding: 20px;
+    }
+    @include small-tablet{
+      width: 100%;
     }
   }
 }
@@ -81,11 +132,16 @@
 .detail-right-user {
   @include flex(space-between, center);
   margin-top: 30px;
+  @include mobile{
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+  }
   .user-avatar {
     @include flex(center, center);
     img {
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       object-fit: cover;
       border-radius: 100rem;
     }
@@ -93,6 +149,9 @@
       margin-left: 8px;
       font-size: large;
     }
+  }
+  button{
+    margin: 16px 0 0 0!important;
   }
 }
 .detail-right-comment {
