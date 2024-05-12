@@ -10,7 +10,9 @@ const userApi = () => ({
     api.put(ApiConstant.auth.changePassword, {oldPassword, newPassword, comfirmPassword}),
   deleteUser: async(id) => api.delete(`${ApiConstant.user.deleteAccount}/${id}`),
   getUserById: async(id) => api.get(`${ApiConstant.user.getUserById}/${id}`),
-  followerByUserId: async(id) => api.post(`${ApiConstant.user.followUser}/${id}`)
+  followerByUserId: async(id) => api.post(`${ApiConstant.user.followUser}/${id}`),
+  unFollowerByUserId: async(id) => api.post(`${ApiConstant.user.unFollowUser}/${id}`),
+  checkFollowByUserId: async(id) => api.get(`${ApiConstant.user.checkFollow}/${id}`)
 });
 
 export const { 
@@ -20,5 +22,7 @@ export const {
   changePassword, 
   deleteUser, 
   getUserById,
-  followerByUserId
+  followerByUserId,
+  unFollowerByUserId,
+  checkFollowByUserId
 } = userApi();

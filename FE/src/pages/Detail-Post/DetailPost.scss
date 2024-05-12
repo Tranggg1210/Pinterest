@@ -14,7 +14,7 @@
 .icon-back {
   position: fixed;
   top: 106px;
-  left: 52px;
+  left: 44px;
   width: 44px;
   height: 44px;
   padding: 8px;
@@ -30,8 +30,8 @@
   display: flex;
   box-shadow: 4px 4px 12px 4px #ededed, -2px -2px 12px 4px #ededed;
   width: 76%;
-  max-width: max-content;
   border-radius: 36px;
+  min-height: 80vh;
   .detail-post-left {
     width: 50%;
     img {

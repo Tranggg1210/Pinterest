@@ -1,6 +1,7 @@
 <script setup>
+import { getAllCollection } from '@/api/collection.api';
 import { getAllPost, getPostById } from '@/api/post.api';
-import { followerByUserId, getUserById } from '@/api/user.api';
+import { checkFollowByUserId, followerByUserId, getUserById, unFollowerByUserId } from '@/api/user.api';
 import { useLoadingBar, useMessage } from 'naive-ui';
 import { useRouter } from 'vue-router';
 const router = useRouter();
@@ -14,20 +15,28 @@ const loadPost = async() => {
   try {
     const result = await getPostById(router.currentRoute.value.params.id);
     post.value = result;
-    const data = await getAllPost();
-    postList.value = data;
     if(post?.value.userId)
     {
       const user = await getUserById(post.value.userId);
       post.value.user = user;
+      const checkFollow = await checkFollowByUserId(post.value.userId);
+      post.value.isFollowUser = checkFollow;
     }
-    console.log(post.value);
   } catch (error) {
     console.log(error);
     message.error("Lỗi không tải được dữ liệu của bài viết, vui lòng thử lại sau");
   }
 }
 
+const loadAllCollection = async() => {
+  try {
+    const data = await getAllCollection();
+    postList.value = data;
+  } catch (error) {
+    console.log(error);
+    message.error("Lỗi không tải được danh sách gợi ý, vui lòng thử lại sau");
+  }
+}
 
 const handleURLImage = async (url) => {
   try {
@@ -38,9 +47,10 @@ const handleURLImage = async (url) => {
     console.error('Lỗi khi tải ảnh:', error);
   }
 };
-onBeforeMount(() => {
-  loadPost();
+onBeforeMount(async() => {
+  await loadPost();
   handleURLImage(post?.value.thumbnailUrl);
+  await loadAllCollection();
 });
 const goBack = () => {
   router.back();
@@ -53,6 +63,7 @@ const handleFollowUser = async() => {
     {
       await followerByUserId(post.value.userId);
     }
+    await loadPost();
     loadingBar.finish();
   } catch (error) {
     loadingBar.error();
@@ -60,6 +71,23 @@ const handleFollowUser = async() => {
     message.error("Lỗi, không thể theo dõi người dùng này, vui lòng thử lại sau");
   }
 }
+
+const handleUnFollowUser = async() => {
+  loadingBar.start();
+  try {
+    if(post?.value.userId)
+    {
+      await unFollowerByUserId(post.value.userId);
+    }
+    await loadPost();
+    loadingBar.finish();
+  } catch (error) {
+    loadingBar.error();
+    console.log(error);
+    message.error("Lỗi, không thể hủy theo dõi người dùng này, vui lòng thử lại sau");
+  }
+}
+console.log(post);
 </script>
 <template>
   <div class="container">
@@ -99,7 +127,8 @@ const handleFollowUser = async() => {
                   {{ post && post.user && post.user.userName && post.user.userName }}
                 </p>
               </div>
-              <HfButton class="btn-follow" @click="handleFollowUser">Theo dõi</HfButton>
+              <HfButton class="btn-follow" @click="handleFollowUser" v-if="!post.isFollowUser">Theo dõi</HfButton>
+              <HfButton class="btn-follow" @click="handleUnFollowUser" v-if="post.isFollowUser">Hủy theo dõi</HfButton>
             </div>
 
             <div class="detail-right-comment">
@@ -119,6 +148,7 @@ const handleFollowUser = async() => {
           <HfNoData />
         </div>
       </div>
+      <br><br>
     </div>
   </div>
 </template>
