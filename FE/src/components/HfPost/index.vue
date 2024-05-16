@@ -1,6 +1,6 @@
 <script setup>
 import { defineProps, onBeforeMount, ref } from 'vue';
-const { postInfor } = defineProps(['postInfor']);
+const { postInfor, isEdit } = defineProps(['postInfor', 'isEdit']);
 const imageURL = ref('');
 
 const handleURLImage = async (url) => {
@@ -24,6 +24,7 @@ onBeforeMount(() => handleURLImage(postInfor?.thumbnailUrl));
           <button class="btn-post-save">Lưu</button>
         </div>
         <div class="model__footer">
+          <IconEdit class="icon" v-show="isEdit"/>
           <a download :href="imageURL" title="ImageName">
             <IconDownload class="icon" size="12"></IconDownload>
           </a>

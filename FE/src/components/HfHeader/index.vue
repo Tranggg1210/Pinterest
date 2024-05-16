@@ -1,7 +1,9 @@
 <script setup>
-import { useAuthStore } from '@/stores/auth';
-import { useMessage } from 'naive-ui';
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { auth } from '@/middlewares/auth';
+import { useAuthStore } from '@/stores/auth';
+import { useCurrentUserStore } from '@/stores/currentUser';
+import { useMessage } from 'naive-ui';
 import { useRouter } from 'vue-router';
 
 const user = useAuthStore();
@@ -10,6 +12,7 @@ const router = useRouter();
 const show = ref(false);
 const showSearchModel = ref(false);
 const isScrolled = ref(false);
+const currentU = useCurrentUserStore();
 const loggedInRouters = ref([
   { label: 'Trang chủ', key: '/' },
   { label: 'Tạo bài viết', key: '/posts' },
@@ -32,6 +35,7 @@ const loginRedirectRouters = ref([
   { label: 'Đăng ký', key: '/sign-up' }
 ]);
 
+
 const handleScroll = () => {
   isScrolled.value = window.scrollY >= 160;
 };
@@ -47,6 +51,7 @@ onBeforeUnmount(() => {
 const goToPage = (key) => {
   if (key === 'logout') {
     user.clear();
+    currentU.clear();
     message.success('Đăng xuất thành công!');
     router.push('/');
   } else {
@@ -165,7 +170,8 @@ const goToPage = (key) => {
             "
             @click="() => goToPage('/profile-favorite')"
           >
-            <img src="@/assets/images/user-avatar.png" alt="avatar" class="user-avatar" />
+            <img src="@/assets/images/user-avatar.png" alt="avatar" class="user-avatar" v-if="!currentU" />
+            <img :src="currentU.currentUser.avatar" alt="avatar" class="user-avatar" v-else />
             <IconChevronDown />
           </div>
         </n-dropdown>

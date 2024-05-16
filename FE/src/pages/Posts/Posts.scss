@@ -1,76 +1,83 @@
 .handle-posts {
-  @include flex(center, center);
+  margin-top: 40px;
+  @include flex(center, start);
   background-color: #fff;
   padding: 0 24px;
   @include mobile{
+    margin-top: 20px;
     flex-direction: column;
+    padding: 0 12px;
   }
   @include small-tablet{
     flex-direction: column;
   }
 }
 
-.mobile-title{
-  display: none;
+.title{
   color: #fff;
   background-color: cornflowerblue;
   font-weight: 400;
-  margin: 20px 0;
+  margin: 20px 24px;
   text-transform: uppercase;
   font-style: italic;
   font-size: 24px;
-  width: 100%;
   text-align: center;
   padding: 4px;
   border-radius: 4px;
   @include mobile{
     display: block;
     font-size: 20px;
+    margin: 20px 12px;
   }
   @include small-tablet{
     display: block;
   }
 }
-
+.upload-dragger{
+  border: 2px dotted #ccc;
+  transition: all 0.4s linear;
+  &:hover{
+    border: 2px dotted red;
+  }
+}
 .image-uploaded {
   width: 50%;
-  border-right: 1px solid #ccc;
-  height: 80vh;
-  padding-right: 3rem;
   @include flex(center, center);
   @include mobile{
     width: 100%;
-    border: none;
-    padding: 0;
     height: max-content;
     margin: 20px 0;
   }
   @include small-tablet{
     width: 100%;
-    border: none;
-    padding: 0;
     height: max-content;
     margin: 20px 0;
   }
 }
-
 .infor-uploaded {
   width: 50%;
-  margin: 24px 0 24px 3rem;
+  margin: 0px 0 24px 3rem;
+  border-left: 2px solid #ccc;
+  padding-left: 3rem;
   @include mobile{
     width: 100%;
     margin: 0 0 40px;
+    border: none;
+    padding: 0;
   }
   @include small-tablet{
     width: 100%;
     margin: 0 0 40px;
+    border: none;
+    padding: 0;
   }
 }
 .posts-input {
-  border: 1px solid #ccc;
+  border: 2px solid #ccc;
   padding: 4px 0;
   border-radius: 4px;
   font-size: 15px;
+  transition: all 0.4s linear;
 }
 .btn-container {
   @include flex(center, center);
