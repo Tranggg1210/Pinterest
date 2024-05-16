@@ -87,7 +87,6 @@ const handleUnFollowUser = async() => {
     message.error("Lỗi, không thể hủy theo dõi người dùng này, vui lòng thử lại sau");
   }
 }
-console.log(post);
 </script>
 <template>
   <div class="container">

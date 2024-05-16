@@ -5,6 +5,8 @@ import { login } from '../../api/auth.api';
 import { validateEmail, validatePassword } from '@/utils/validator';
 import { useAuthStore } from '@/stores/auth';
 import { useRoute } from 'vue-router';
+import { getCurrentUser } from '@/api/user.api';
+import { useCurrentUserStore } from '@/stores/currentUser';
 
 const message = useMessage();
 const authStore = useAuthStore();

@@ -10,7 +10,13 @@ const postApi = () => ({
     theme,
     file
   }),
-  getPostById: async(id) => api.get(`${ApiConstant.post.postById}/${id}`)
+  getPostById: async(id) => api.get(`${ApiConstant.post.postById}/${id}`),
+  getAllPostByUserId: async() => api.get(ApiConstant.post.postByUserId)
 });
 
-export const { getAllPost,createPost,getPostById } = postApi();
+export const { 
+  getAllPost,
+  createPost,
+  getPostById,
+  getAllPostByUserId
+ } = postApi();

@@ -1,6 +1,26 @@
 <script setup>
-const dataImage = [];
+import { getAllPostByUserId } from '@/api/post.api';
+import { useCurrentUserStore } from '@/stores/currentUser';
+import { useMessage } from 'naive-ui';
+import { RouterLink } from 'vue-router';
+const posts = ref([]);
 const router = useRouter();
+const user = useCurrentUserStore();
+const message = useMessage();
+const loading = ref(true);
+const loadPosts = async () => {
+  loading.value = true;
+  try {
+    const result = await getAllPostByUserId();
+    posts.value = result;
+    loading.value = false;
+    } catch (err) {
+    loading.value = false;
+    console.log(err);
+    message.error("Tải danh sách bài viết không thành công");
+  }
+};
+onBeforeMount(loadPosts);
 </script>
 <template>
   <div class="profile-favorite container">
@@ -8,20 +28,33 @@ const router = useRouter();
       <div class="basic-profile container">
         <div class="user-avatar">
           <img
-            src="https://i.pinimg.com/280x280_RS/63/1e/53/631e53700ce9c9bbdc5c8d529956fc29.jpg"
-            alt=""
+            :src="user.currentUser.avatar"
+            alt="avatar"
+            v-if="user.currentUser.avatar"
+          />
+          <img
+            src="@/assets/images/user-avatar.png"
+            alt="avatar"
+            v-else
           />
         </div>
-        <h1 class="user-name">Nguyễn Thị Trang</h1>
+        <h1 class="user-name">
+          {{ user.currentUser.fullname || "Nguyễn Thị Trang" }}
+        </h1>
         <p class="user-account">
           <IconBrandPinterest size="20" />
-          nguyenthitrang.ttd
+          {{ user.currentUser.username || "Nguyễn Thị Trang" }}
         </p>
         <div class="btn-container">
-          <HfButton>Tạo ghim</HfButton>
-          <HfButton @click="router('/user-infor')">Chỉnh sửa hồ sơ</HfButton>
-          <HfButton class="active">Đã lưu</HfButton>
-          <HfButton>Đã tạo</HfButton>
+          <HfButton class="active">Đã tạo</HfButton>
+          <HfButton >Đã lưu</HfButton>
+        </div>
+        <HfLoading v-if="loading"/>
+        <div v-else class="container">
+          <div class="wide posts-container" v-if="posts.length > 0">
+            <HfPost v-for="post in posts" :key="post.id" :postInfor="post" :isEdit="true" @click="() => goToDetailProduct(post.id)" />
+          </div>
+          <HfNoData v-else/>
         </div>
       </div>
     </div>
@@ -39,7 +72,7 @@ const router = useRouter();
     width: 110px;
     height: 110px;
     border-radius: 50%;
-    border: 4px solid rgb(131, 173, 251);
+    border: 5px solid #2eca7f;
     overflow: hidden;
     cursor: pointer;
     transition: all 0.3s linear;
@@ -73,9 +106,13 @@ const router = useRouter();
   background-color: #000;
   color: #fff;
 }
+.posts-container{
+  margin: 40px 0;
+}
 </style>
 <route lang="yaml">
 name: ProfileFavorite
 meta:
   layout: default
+  requiresAuth: true
 </route>

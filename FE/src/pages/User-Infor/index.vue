@@ -1,19 +1,16 @@
 <script setup>
 import { onBeforeMount, reactive } from 'vue';
 import { validateDOB, validateFirstName, validateLastName, validatePassword } from '@/utils/validator';
-import router from '@/router';
-import { useAuthStore } from '@/stores/auth';
-import { changeAvatar, changeInforUser, changePassword, deleteUser, getCurrentUser } from '@/api/user.api';
+import { changeAvatar, changeInforUser, changePassword, getCurrentUser } from '@/api/user.api';
+import { useCurrentUserStore } from '@/stores/currentUser';
 
 const message = useMessage();
-const auth = useAuthStore();
 const loadingBar = useLoadingBar();
 const disabledRef = ref(true);
-const dialog = useDialog();
 const userForm = ref({});
-const user = ref({});
 const formRef = ref(null);
 const formRefAccount = ref(null);
+const user = useCurrentUserStore();
 const account = reactive({
   oldPassword: '',
   newPassword: '',
@@ -58,21 +55,6 @@ const rulesAccount = {
     trigger: ['blur', 'password-input']
   }
 };
-const loadUser = async () => {
-  try {
-    const result = await getCurrentUser();
-    user.value = {...result};
-    userForm.value = result;
-    userForm.value.birthday = new Date(userForm.value.birthday).getTime();
-    userForm.value.gender = userForm.value.gender ? 'Male'.toString() : 'Female';
-  } catch (err) {
-    console.log(err);
-    message.error("Lấy thông tin người dùng thất bại");
-  }
-};
-
-onBeforeMount(loadUser);
-
 
 const handleFullName = (firstName, lastName) => {
   const fullName = `${lastName} ${firstName} `;
@@ -83,6 +65,25 @@ const handleFullName = (firstName, lastName) => {
 
   return formattedFullName;
 };
+
+const loadUser = async () => {
+  try {
+    const result = await getCurrentUser();
+    userForm.value = result;
+    userForm.value.birthday = new Date(userForm.value.birthday).getTime();
+    userForm.value.gender = userForm.value.gender ? 'Male'.toString() : 'Female'
+    user.save({
+        fullname: handleFullName(result.firstName, result.lastName),
+        avatar: result.avatarUrl,
+        username: result.userName
+    });
+  } catch (err) {
+    console.log(err);
+    message.error("Lấy thông tin người dùng thất bại");
+  }
+};
+
+onBeforeMount(loadUser);
 
 const beforeUpload = async(data) => {
   try {
@@ -95,9 +96,9 @@ const beforeUpload = async(data) => {
       data.file.file?.type === 'image/gif'
     ) {
       await changeAvatar(data.file);
-      await loadUser();
       loadingBar.finish();
       disabledRef.value = true;
+      await loadUser();
       return true;
     }
     message.error('Vui lòng nhập đúng định dạng ảnh');
@@ -174,8 +175,8 @@ const handleChangePassword = async () => {
           <div class="avatar">
             <img
               :src="
-                user.avatarUrl
-                  ? user.avatarUrl
+                user.currentUser.avatar
+                  ? user.currentUser.avatar
                   : 'https://cdn-icons-png.flaticon.com/512/9131/9131529.png'
               "
               alt="avatar"
@@ -184,13 +185,13 @@ const handleChangePassword = async () => {
           <div class="user-bio">
             <h2>
               {{
-                user.firstName ? handleFullName(user.firstName, user.lastName) : 'Không xác định'
+                user.currentUser.fullname ? user.currentUser.fullname: 'Không xác định'
               }}
             </h2>
             <p>
               <IconMail />
               <span>
-                {{ user.email ? user.email : 'Không xác định' }}
+                {{ user.currentUser.username ? user.currentUser.username : 'Không xác định' }}
               </span>
             </p>
           </div>

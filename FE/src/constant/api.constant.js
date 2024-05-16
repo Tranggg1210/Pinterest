@@ -7,7 +7,8 @@ export const ApiConstant = {
   post: {
     postAll: 'Posts/getAll',
     createPost: 'Posts/create',
-    postById: 'Posts/getById'
+    postById: 'Posts/getById',
+    postByUserId: '/Posts/getByUserId'
   },
   user: {
     currentUser: 'Users/getLoginUser',

@@ -81,16 +81,15 @@ const handleCreatePost = async() => {
 <template>
   <div class="container posts">
     <div class="wide">
+      <h1 class="title">Tạo bài viết</h1>
       <div class="handle-posts">
-        <h1 class="mobile-title">Tạo bài viết</h1>
         <div class="image-uploaded">
           <n-upload
-            multiple
             directory-dnd
             @before-upload="beforeUpload"
             :max="5"
           >
-            <n-upload-dragger >
+            <n-upload-dragger class="upload-dragger">
               <div style="margin-bottom: 12px">
                 <IconUpload size="40" style="opacity: 0.3" />
               </div>
