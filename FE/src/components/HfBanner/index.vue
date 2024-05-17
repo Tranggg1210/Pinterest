@@ -53,10 +53,10 @@
     height: 60vh;
   }
   @include small-tablet {
-    height: 50vh;
+    height: 48vh;
   }
   @include tablet {
-    height: 40vh;
+    height: 48vh;
   }
 }
 </style>

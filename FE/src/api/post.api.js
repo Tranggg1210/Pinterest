@@ -11,12 +11,22 @@ const postApi = () => ({
     file
   }),
   getPostById: async(id) => api.get(`${ApiConstant.post.postById}/${id}`),
-  getAllPostByUserId: async() => api.get(ApiConstant.post.postByUserId)
+  getAllPostByUserId: async() => api.get(ApiConstant.post.postByUserId),
+  deletePostById: async(id) => api.delete(`${ApiConstant.post.deletePostById}/${id}`),
+  updatePost: async({link, caption, detail, theme, file}) => apiUpload.post(`${ApiConstant.post.updatePostById}/${id}`,{
+    link, 
+    caption, 
+    detail, 
+    theme,
+    file
+  })
 });
 
 export const { 
   getAllPost,
   createPost,
   getPostById,
-  getAllPostByUserId
+  getAllPostByUserId,
+  deletePostById,
+  updatePost
  } = postApi();
