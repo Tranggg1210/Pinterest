@@ -1,18 +1,28 @@
 <script setup>
 import { createPost } from '@/api/post.api';
+import { viVN } from 'naive-ui';
 import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 
 const message = useMessage();
 const loadingBar = useLoadingBar();
-const router = useRouter()
+const router = useRouter();
+const showModal = ref(false);
+const generalOptions = ref([
+    { label: 'Chưa có bảng nào được tạo', value: '' },
+])
 const posts = reactive({
   link: null,
   caption: null,
   detail: null,
+  table: null,
   theme: null,
   file: null
 });
+const table = ref({
+  name: null,
+  title: null
+})
 const formRef = ref(null);
 const rules = {
   caption: {
@@ -63,7 +73,9 @@ const handleCreatePost = async() => {
       }
       loadingBar.start();
       try {
-        await createPost(posts);
+        const result = await createPost(posts);
+        console.log(posts);
+        console.log(result)
         message.success('Tạo bài viết thành công!!!');
         setTimeout(() => {
           router.push('/');
@@ -87,7 +99,6 @@ const handleCreatePost = async() => {
           <n-upload
             directory-dnd
             @before-upload="beforeUpload"
-            :max="5"
           >
             <n-upload-dragger class="upload-dragger">
               <div style="margin-bottom: 12px">
@@ -117,13 +128,25 @@ const handleCreatePost = async() => {
                 type="textarea"
                 class="posts-input"
                 :autosize="{
-                  minRows: 4,
-                  maxRows: 6
+                  minRows: 2,
+                  maxRows: 4
                 }"
               />
             </n-form-item>
-            <n-form-item label="Chủ đề" path="theme">
-              <n-input v-model:value="posts.theme" placeholder="Thêm chủ đề cho bài viết" class="posts-input" />
+            <n-form-item path="table" label="Bảng">
+                <n-select
+                    class="posts-input"
+                    :bordered="false"
+                    v-model:value="posts.table"
+                    placeholder="Chọn bảng"
+                    :options="generalOptions"
+                />
+                <n-button type="success" class="btn-create-table" @click="showModal = true">
+                  Tạo bảng
+                </n-button>
+            </n-form-item>
+            <n-form-item label="Hashtab" path="theme">
+              <n-input v-model:value="posts.theme" placeholder="Thêm hashtab cho bài viết" class="posts-input" />
             </n-form-item>
             <n-form-item label="Nguồn" path="link">
               <n-input v-model:value="posts.link" placeholder="Thêm nguồn cho bài viết" class="posts-input" />
@@ -141,6 +164,20 @@ const handleCreatePost = async() => {
       </div>
     </div>
   </div>
+  <n-modal
+    v-model:show="showModal"
+    class="custom-card"
+    preset="card"
+    title="Modal"
+    style="width: 60%"
+    :bordered="false"
+    :segmented="segmented"
+  >
+    Content
+    <template #footer>
+      Footer
+    </template>
+  </n-modal>
 </template>
 
 <style lang="scss" scoped src="./Posts.scss"></style>

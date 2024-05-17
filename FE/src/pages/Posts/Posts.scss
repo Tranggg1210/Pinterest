@@ -14,8 +14,6 @@
 }
 
 .title{
-  color: #fff;
-  background-color: cornflowerblue;
   font-weight: 400;
   margin: 20px 24px;
   text-transform: uppercase;
@@ -24,6 +22,10 @@
   text-align: center;
   padding: 4px;
   border-radius: 4px;
+  text-decoration: underline;
+  color: #fff;
+  background-color: cornflowerblue;
+  display: none;
   @include mobile{
     display: block;
     font-size: 20px;
@@ -31,6 +33,7 @@
   }
   @include small-tablet{
     display: block;
+    margin: 20px 24px;
   }
 }
 .upload-dragger{
@@ -94,4 +97,15 @@
       opacity: 0.7;
     }
   }
+}
+.btn-create-table{
+  color: #fff !important;
+  padding: 25px 16px;
+  &:hover{
+    color: #fff;
+    opacity: 0.6;
+  }
+}
+.custom-card{
+  width: 600px;
 }

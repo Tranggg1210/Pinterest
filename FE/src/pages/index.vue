@@ -3,7 +3,6 @@ import { onBeforeMount } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import HfFeature from '@/components/HfFeature/HfFeature.vue';
 import { getAllPost } from '@/api/post.api';
-import router from '@/router';
 import { getCurrentUser } from '@/api/user.api';
 import { useCurrentUserStore } from '@/stores/currentUser';
 const posts = ref([]);
@@ -57,7 +56,7 @@ const goToDetailProduct = (id) => {
     <HfLoading v-if="loading"/>
     <div v-else class="container">
       <div class="wide posts-container" v-if="posts.length > 0">
-        <HfPost v-for="post in posts" :key="post.id" :postInfor="post" @click="() => goToDetailProduct(post.id)" />
+        <HfPost v-for="post in posts" :key="post.id" :postInfor="post" :isEdit="false"/>
       </div>
       <div v-else>
         <HfNoData />

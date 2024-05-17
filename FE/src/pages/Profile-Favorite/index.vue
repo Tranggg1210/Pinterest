@@ -2,9 +2,7 @@
 import { getAllPostByUserId } from '@/api/post.api';
 import { useCurrentUserStore } from '@/stores/currentUser';
 import { useMessage } from 'naive-ui';
-import { RouterLink } from 'vue-router';
 const posts = ref([]);
-const router = useRouter();
 const user = useCurrentUserStore();
 const message = useMessage();
 const loading = ref(true);
@@ -52,7 +50,7 @@ onBeforeMount(loadPosts);
         <HfLoading v-if="loading"/>
         <div v-else class="container">
           <div class="wide posts-container" v-if="posts.length > 0">
-            <HfPost v-for="post in posts" :key="post.id" :postInfor="post" :isEdit="true" @click="() => goToDetailProduct(post.id)" />
+            <HfPost v-for="post in posts" :key="post.id" :postInfor="post" :isEdit="true"/>
           </div>
           <HfNoData v-else/>
         </div>
