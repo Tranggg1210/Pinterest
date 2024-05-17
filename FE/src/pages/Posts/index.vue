@@ -1,29 +1,28 @@
 <script setup>
+import { createCollection, getCollectionByUserId } from '@/api/collection.api';
 import { createPost } from '@/api/post.api';
 import { viVN } from 'naive-ui';
-import { ref, reactive } from 'vue';
+import { ref, reactive, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 
 const message = useMessage();
 const loadingBar = useLoadingBar();
 const router = useRouter();
 const showModal = ref(false);
-const generalOptions = ref([
-    { label: 'Chưa có bảng nào được tạo', value: '' },
-])
+const generalOptions = ref([])
 const posts = reactive({
   link: null,
   caption: null,
   detail: null,
-  table: null,
   theme: null,
+  collectionId: null,
   file: null
 });
 const table = ref({
-  name: null,
-  title: null
+  name: null
 })
 const formRef = ref(null);
+const formTableRef = ref(null);
 const rules = {
   caption: {
     required: true,
@@ -39,6 +38,34 @@ const rules = {
     trigger: ['blur', 'input']
   },
 };
+const rulesTable = {
+  name: {
+    required: true,
+    validator: (_, name) => {
+      if (name === null || typeof name === 'undefined') {
+        return new Error('Vui lòng nhập tên bảng!');
+      }
+
+      if (name.trim() === '') {
+        return new Error('Vui lòng nhập tên bảng!');
+      }
+    },
+    trigger: ['blur', 'input']
+  },
+};
+const loadTableByUserId = async() => {
+  try {
+    const result = await getCollectionByUserId();
+    let data = result?.map(choose => (
+      {label: choose.name, value: choose.id}
+    ));
+    generalOptions.value = data;
+  } catch (error) {
+    console.log(error);
+    message.error("Lấy danh sách bảng thất bại!!!")
+  }
+}
+onBeforeMount(loadTableByUserId)
 const beforeUpload = async(data) => {
   try {
     loadingBar.start();
@@ -73,9 +100,7 @@ const handleCreatePost = async() => {
       }
       loadingBar.start();
       try {
-        const result = await createPost(posts);
-        console.log(posts);
-        console.log(result)
+        await createPost(posts);
         message.success('Tạo bài viết thành công!!!');
         setTimeout(() => {
           router.push('/');
@@ -83,6 +108,24 @@ const handleCreatePost = async() => {
       } catch (err) {
         loadingBar.error()
         message.error("Tạo bài viết thất bại");
+      }
+      loadingBar.finish();
+    }
+  });
+}
+const handleCreateTable = async() => {
+  formTableRef.value?.validate(async (errors) => {
+    if (!errors) {
+      loadingBar.start();
+      try {
+        await createCollection({name: table.value.name});
+        message.success("Tạo bảng thành công!!!");
+        showModal.value = false;
+        await loadTableByUserId();
+      } catch (error) {
+        loadingBar.error()
+        console.log(error);
+        message.error('Tạo bảng thất bại!!!');
       }
       loadingBar.finish();
     }
@@ -133,11 +176,11 @@ const handleCreatePost = async() => {
                 }"
               />
             </n-form-item>
-            <n-form-item path="table" label="Bảng">
+            <n-form-item path="collectionId" label="Bảng">
                 <n-select
-                    class="posts-input"
+                    class="posts-input posts-select"
                     :bordered="false"
-                    v-model:value="posts.table"
+                    v-model:value="posts.collectionId"
                     placeholder="Chọn bảng"
                     :options="generalOptions"
                 />
@@ -171,12 +214,28 @@ const handleCreatePost = async() => {
     title="Modal"
     style="width: 60%"
     :bordered="false"
-    :segmented="segmented"
   >
-    Content
-    <template #footer>
-      Footer
-    </template>
+  <n-form
+    ref="formTableRef"
+    :model="table"
+    :rules="rulesTable"
+    size="large"
+  >
+    <n-form-item label="Tên bảng" path="name">
+      <n-input v-model:value="table.name"  placeholder="Tên bảng" class="posts-input" />
+    </n-form-item>
+    <n-form-item class="container-end">
+        <n-button @click="() => {
+          showModal = false;
+          table.name = ''
+        }">
+          Hủy
+        </n-button>
+        <n-button type="success" style="color: white; margin-left:12px ;" @click="handleCreateTable">
+          Tạo bảng
+        </n-button>
+    </n-form-item>
+  </n-form>
   </n-modal>
 </template>
 

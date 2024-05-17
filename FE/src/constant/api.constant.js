@@ -23,6 +23,8 @@ export const ApiConstant = {
     checkFollow: 'Follow/checkFollower'
   },
   collection: {
-    collectionAll: 'Posts/getAll'
+    collectionAll: 'Posts/getAll',
+    createCollection: 'Collections/create',
+    getCollectionByUserId: 'Collections/getByUserId'
   }
 };

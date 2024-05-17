@@ -116,7 +116,13 @@ const handleUnFollowUser = async() => {
 
             <div class="detail-right-title">{{ post?.caption ? post.caption : "Bài viết chưa có tiêu đề" }}</div>
             <div class="detail-right-des">
-              {{ post?.detail ? post.detail : "👉Bài viết chưa có mô tả👈" }}
+              {{ post?.detail && post.detail }}
+            </div>
+            <div class="detail-right-hashtab">
+              {{ post?.theme && post.theme }}
+            </div>
+            <div class="detail-right-link">
+               {{ post?.link && `👉Nguồn tham khảo: ${ post.link} 👈` }}
             </div>
             <div class="detail-right-user">
               <div class="user-avatar">

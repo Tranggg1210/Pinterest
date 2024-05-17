@@ -82,6 +82,9 @@
   font-size: 15px;
   transition: all 0.4s linear;
 }
+.posts-select{
+  border-radius: 4px 0 0 4px;
+}
 .btn-container {
   @include flex(center, center);
   button {
@@ -101,11 +104,14 @@
 .btn-create-table{
   color: #fff !important;
   padding: 25px 16px;
+  border-radius: 0 4px 4px 0;
+  border: 1px solid #18a058;
   &:hover{
     color: #fff;
     opacity: 0.6;
   }
 }
-.custom-card{
-  width: 600px;
+.container-end{
+  display: block;
+  @include flex(end, center)
 }
