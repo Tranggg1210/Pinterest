@@ -1,20 +1,28 @@
 <script setup>
 import { defineProps, onBeforeMount, ref } from 'vue';
 import router from '@/router';
-import { deletePostById } from '@/api/post.api';
+import { deletePostById, updatePost } from '@/api/post.api';
+import { createCollection, getCollectionByPostId, getCollectionByUserId } from '@/api/collection.api';
 const { postInfor, isEdit } = defineProps(['postInfor', 'isEdit']);
 const imageURL = ref('');
 const showModalEdit = ref(false);
 const message = useMessage();
 const loadingBar = useLoadingBar();
+const showModal = ref(false);
+const generalOptions = ref([]);
 const posts = reactive({
   link: postInfor.link,
   caption: postInfor.caption,
   detail: postInfor.detail,
+  collectionId: null,
   theme: postInfor.theme,
   file: postInfor.thumbnailUrl
 });
+const table = ref({
+  name: null
+})
 const formRef = ref(null);
+const formTableRef = ref(null);
 const rules = {
   caption: {
     required: true,
@@ -30,7 +38,21 @@ const rules = {
     trigger: ['blur', 'input']
   },
 };
+const rulesTable = {
+  name: {
+    required: true,
+    validator: (_, name) => {
+      if (name === null || typeof name === 'undefined') {
+        return new Error('Vui lòng nhập tên bảng!');
+      }
 
+      if (name.trim() === '') {
+        return new Error('Vui lòng nhập tên bảng!');
+      }
+    },
+    trigger: ['blur', 'input']
+  },
+};
 const handleURLImage = async (url) => {
   try {
     const response = await fetch(url);
@@ -40,9 +62,35 @@ const handleURLImage = async (url) => {
     console.error('Lỗi khi tải ảnh:', error);
   }
 };
-onBeforeMount(() => handleURLImage(postInfor?.thumbnailUrl));
-const handleShowModal = () => {
-  showModalEdit.value = true
+const loadTableByUserId = async() => {
+  try {
+    const result = await getCollectionByUserId();
+    let data = result?.map(choose => (
+      {label: choose.name, value: choose.id}
+    ));
+    generalOptions.value = data;
+  } catch (error) {
+    console.log(error);
+    message.error("Lấy danh sách bảng thất bại!!!")
+  }
+}
+const loadCollectionId = async() => {
+  try {
+    const result = await getCollectionByPostId(postInfor.id);
+    posts.collectionId = result[0]?.id || null;
+  } catch (error) {
+    console.log(error);
+    message.error("Lấy id collection thất bại!!!")
+  }
+}
+onBeforeMount(() => {
+  handleURLImage(postInfor?.thumbnailUrl);
+})
+
+const handleShowModal = async() => {
+  showModalEdit.value = true;
+  await loadTableByUserId();
+  await loadCollectionId();
 }
 const goToDetailProduct = (id) => {
   router.push(`/detail-post/${id}`)
@@ -71,21 +119,39 @@ const beforeUpload = async(data) => {
     loadingBar.finish();
   }
 };
-
+const handleCreateTable = async() => {
+  formTableRef.value?.validate(async (errors) => {
+    if (!errors) {
+      loadingBar.start();
+      try {
+        await createCollection({name: table.value.name});
+        message.success("Tạo bảng thành công!!!");
+        showModal.value = false;
+        await loadTableByUserId();
+      } catch (error) {
+        loadingBar.error()
+        console.log(error);
+        message.error('Tạo bảng thất bại!!!');
+      }
+      loadingBar.finish();
+    }
+  });
+}
 const handleUpdatePost = async() => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
-      if(!posts.file)
-      {
-        message.error("Vui lòng upload ảnh của bài viết");
-        return;
-      }
       loadingBar.start();
       try {
-        message.success('Tạo bài viết thành công!!!');
+        if(posts.file == postInfor.thumbnailUrl)
+        {
+          posts.file = null;
+        }
+        await updatePost(postInfor.id, posts);
+        window.location.reload();
+        message.success('Cập nhập bài viết thành công!!!');
       } catch (err) {
         loadingBar.error()
-        message.error("Tạo bài viết thất bại");
+        message.error("Cập nhập bài viết thất bại");
       }
       loadingBar.finish();
     }
@@ -118,7 +184,7 @@ const handleDeletePost = async() => {
         </div>
         <div class="model__footer">
           <IconEdit class="icon" v-show="isEdit" @click.stop="handleShowModal"/>
-          <n-drawer v-model:show="showModalEdit" :width="502">
+          <n-drawer v-model:show="showModalEdit" id="modal-dragger" style="width: 40%;">
             <n-drawer-content>
               <template #header>
                 Chỉnh sửa bài viết
@@ -135,8 +201,8 @@ const handleDeletePost = async() => {
                     @before-upload="beforeUpload"
                     :default-file-list="posts.file ? [{
                       id: '1',
-                      name: 'anh',
-                      url: posts.file
+                      name: 'anh-ban-dau',
+                      url: postInfor?.thumbnailUrl
                     }] : []"
                   >
                     <n-button>Upload ảnh</n-button>
@@ -156,6 +222,18 @@ const handleDeletePost = async() => {
                         maxRows: 6
                       }"
                     />
+                  </n-form-item>
+                  <n-form-item path="collectionId" label="Bảng">
+                    <n-select
+                        class="posts-input posts-select"
+                        :bordered="false"
+                        v-model:value="posts.collectionId"
+                        placeholder="Chọn bảng"
+                        :options="generalOptions"
+                    />
+                    <n-button type="success" class="btn-create-table" @click="showModal = true">
+                      Tạo bảng
+                    </n-button>
                   </n-form-item>
                   <n-form-item label="Hashtab" path="theme">
                     <n-input v-model:value="posts.theme" placeholder="Thêm hashtab cho bài viết" class="posts-input" />
@@ -178,6 +256,36 @@ const handleDeletePost = async() => {
       </div>
     </div>
   </div>
+  <n-modal
+    v-model:show="showModal"
+    class="custom-card"
+    preset="card"
+    title="Modal"
+    style="width: 60%;"
+    :bordered="false"
+  >
+  <n-form
+    ref="formTableRef"
+    :model="table"
+    :rules="rulesTable"
+    size="large"
+  >
+  <n-form-item label="Tên bảng" path="name">
+    <n-input v-model:value="table.name"  placeholder="Tên bảng" class="posts-input" />
+  </n-form-item>
+  <n-form-item class="container-end">
+      <n-button @click="() => {
+        showModal = false;
+        table.name = ''
+      }">
+        Hủy
+      </n-button>
+      <n-button type="success" style="color: white; margin-left:12px ;" @click="handleCreateTable">
+        Tạo bảng
+      </n-button>
+    </n-form-item>
+  </n-form>
+  </n-modal>
 </template>
 
 <style scoped lang="scss">
@@ -272,5 +380,19 @@ img {
 }
 .posts-input{
   border: 1px solid #ddd;
+}
+.posts-select{
+  border-radius: 4px 0 0 4px;
+}
+.btn-create-table{
+  color: #fff;
+  border-radius: 0 4px 4px 0;
+  border: 1px solid #18a058;
+  &:hover{
+    color: #fff;
+  }
+}
+#modal-dragger{
+  width: 1000px !important;
 }
 </style>

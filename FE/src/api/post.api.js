@@ -14,12 +14,13 @@ const postApi = () => ({
   getPostById: async(id) => api.get(`${ApiConstant.post.postById}/${id}`),
   getAllPostByUserId: async() => api.get(ApiConstant.post.postByUserId),
   deletePostById: async(id) => api.delete(`${ApiConstant.post.deletePostById}/${id}`),
-  updatePost: async({link, caption, detail, theme, file}) => apiUpload.post(`${ApiConstant.post.updatePostById}/${id}`,{
+  updatePost: async(id,{link, caption, detail, theme, file,collectionId}) => apiUpload.put(`${ApiConstant.post.updatePostById}/${id}`,{
     link, 
     caption, 
     detail, 
     theme,
-    file
+    file,
+    collectionId
   })
 });
 

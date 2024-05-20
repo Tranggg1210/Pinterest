@@ -25,6 +25,7 @@ export const ApiConstant = {
   collection: {
     collectionAll: 'Posts/getAll',
     createCollection: 'Collections/create',
-    getCollectionByUserId: 'Collections/getByUserId'
+    getCollectionByUserId: 'Collections/getByUserId',
+    getCollectionByPostId: 'Collections/getByPostId'
   }
 };
