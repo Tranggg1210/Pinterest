@@ -102,7 +102,7 @@ onBeforeMount(async () => {
           <HfLoading v-if="loading"/>
           <div v-else>
             <div v-if="true">
-              <n-space vertical class="table-slider">
+              <n-space vertical class="table-slider" v-if="tableRef.length > 0">
                 <n-carousel
                 class="carousel"
                 autoplay
@@ -121,7 +121,11 @@ onBeforeMount(async () => {
                 </template>
                 </n-carousel>
               </n-space>
-              <div class="posts-container"></div>
+              <div class="container">
+                <div class="wide posts-container">
+
+                </div>
+              </div>
             </div>
             <HfNoData v-else/>
           </div>

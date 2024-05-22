@@ -10,7 +10,8 @@ export const ApiConstant = {
     postById: 'Posts/getById',
     postByUserId: 'Posts/getByUserId',
     deletePostById: 'Posts/delete',
-    updatePostById: 'Posts/update'
+    updatePostById: 'Posts/update',
+    getByCollectionId: 'Posts/getByCollectionId'
   },
   user: {
     currentUser: 'Users/getLoginUser',
@@ -28,5 +29,6 @@ export const ApiConstant = {
     getCollectionByUserId: 'Collections/getByUserId',
     getCollectionByPostId: 'Collections/getByPostId',
     savePost: "Posts/toggleCollection",
+    getById: 'Collections/getById'
   }
 };

@@ -21,7 +21,10 @@ const postApi = () => ({
     theme,
     file,
     collectionId
-  })
+  }),
+  getPostByCollectionId: async(id) => {
+    return api.get(`${ApiConstant.post.getByCollectionId}/${id}`);
+  }
 });
 
 export const { 
@@ -30,5 +33,6 @@ export const {
   getPostById,
   getAllPostByUserId,
   deletePostById,
-  updatePost
+  updatePost,
+  getPostByCollectionId
  } = postApi();

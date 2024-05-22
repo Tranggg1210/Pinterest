@@ -1,36 +1,101 @@
 <script setup>
+import { getCollectionById } from '@/api/collection.api';
+import { getPostByCollectionId } from '@/api/post.api';
 import { useMessage } from 'naive-ui';
+import { onBeforeMount } from 'vue';
+import { useRouter } from 'vue-router';
+
+const message = useMessage();
 const loading = ref(false);
+const router = useRouter();
+const collectionInfor = ref({});
+const posts = ref([]);
+const options = [
+    {
+      label: "Câp nhập hình nền",
+      key: 1,
+    },
+    {
+      label: "Cập nhập bộ sưu tập",
+      key: 2
+    },
+    {
+      label: "Xóa bộ sưu tập",
+      key: 4
+    }
+];
+
+const loadCollection = async() => {
+  try {
+    const result = await getCollectionById(router.currentRoute.value.params.id);
+    collectionInfor.value = result;
+  } catch (error) {
+    console.log(error);
+    message.error("Lỗi không thể tải được dữ liệu của collection");
+  }
+}
+const loadPostOfCollection = async() => {
+  try {
+    loading.value = true;
+    const result = await getPostByCollectionId(collectionInfor.value.id);
+    posts.value = result;
+    loading.value = false;
+    console.log(result);
+  } catch (error) {
+    console.log(error);
+    loading.value = false;
+    message.error("Lỗi không thể tải được danh sách bài viết của collection");
+  }
+}
+onBeforeMount(async() => {
+  await loadCollection();
+  await loadPostOfCollection();
+});
+const handleName = (name) => {
+  const formattedName = name
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/(^|\s)\S/g, (match) => match.toUpperCase());
+
+  return formattedName;
+};
 </script>
 <template>
   <div class="collection-favorite container">
     <div class="wide">
       <div class="basic-collection container">
         <div class="collection-background">
-          <!-- <img
-            :src=""
-            alt="background"
-            v-if=""
-          /> -->
           <img
+            :src="collectionInfor?.backgroundUrl"
+            alt="background"
+            v-if="collectionInfor?.backgroundUrl"
+          />
+          <img
+            v-else
             src="@/assets/images/collection.png"
             alt="background"
             style="width: 72%;"
           />
         </div>
         <h1 class="collection-name">
-          {{ "Nguyễn Thị Trang" }}
+          {{ collectionInfor?.name ? handleName(collectionInfor?.name) : "Chưa xác định" }}
         </h1>
         <p class="collection-account">
-          <IconSum size="20" />
-          {{ "0" }} bài viết
+          <IconFileDescription size="20" />
+          {{ collectionInfor?.description || "Chưa có mô tả"  }}
         </p>
+        <n-space>
+          <n-dropdown trigger="click" :options="options">
+            <n-button>Chỉnh sửa bộ sưu tập</n-button>
+          </n-dropdown>
+        </n-space>
         <div>
           <HfLoading v-if="loading"/>
           <div v-else class="container">
-            <!-- <div class="wide posts-container">
-            </div> -->
-            <HfNoData />
+            <div class="wide posts-container" v-if="posts.length > 0">
+              <HfPost v-for="post in posts" :key="post.id" :postInfor="post" :isEdit="false"/>
+            </div>
+            <HfNoData v-else />
           </div>
         </div>
       </div>

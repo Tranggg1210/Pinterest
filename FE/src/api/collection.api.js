@@ -6,6 +6,7 @@ const collectionApi = () => ({
   createCollection: async({name}) => api.post(ApiConstant.collection.createCollection,{name}),
   getCollectionByUserId: async() => api.get(ApiConstant.collection.getCollectionByUserId),
   getCollectionByPostId: async(id) => api.get(`${ApiConstant.collection.getCollectionByPostId}/${id}`),
+  getCollectionById: async(id) => api.get(`${ApiConstant.collection.getById}/${id}`),
   savePostInCollection: async({postId, collectionId}) => {
     const params = new URLSearchParams();
     params.append('postId', postId);
@@ -21,5 +22,6 @@ export const {
     createCollection,
     getCollectionByUserId,
     getCollectionByPostId,
+    getCollectionById,
     savePostInCollection
 } =  collectionApi();
