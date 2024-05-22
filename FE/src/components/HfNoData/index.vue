@@ -13,7 +13,7 @@
   @include flex(center, center);
 }
 img {
-  width: 40%;
+  width: 28%;
   @include mobile {
     width: 80%;
   }
