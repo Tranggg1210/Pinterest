@@ -1,34 +1,59 @@
 <script setup>
-import { getCollectionById } from '@/api/collection.api';
+import { deleteCollection, getCollectionById, updateBackground, updateCollection } from '@/api/collection.api';
 import { getPostByCollectionId } from '@/api/post.api';
-import { useMessage } from 'naive-ui';
+import { useDialog, useLoadingBar, useMessage } from 'naive-ui';
 import { onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 
 const message = useMessage();
 const loading = ref(false);
 const router = useRouter();
-const collectionInfor = ref({});
+const collectionInfor = ref(null);
+const loadingBar = useLoadingBar()
 const posts = ref([]);
+const showModal = ref(false);
+const dialog = useDialog();
+const collectionForm = ref({
+  file: null,
+  name: null,
+  description: null
+});
+const formRef = ref(null);
+const rulesCollection = {
+  name: {
+    required: true,
+    validator: (_, name) => {
+      if (name === null || typeof name === 'undefined') {
+        return new Error('Vui lòng nhập tên bộ sưu tập!');
+      }
+
+      if (name.trim() === '') {
+        return new Error('Vui lòng nhập tên bộ sưu tập!');
+      }
+    },
+    trigger: ['blur', 'input']
+  },
+}
 const options = [
     {
-      label: "Câp nhập hình nền",
-      key: 1,
-    },
-    {
       label: "Cập nhập bộ sưu tập",
-      key: 2
+      key: 1
     },
     {
       label: "Xóa bộ sưu tập",
-      key: 4
+      key: 2
     }
 ];
 
 const loadCollection = async() => {
   try {
-    const result = await getCollectionById(router.currentRoute.value.params.id);
+    const result = await getCollectionById(router.currentRoute.value.params?.id);
     collectionInfor.value = result;
+    collectionForm.value = {
+      file: collectionInfor.value.backgroundUrl,
+      name: collectionInfor.value.name,
+      description: collectionInfor.value.description
+    }
   } catch (error) {
     console.log(error);
     message.error("Lỗi không thể tải được dữ liệu của collection");
@@ -37,10 +62,12 @@ const loadCollection = async() => {
 const loadPostOfCollection = async() => {
   try {
     loading.value = true;
-    const result = await getPostByCollectionId(collectionInfor.value.id);
-    posts.value = result;
+    if(collectionInfor.value)
+    {
+      const result = await getPostByCollectionId(collectionInfor?.value.id);
+      posts.value = result;
+    }
     loading.value = false;
-    console.log(result);
   } catch (error) {
     console.log(error);
     loading.value = false;
@@ -49,7 +76,10 @@ const loadPostOfCollection = async() => {
 }
 onBeforeMount(async() => {
   await loadCollection();
-  await loadPostOfCollection();
+  if(collectionInfor.value)
+  {
+    await loadPostOfCollection();
+  }
 });
 const handleName = (name) => {
   const formattedName = name
@@ -59,47 +89,162 @@ const handleName = (name) => {
 
   return formattedName;
 };
+const beforeUpload = async(data) => {
+  try {
+    loadingBar.start();
+    if (
+      data.file.file?.type === 'image/png' ||
+      data.file.file?.type === 'image/jpg' ||
+      data.file.file?.type === 'image/jpeg' ||
+      data.file.file?.type === 'image/gif' ||
+      data.file.file?.type === 'image/webp'
+    ) {
+      collectionForm.value.file = data.file.file;
+      return true;
+    }
+    message.error('Vui lòng nhập đúng định dạng ảnh');
+    return false;
+  } catch (err) {
+    console.log(err);
+    message.error("Cập nhập ảnh người dùng không thành công!");
+  }finally{
+    loadingBar.finish();
+  }
+};
+const handleUpdateCollection = async() =>{
+  try {
+    loadingBar.start();
+    await updateCollection(collectionInfor.value.id, {
+      name: collectionForm.value.name,
+      description: collectionForm.value.description
+    });
+    if(collectionForm.value.file !== collectionInfor.value.backgroundUrl)
+    {
+      await updateBackground(collectionInfor.value.id, {
+        file: collectionForm.value.file
+      })
+    }
+    showModal.value = false;
+    await loadCollection();
+    message.success("Cập nhập bộ sưu tập thành công");
+  } catch (error) {
+    console.log(error);
+    loadingBar.error();
+    message.error("Lỗi không thể cập nhập bộ sưu tập ");
+  }
+  loadingBar.finish();
+}
+const handleDeleteCollection = () => {
+  dialog.warning({
+    title: 'Xóa bộ sưu tập',
+    content: 'Bạn có chắc chắn muốn xóa bộ sưu tập này này?',
+    positiveText: 'Hủy',
+    negativeText: 'Xóa bộ sưu tập',
+    onNegativeClick: async () => {
+      try {
+        loadingBar.start();
+        await deleteCollection(collectionInfor.value.id);
+        message.success('Xóa bộ sưu tập thành công!');
+        router.push('/profile-favorite');
+      } catch (err) {
+        console.log(err);
+        message.error("Xóa bộ sưu tập không thành công!")
+      }
+      loadingBar.finish();
+    },
+    onPositiveClick: () => {
+
+    }
+  });
+};
+const handleSelectDropdown = (key) => {
+  if(key === 1)
+  {
+    showModal.value = true;
+  }else{
+    handleDeleteCollection();
+  }
+}
+const gotoPage = () => {
+  router.push('/profile-favorite')
+}
 </script>
 <template>
-  <div class="collection-favorite container">
-    <div class="wide">
-      <div class="basic-collection container">
-        <div class="collection-background">
-          <img
-            :src="collectionInfor?.backgroundUrl"
-            alt="background"
-            v-if="collectionInfor?.backgroundUrl"
-          />
-          <img
-            v-else
-            src="@/assets/images/collection.png"
-            alt="background"
-            style="width: 72%;"
-          />
-        </div>
-        <h1 class="collection-name">
-          {{ collectionInfor?.name ? handleName(collectionInfor?.name) : "Chưa xác định" }}
-        </h1>
-        <p class="collection-account">
-          <IconFileDescription size="20" />
-          {{ collectionInfor?.description || "Chưa có mô tả"  }}
-        </p>
-        <n-space>
-          <n-dropdown trigger="click" :options="options">
-            <n-button>Chỉnh sửa bộ sưu tập</n-button>
-          </n-dropdown>
-        </n-space>
-        <div>
-          <HfLoading v-if="loading"/>
-          <div v-else class="container">
-            <div class="wide posts-container" v-if="posts.length > 0">
-              <HfPost v-for="post in posts" :key="post.id" :postInfor="post" :isEdit="false"/>
+  <div>
+    <div class="collection-favorite container">
+      <div class="wide">
+        <div class="basic-collection container">
+          <div class="collection-background">
+            <img
+              :src="collectionInfor?.backgroundUrl"
+              alt="background"
+              v-if="collectionInfor?.backgroundUrl"
+            />
+            <img
+              v-else
+              src="@/assets/images/collection.png"
+              alt="background"
+              style="width: 72%;"
+            />
+          </div>
+          <h1 class="collection-name">
+            {{ collectionInfor?.name ? handleName(collectionInfor?.name) : "Chưa xác định" }}
+          </h1>
+          <p class="collection-account">
+            <IconFileDescription size="20" />
+            {{ collectionInfor?.description || "Chưa có mô tả"  }}
+          </p>
+          <n-space>
+            <n-button @click="gotoPage">Quay lại trang trước</n-button>
+            <n-dropdown trigger="click" :options="options" @select="handleSelectDropdown">
+              <n-button>Chỉnh sửa bộ sưu tập</n-button>
+            </n-dropdown>
+          </n-space>
+          <div>
+            <HfLoading v-if="loading"/>
+            <div v-else class="container">
+              <div class="wide posts-container" v-if="posts.length > 0">
+                <HfPost v-for="post in posts" :key="post.id" :postInfor="post" :isEdit="false"/>
+              </div>
+              <HfNoData v-else />
             </div>
-            <HfNoData v-else />
           </div>
         </div>
       </div>
     </div>
+    <n-modal
+      v-model:show="showModal"
+      class="custom-card"
+      preset="card"
+      title="Cập nhập bộ sưu tập"
+      style="width: 60%;"
+      :bordered="false"
+    >
+    <n-form
+      ref="formRef"
+      :model="collectionForm"
+      :rules="rulesCollection"
+      size="large"
+    >
+    <n-form-item label="Tên bộ sưu tập:" path="name">
+      <n-input v-model:value="collectionForm.name"  placeholder="Tên bộ sưu tập" class="posts-input" />
+    </n-form-item>
+    <n-form-item label="Mô tả bộ sưu tập:" path="description">
+      <n-input v-model:value="collectionForm.description"  placeholder="Mô tả bộ sưu tập" class="posts-input" />
+    </n-form-item>
+    <n-form-item label="Ảnh minh họa của bài viết:" path="file">
+      <n-upload 
+        @before-upload="beforeUpload">
+        <n-button>Upload ảnh</n-button>
+      </n-upload>
+    </n-form-item>
+    <n-form-item class="container-end">
+        <n-button type="success" style="color: white; margin-left:12px ;" @click="handleUpdateCollection">
+          Cập nhập bộ sưu tập
+        </n-button>
+      </n-form-item>
+    </n-form>
+    </n-modal>
   </div>
 </template>
 
@@ -152,6 +297,13 @@ const handleName = (name) => {
 }
 .posts-container{
   margin: 40px 0;
+}
+.posts-input{
+  border: 1px solid #ccc;
+}
+.container-end{
+  display: flex;
+  justify-content: end;
 }
 </style>
 <route lang="yaml">

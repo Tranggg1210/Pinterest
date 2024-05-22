@@ -275,7 +275,7 @@ const handleSaveCollection = async() => {
     v-model:show="showModal"
     class="custom-card"
     preset="card"
-    title="Modal"
+    title="Thêm bảng"
     style="width: 60%;"
     :bordered="false"
   >

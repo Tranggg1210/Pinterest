@@ -29,6 +29,7 @@ const loadCollections = async() => {
     const result = await getCollectionByUserId();
     tableRef.value = result;
     loading.value = false;
+    console.log(result);
     isActiveButton.value = false;
     message.success("Tải danh sách bảng thành công")
   } catch (error) {
@@ -37,7 +38,6 @@ const loadCollections = async() => {
     message.error("Tải danh sách bảng thất bại")
   }
 }
-console.log(tableRef);
 const updateNumberSlides = () => {
   const width = window.innerWidth;
   if (width < 700) {
@@ -113,9 +113,7 @@ onBeforeMount(async () => {
                 :slides-per-view="numberSlides"
                 draggable
                 >
-                  <div v-for="(tableInfor, index) in tableRef">
-                    <hf-card-collection :class="`collection-item-${index % 6 + 1}`" :key="index" :tableInfor="tableInfor"/>
-                  </div>
+                  <HfCardCollection  v-for="(tableInfor, index) in tableRef" :class="`collection-item-${index % 6 + 1}`" :key="tableInfor.id" :tableInfor="tableInfor"/>
                  <template #dots="{ total, currentIndex, to }">
                   <hf-custom-dots :total="total" :currentIndex="currentIndex" @to="to"></hf-custom-dots>
                 </template>

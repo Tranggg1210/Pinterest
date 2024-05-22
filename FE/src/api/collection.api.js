@@ -1,5 +1,5 @@
 import { ApiConstant } from '@/constant/api.constant';
-import { api} from '.';
+import { api, apiUpload} from '.';
 
 const collectionApi = () => ({
   getAllCollection: async() => api.get(ApiConstant.collection.collectionAll),
@@ -14,7 +14,10 @@ const collectionApi = () => ({
       params.append('collectionId', collectionId);
     }
     return api.post(`${ApiConstant.collection.savePost}?${params.toString()}`);
-  }
+  },
+  updateBackground: (id, {file}) => apiUpload.post(`${ApiConstant.collection.updateBackgound}/${id}`,{file}),
+  updateCollection: async(id, {name, description}) => api.put(`${ApiConstant.collection.updateCollection}/${id}`,{name, description}),
+  deleteCollection: async(id) => api.delete(`${ApiConstant.collection.deleteCollection}/${id}`)
 });
 
 export const { 
@@ -23,5 +26,8 @@ export const {
     getCollectionByUserId,
     getCollectionByPostId,
     getCollectionById,
-    savePostInCollection
+    savePostInCollection,
+    updateBackground,
+    updateCollection,
+    deleteCollection
 } =  collectionApi();
