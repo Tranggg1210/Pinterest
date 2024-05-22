@@ -1,6 +1,6 @@
 <script setup>
 import { getAllCollection } from '@/api/collection.api';
-import { getAllPost, getPostById } from '@/api/post.api';
+import { getPostById } from '@/api/post.api';
 import { checkFollowByUserId, followerByUserId, getUserById, unFollowerByUserId } from '@/api/user.api';
 import { useLoadingBar, useMessage } from 'naive-ui';
 import { useRouter } from 'vue-router';

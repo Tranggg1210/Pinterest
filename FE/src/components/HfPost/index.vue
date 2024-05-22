@@ -2,7 +2,7 @@
 import { defineProps, onBeforeMount, ref } from 'vue';
 import router from '@/router';
 import { deletePostById, updatePost } from '@/api/post.api';
-import { createCollection, getCollectionByPostId, getCollectionByUserId } from '@/api/collection.api';
+import { createCollection, getCollectionByPostId, getCollectionByUserId, savePostInCollection } from '@/api/collection.api';
 const { postInfor, isEdit } = defineProps(['postInfor', 'isEdit']);
 const imageURL = ref('');
 const showModalEdit = ref(false);
@@ -172,6 +172,21 @@ const handleDeletePost = async() => {
   }
   loadingBar.finish();
 }
+
+const handleSaveCollection = async() => {
+  loadingBar.start();
+  try {
+    await savePostInCollection({
+      postId: postInfor.id
+    });
+    message.success('Lưu bài viết thành công!!!');
+  } catch (error) {
+    console.log(error);
+    loadingBar.error(); 
+    message.error("Lưu bài viết thất bại");
+  }
+  loadingBar.finish();
+}
 </script>
 
 <template>
@@ -179,8 +194,8 @@ const handleDeletePost = async() => {
     <div class="post-image">
       <img :src="postInfor?.thumbnailUrl" alt="image" loading="lazy" />
       <div class="model" @click="() => goToDetailProduct(postInfor?.id)">
-        <div class="model__header">
-          <button class="btn-post-save">Lưu</button>
+        <div class="model__header" v-if="!isEdit">
+          <button class="btn-post-save" @click.stop="handleSaveCollection">Lưu</button>
         </div>
         <div class="model__footer">
           <IconEdit class="icon" v-show="isEdit" @click.stop="handleShowModal"/>
