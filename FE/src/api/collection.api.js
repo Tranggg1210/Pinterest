@@ -17,7 +17,8 @@ const collectionApi = () => ({
   },
   updateBackground: (id, {file}) => apiUpload.post(`${ApiConstant.collection.updateBackgound}/${id}`,{file}),
   updateCollection: async(id, {name, description}) => api.put(`${ApiConstant.collection.updateCollection}/${id}`,{name, description}),
-  deleteCollection: async(id) => api.delete(`${ApiConstant.collection.deleteCollection}/${id}`)
+  deleteCollection: async(id) => api.delete(`${ApiConstant.collection.deleteCollection}/${id}`),
+  isCheckSaveCollection: async(id) => api.get(`${ApiConstant.collection.checkSaveCollection}/${id}`)
 });
 
 export const { 
@@ -29,5 +30,6 @@ export const {
     savePostInCollection,
     updateBackground,
     updateCollection,
-    deleteCollection
+    deleteCollection,
+    isCheckSaveCollection
 } =  collectionApi();

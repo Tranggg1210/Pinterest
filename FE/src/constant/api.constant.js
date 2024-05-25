@@ -32,6 +32,7 @@ export const ApiConstant = {
     getById: 'Collections/getById',
     updateBackgound: 'Collections/background',
     updateCollection: 'Collections/update',
-    deleteCollection: 'Collections/delete'
+    deleteCollection: 'Collections/delete',
+    checkSaveCollection: 'Collections/checkOwnCollection'
   }
 };

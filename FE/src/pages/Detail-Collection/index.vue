@@ -64,8 +64,15 @@ const loadPostOfCollection = async() => {
     loading.value = true;
     if(collectionInfor.value)
     {
-      const result = await getPostByCollectionId(collectionInfor?.value.id);
-      posts.value = result;
+      if(collectionInfor.value.isDefault)
+      {
+        const result = await getPostByCollectionId();
+        posts.value = result;
+      }else{
+        const result = await getPostByCollectionId(collectionInfor?.value.id);
+        posts.value = result;
+        console.log(result);
+      }
     }
     loading.value = false;
   } catch (error) {
@@ -196,9 +203,10 @@ const gotoPage = () => {
           </p>
           <n-space>
             <n-button @click="gotoPage">Quay lại trang trước</n-button>
-            <n-dropdown trigger="click" :options="options" @select="handleSelectDropdown">
+            <n-dropdown trigger="click" :options="options" @select="handleSelectDropdown" v-if="!collectionInfor?.isDefault">
               <n-button>Chỉnh sửa bộ sưu tập</n-button>
             </n-dropdown>
+            <n-button v-else @click=" showModal = true;">Chỉnh sửa bộ sưu tập</n-button>
           </n-space>
           <div>
             <HfLoading v-if="loading"/>

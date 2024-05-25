@@ -2,7 +2,7 @@
 import { defineProps, onBeforeMount, ref } from 'vue';
 import router from '@/router';
 import { deletePostById, updatePost } from '@/api/post.api';
-import { createCollection, getCollectionByPostId, getCollectionByUserId, savePostInCollection } from '@/api/collection.api';
+import { createCollection, getCollectionByPostId, getCollectionByUserId, isCheckSaveCollection, savePostInCollection } from '@/api/collection.api';
 const { postInfor, isEdit } = defineProps(['postInfor', 'isEdit']);
 const imageURL = ref('');
 const showModalEdit = ref(false);
@@ -23,6 +23,7 @@ const table = ref({
 })
 const formRef = ref(null);
 const formTableRef = ref(null);
+const isCheckSave = ref(false);
 const rules = {
   caption: {
     required: true,
@@ -83,8 +84,18 @@ const loadCollectionId = async() => {
     message.error("Lấy id collection thất bại!!!")
   }
 }
-onBeforeMount(() => {
+const checkSaveCollection = async() => {
+  try {
+    const reusult = await isCheckSaveCollection(postInfor.id);
+    isCheckSave.value = reusult;
+  } catch (error) {
+    console.log(error);
+    message.error("Không thể check các bài viết đã lưu!!!")
+  }
+}
+onBeforeMount(async() => {
   handleURLImage(postInfor?.thumbnailUrl);
+  await checkSaveCollection();
 })
 
 const handleShowModal = async() => {
@@ -177,13 +188,24 @@ const handleSaveCollection = async() => {
   loadingBar.start();
   try {
     await savePostInCollection({
-      postId: postInfor.id
+      postId: postInfor?.id
     });
-    message.success('Lưu bài viết thành công!!!');
+    await checkSaveCollection();
+    if(!isCheckSave.value)
+    {
+      message.success('Hủy lưu bài viết thành công!!!');
+    }else{
+      message.success('Lưu bài viết thành công!!!');
+    }
   } catch (error) {
     console.log(error);
     loadingBar.error(); 
-    message.error("Lưu bài viết thất bại");
+    if(!isCheckSave.value)
+    {
+      message.error("Hủy lưu bài viết thất bại");
+    }else{
+      message.error("Lưu bài viết thất bại");
+    }
   }
   loadingBar.finish();
 }
@@ -195,7 +217,9 @@ const handleSaveCollection = async() => {
       <img :src="postInfor?.thumbnailUrl" alt="image" loading="lazy" />
       <div class="model" @click="() => goToDetailProduct(postInfor?.id)">
         <div class="model__header" v-if="!isEdit">
-          <button class="btn-post-save" @click.stop="handleSaveCollection">Lưu</button>
+          <button class="btn-post-save" @click.stop="handleSaveCollection">
+            {{ isCheckSave ? "Hủy lưu" : "Lưu" }}
+          </button>
         </div>
         <div class="model__footer">
           <IconEdit class="icon" v-show="isEdit" @click.stop="handleShowModal"/>
@@ -366,10 +390,11 @@ img {
   .btn-post-save {
     background-color: red;
     color: white;
-    font-weight: 700;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 600;
     font-size: 15px;
     border-radius: 20px;
-    padding: 14px 18px;
+    padding: 12px 18px;
     border: none;
     cursor: pointer;
     position: relative;

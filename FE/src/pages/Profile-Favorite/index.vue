@@ -1,6 +1,6 @@
 <script setup>
 import { getCollectionByUserId } from '@/api/collection.api';
-import { getAllPostByUserId } from '@/api/post.api';
+import { getAllPostByUserId, getPostByCollectionId } from '@/api/post.api';
 import { useCurrentUserStore } from '@/stores/currentUser';
 import { useMessage } from 'naive-ui';
 const posts = ref([]);
@@ -10,6 +10,7 @@ const loading = ref(true);
 const isActiveButton = ref(true);
 const tableRef = ref([]);
 const numberSlides = ref(3);
+const postDefaultCollection = ref([]);
 const loadPosts = async () => {
   loading.value = true;
   try {
@@ -23,19 +24,21 @@ const loadPosts = async () => {
     message.error("Tải danh sách bài viết không thành công");
   }
 };
+
 const loadCollections = async() => {
   try {
     loading.value = true;
     const result = await getCollectionByUserId();
     tableRef.value = result;
     loading.value = false;
-    console.log(result);
+    const data = await getPostByCollectionId();
+    postDefaultCollection.value = data;
     isActiveButton.value = false;
-    message.success("Tải danh sách bảng thành công")
+    message.success("Tải danh sách bảng và danh sách bài viết của bảng mặc định thành công")
   } catch (error) {
     console.log(error);
     loading.value = false;
-    message.error("Tải danh sách bảng thất bại")
+    message.error("Tải danh sách bảng và danh sách bài viết của bảng mặc định thất bại")
   }
 }
 const updateNumberSlides = () => {
@@ -45,7 +48,7 @@ const updateNumberSlides = () => {
   } else if (width < 870) {
     numberSlides.value = 2;
   } else if (width < 1200) {
-    numberSlides.value = 3;
+    numberSlides.value = 2;
   } else {
     numberSlides.value = 3;
   }
@@ -101,7 +104,7 @@ onBeforeMount(async () => {
         <div v-else>
           <HfLoading v-if="loading"/>
           <div v-else>
-            <div v-if="true">
+            <div v-if="tableRef.length > 0 || postDefaultCollection.length > 0">
               <n-space vertical class="table-slider" v-if="tableRef.length > 0">
                 <n-carousel
                 class="carousel"
@@ -119,9 +122,9 @@ onBeforeMount(async () => {
                 </template>
                 </n-carousel>
               </n-space>
-              <div class="container">
+              <div class="container" v-if="postDefaultCollection.length > 0">
                 <div class="wide posts-container">
-
+                  <HfPost v-for="post in postDefaultCollection" :key="post.id" :postInfor="post" :isEdit="false"/>
                 </div>
               </div>
             </div>
