@@ -10,7 +10,20 @@ const message = useMessage();
 const post = ref({});
 const postList = ref([]);
 const loadingBar = useLoadingBar();
-
+const options = [
+  {
+    label: "Jay Gatsby",
+    key: "jay gatsby"
+  },
+  {
+    label: "Jay Gatsby",
+    key: "jay gatsby"
+  },
+  {
+    label: "Jay Gatsby",
+    key: "jay gatsby"
+  } 
+]
 const loadPost = async() => {
   try {
     const result = await getPostById(router.currentRoute.value.params.id);
@@ -109,7 +122,13 @@ const handleUnFollowUser = async() => {
               </div>
               <div class="option-right">
                 <div class="collection-name">
-                  <button class="btn-post-save">Lưu</button>
+                  <n-dropdown
+                    :options="options"
+                    placement="bottom-start"
+                    trigger="click"
+                  >
+                    <button class="btn-post-save">Lưu</button>
+                  </n-dropdown>
                 </div>
               </div>
             </div>

@@ -23,6 +23,10 @@ const postApi = () => ({
     collectionId
   }),
   getPostByCollectionId: async(id) => {
+    if(!id)
+    {
+      return api.get(`${ApiConstant.post.getByCollectionId}`);
+    }
     return api.get(`${ApiConstant.post.getByCollectionId}/${id}`);
   }
 });

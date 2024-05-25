@@ -1,5 +1,6 @@
 <script setup>
 const { tableInfor } = defineProps(['tableInfor']);
+
 </script>
 <template>
   <div class="slider-item">
