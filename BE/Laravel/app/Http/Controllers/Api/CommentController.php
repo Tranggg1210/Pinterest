@@ -55,7 +55,7 @@ class CommentController extends Controller
 {
     public function sendcomment(Request $request){
         // $user = auth() -> user();
-        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> get('Id','UserName', 'FirstName', 'LastName', 'Email', 'Country');
+        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> first();
         if($request -> PostId == null){
             return response()->json([
                'status' => 403 ,
@@ -83,7 +83,8 @@ class CommentController extends Controller
             }
             $comment -> save();
             // $content = $request -> content;
-            event(new CommentPublished($comment));
+            // 
+            event(new CommentPublished($comment)); // Tạo event khi comment thành công 
             return response()->json([
                 'status' => 200,
                 'message' => 'Bình luận thành công',
@@ -98,7 +99,6 @@ class CommentController extends Controller
         }
     }
     public function getComments(Request $request){
-
         $comment = new Comment();
         $listComments = $comment -> where('PostId',$request -> PostId) -> orderBy('CreatedAt','desc') -> get();
         // $listComments = $comment->orderBy('CreatedAt', 'desc')->take(10)->get();;

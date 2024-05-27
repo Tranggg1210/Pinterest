@@ -82,13 +82,14 @@ class ChatController extends Controller
 {
     public function sendMessage(Request $request,$data = []){
         // $auth = auth()-> user();
-        $auth = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> get('Id','UserName', 'FirstName', 'LastName', 'Email', 'Country');
+        $auth = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> first();
         $message = new Message();
+        
         // Nếu có data thì là vừa tạo cuộc hội thoại,không có data thì cuộc hội thoại đã được tạo
         if($data){
-            $request->merge(['conversation_id' => $data['conversation_id']]);
+            $request->merge(['id' => $data['conversation_id']]);
             // $request->merge(['senderId' => $data['creator_id']]);
-            $request->merge(['user_id' => $data['connector_id']]);
+            $request->merge(['receiver_id' => $data['connector_id']]);
             $request->merge(['content' => $data['content']]);
             // Nếu người gửi và người tạo khác nhau thì fail
             if($auth-> Id != $data['creator_id']){
@@ -124,12 +125,12 @@ class ChatController extends Controller
             // dd($message);
             if(isset($conversation)){
                 //Nếu auth là người tạo hội thoại thì lấy người nhận là người kết nối và ngược lại
-                $request -> merge(['receiver_id' => $conversation -> connectorId == $auth -> Id ? $conversation -> creatorId : $conversation -> connectorId]);
+                $request -> merge(['receiver_id' => $conversation -> ConnectorId == $auth -> Id ? $conversation -> CreatorId : $conversation -> ConnectorId]);
                 if($message -> createMessage($auth,$request)){
                     $data= [
                         'id_conversation' => $conversation -> Id,
                         'sender_id' => $auth -> Id,
-                        'receiver_id' => $conversation -> connectorId == $auth -> Id ? $conversation -> creatorId : $conversation -> connectorId,
+                        'receiver_id' => $conversation -> ConnectorId == $auth -> Id ? $conversation -> CreatorId : $conversation -> ConnectorId,
                         'content' => $request -> content
                     ];
                     event(new ChatPublished($data));
@@ -154,7 +155,7 @@ class ChatController extends Controller
     public function getConversations(Request $request){
         // $content = $request-> content; //Nội dung tin nhắn
         // $user = auth() -> user();
-        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> get('Id','UserName', 'FirstName', 'LastName', 'Email', 'Country');
+        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> first();
         if(!isset($user)){
             return response()-> json(
                 [
@@ -175,7 +176,7 @@ class ChatController extends Controller
     }
     public function createConversation(Request $request){
         // $user = auth() -> user();
-        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> get('Id','UserName', 'FirstName', 'LastName', 'Email', 'Country');
+        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> first();
         $connector = User::find($request-> id);
         if(!isset($user) || !isset($connector)){
             return response()-> json(

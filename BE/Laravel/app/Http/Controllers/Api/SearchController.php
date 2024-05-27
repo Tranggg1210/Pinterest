@@ -32,7 +32,7 @@ use Laravel\Scout\Searchable;
  *     tags={"Search"},
  *     @OA\Parameter(
  *         name="keyword",
- *         in="header",
+ *         in="path",
  *         description="Điền email hoặc tên",
  *         required=true,
  *         @OA\Schema(
@@ -50,6 +50,18 @@ use Laravel\Scout\Searchable;
 
 class SearchController extends Controller
 {
+    public function searchUser(Request $request){
+        $keyword = $request -> keyword;
+        $users = User::search($keyword)->get()->map(function ($user) {
+            return $user->only('Id','FirstName', 'LastName','Email');
+        });
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'users' => $users,
+            ]
+        ],200);
+    }
     public function search(Request $request){
         $keyword = $request -> keyword;
         $users = User::search($keyword)->get()->map(function ($user) {
@@ -67,17 +79,5 @@ class SearchController extends Controller
     public function shouldBeSearchable()
     {
         return $this->isPublished();
-    }
-    public function searchUser(Request $request){
-        $keyword = $request -> keyword;
-        $users = User::search($keyword)->get()->map(function ($user) {
-            return $user->only('Id','FirstName', 'LastName','Email');
-        });
-        return response()->json([
-            'status' =>'success',
-            'data' => [
-                'users' => $users,
-            ]
-        ],200);
     }
 }

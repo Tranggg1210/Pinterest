@@ -9,86 +9,10 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
-/**
- * @OA\Post(
- *  path="/api/login",
- *  summary="Đăng nhập ",
- *  description="Đăng nhập ",
- * method="POST",
- * tags={"User"},
- *    @OA\RequestBody(
- *         @OA\JsonContent(
- *             allOf = {
- *                  @OA\Schema(
- *                      @OA\Property(property="Email",type="string"),
- *                      @OA\Property(property="PasswordHash",type="string"),
- *                      example={"Email": "trungquanbg3@gmail.com", "Password": "123"}
- *                  )
- *              }
- *         )
- *     ),
-*          @OA\Response(
-*          response = 200,
-*          description = "Success",
-*          @OA\JsonContent(
-*              @OA\Property(property="user",type="array",@OA\Items(
-*                      @OA\Property(property="Id",type="string"),
-*                      @OA\Property(property="FirstName",type="string"),
-*                      @OA\Property(property="LastName",type="string"),
-*                      @OA\Property(property="AvatarId",type="string"),
-*                      @OA\Property(property="Introduction",type="string"),
-*                      @OA\Property(property="Birthday",type="string"),
-*                      @OA\Property(property="Gender",type="string"),
-*                      @OA\Property(property="Country",type="string"),
-*                      @OA\Property(property="Email",type="string"),
-*
-*               ),
-*           ),
-*           @OA\Property(property="token",type="string"),
-*       ),
-*   ),
-* ),
- * @OA\Post(
- *     path="/api/logout",
- *     summary="Đăng xuất ",
- *     description="Đăng xuất ",
- *     tags={"User"},
- *     @OA\Parameter(
- *         name="access_token",
- *         in="header",
- *         description="Điền token JWT",
- *         required=true,
- *         @OA\Schema(
- *             type="string"
- *         )
- *     ),
- *     @OA\Response(response=200, description="Logged out successfully"),
- *     @OA\Response(response=400, description="Bad request"),
- *     @OA\Response(response=401, description="Unauthenticated"),
- *     @OA\Response(response=403, description="Forbidden"),
- *     @OA\Response(response=405, description="Method Not Allowed")
- * )
- * @OA\Get(
- *     path="/api/me/",
- *     tags={"User"},
- *     summary="Xem thông tin",
- *     description="Xem thông tin người dùng",
- *     @OA\Response(response=200, description="Logged out successfully"),
- *     @OA\Response(response=400, description="Bad request"),
- * )
- **/
 
 
 class AuthController extends Controller
 {
-    /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
-
-
-
     public function login(Request $request)
     {
 
