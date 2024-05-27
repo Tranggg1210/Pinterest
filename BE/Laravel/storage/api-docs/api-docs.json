@@ -52,12 +52,7 @@
                     "414": {
                         "description": "Hội thoại đã tồn tại"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         },
         "/api/get-conversation": {
@@ -75,12 +70,7 @@
                     "404": {
                         "description": "Không tồn tại người dùng"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         },
         "/api/send-message": {
@@ -123,12 +113,7 @@
                     "404": {
                         "description": "Không tồn tại hội thoại"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         },
         "/api/get-message/{id}": {
@@ -156,12 +141,7 @@
                     "404": {
                         "description": "Không tồn tại hội thoại"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         },
         "/api/comments/{PostId}": {
@@ -214,12 +194,91 @@
                     "502": {
                         "description": "Không tồn tại bình luận đã phản hồi trong bài viết này"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
+                }
+            }
+        },
+        "/api/del-comment/{commentId?}": {
+            "delete": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Xoá comment",
+                "description": "Xoá cmt theo Id",
+                "operationId": "218a3fa8c2074be77d09e020f6fd44de",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "commentId": {
+                                                "type": "interger"
+                                            }
+                                        },
+                                        "type": "object",
+                                        "example": {
+                                            "commentId": "Id bài post"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
                     }
-                ]
+                },
+                "responses": {
+                    "200": {
+                        "description": "Deleted successfully"
+                    },
+                    "403": {
+                        "description": "Không có quyền xoá"
+                    },
+                    "404": {
+                        "description": "Không tồn tại comment"
+                    }
+                }
+            }
+        },
+        "/api/edit-comment/{commentId?}": {
+            "put": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Sửa comment",
+                "description": "Sửa cmt theo Id",
+                "operationId": "5751df9a2dda020246d4061d0bffd5af",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "commentId": {
+                                                "type": "interger"
+                                            }
+                                        },
+                                        "type": "object",
+                                        "example": {
+                                            "commentId": "Id bài post"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Modified successfully"
+                    },
+                    "403": {
+                        "description": "Không có quyền sửa"
+                    },
+                    "404": {
+                        "description": "Không tồn tại comment"
+                    }
+                }
             }
         },
         "/api/get-comment/{PostId}": {
@@ -249,12 +308,7 @@
                     "404": {
                         "description": "Không tồn tại bài viết"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         },
         "/api/follow/{UserId}": {
@@ -285,12 +339,7 @@
                     "404": {
                         "description": "Not found"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         },
         "/api/get-follower": {
@@ -308,12 +357,7 @@
                     "404": {
                         "description": "Không tồn tại người dùng"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         },
         "/api/forgot": {
@@ -352,92 +396,6 @@
                 }
             }
         },
-        "/api/register": {
-            "post": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Đăng ký ",
-                "description": "Đăng ký ",
-                "operationId": "30ca788be39e7657143289d631035de8",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "allOf": [
-                                    {
-                                        "properties": {
-                                            "Email": {
-                                                "type": "string"
-                                            },
-                                            "PasswordHash": {
-                                                "type": "string"
-                                            },
-                                            "Id": {
-                                                "type": "string"
-                                            },
-                                            "FirstName": {
-                                                "type": "string"
-                                            },
-                                            "LastName": {
-                                                "type": "string"
-                                            },
-                                            "AvatarId": {
-                                                "type": "string"
-                                            },
-                                            "Introduction": {
-                                                "type": "string"
-                                            },
-                                            "Birthday": {
-                                                "type": "string"
-                                            },
-                                            "Gender": {
-                                                "type": "string"
-                                            },
-                                            "Country": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "type": "object",
-                                        "example": {
-                                            "Email": "trungquanbg3@gmail.com",
-                                            "Password": "123",
-                                            "FirstName": "Quân",
-                                            "LastName": "NTQ",
-                                            "AvatarId": "url",
-                                            "Introduction": "",
-                                            "Birthday": "09-01-2003",
-                                            "Gender": "1",
-                                            "Country": "VN"
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "status": {
-                                            "type": "integer"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/api/search/": {
             "get": {
                 "tags": [
@@ -471,7 +429,7 @@
                 "parameters": [
                     {
                         "name": "keyword",
-                        "in": "header",
+                        "in": "path",
                         "description": "Điền email hoặc tên",
                         "required": true,
                         "schema": {
@@ -496,165 +454,6 @@
                         "description": "Method Not Allowed"
                     }
                 }
-            }
-        },
-        "/api/login": {
-            "post": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Đăng nhập ",
-                "description": "Đăng nhập ",
-                "operationId": "99539a8e18179644cbac3165cf994fe5",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "allOf": [
-                                    {
-                                        "properties": {
-                                            "Email": {
-                                                "type": "string"
-                                            },
-                                            "PasswordHash": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "type": "object",
-                                        "example": {
-                                            "Email": "trungquanbg3@gmail.com",
-                                            "Password": "123"
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "user": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "Id": {
-                                                        "type": "string"
-                                                    },
-                                                    "FirstName": {
-                                                        "type": "string"
-                                                    },
-                                                    "LastName": {
-                                                        "type": "string"
-                                                    },
-                                                    "AvatarId": {
-                                                        "type": "string"
-                                                    },
-                                                    "Introduction": {
-                                                        "type": "string"
-                                                    },
-                                                    "Birthday": {
-                                                        "type": "string"
-                                                    },
-                                                    "Gender": {
-                                                        "type": "string"
-                                                    },
-                                                    "Country": {
-                                                        "type": "string"
-                                                    },
-                                                    "Email": {
-                                                        "type": "string"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        },
-                                        "token": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/logout": {
-            "post": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Đăng xuất ",
-                "description": "Đăng xuất ",
-                "operationId": "84c346b5fbf89662322f7b60466d3011",
-                "parameters": [
-                    {
-                        "name": "access_token",
-                        "in": "header",
-                        "description": "Điền token JWT",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Logged out successfully"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "405": {
-                        "description": "Method Not Allowed"
-                    }
-                }
-            }
-        },
-        "/api/me/": {
-            "get": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Xem thông tin",
-                "description": "Xem thông tin người dùng",
-                "operationId": "63385b4473b6c3ddf073d5b842b73d32",
-                "responses": {
-                    "200": {
-                        "description": "Logged out successfully"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        }
-    },
-    "components": {
-        "securitySchemes": {
-            "bearerAuth": {
-                "type": "http",
-                "name": "Token based Based",
-                "in": "header",
-                "bearerFormat": "JWT",
-                "scheme": "bearer"
             }
         }
     }

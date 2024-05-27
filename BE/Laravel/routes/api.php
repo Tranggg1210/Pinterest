@@ -36,12 +36,21 @@ Route::group(['middleware' => 'api',], function ($router) {
     // Route::middleware("auth:api")->group(function(){
     Route::get('/me', [AuthController::class,'me']) -> name('me');
     Route::post('logout', [AuthController::class,'logout']) -> name('logout');
+
+
     Route::post('follow/{UserId?}', [FollowController::class,'follow']) -> name('follow');
     Route::get('/get-follower', [FollowController::class,'getAllFollowers']);
-    Route::post('comments/{PostId?}', [CommentController::class,'sendcomment']) -> name('comment');
+
+
+
     Route::post('/create-chat/{id?}', [ChatController::class,'createConversation']);
     Route::get('/get-conversation', [ChatController::class,'getConversations']);
     Route::post('/send-message', [ChatController::class,'sendMessage']);
     Route::get('/get-message/{id}', [ChatController::class,'getConversations']);
-// });
-Route::get('get-comment/{PostId?}', [CommentController::class,'getComments']) -> name('getComment');
+    // });
+
+
+    Route::get('get-comment/{PostId?}', [CommentController::class,'getComments']) -> name('getComment');
+    Route::post('comments/{PostId?}', [CommentController::class,'sendcomment']) -> name('comment');
+    Route::delete('del-comment/{commentId?}', [CommentController::class,'deleteComment']) ;
+    Route::put('edit-comment/{commentId?}', [CommentController::class,'editComment']) ;
