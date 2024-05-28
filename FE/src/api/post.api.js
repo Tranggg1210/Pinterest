@@ -12,7 +12,13 @@ const postApi = () => ({
     file
   }),
   getPostById: async(id) => api.get(`${ApiConstant.post.postById}/${id}`),
-  getAllPostByUserId: async() => api.get(ApiConstant.post.postByUserId),
+  getAllPostByUserId: async(id) => {
+    if(id)
+    {
+      return api.get(`${ApiConstant.post.postByUserId}?userId=${id}`)
+    }
+    return api.get(ApiConstant.post.postByUserId)
+  },
   deletePostById: async(id) => api.delete(`${ApiConstant.post.deletePostById}/${id}`),
   updatePost: async(id,{link, caption, detail, theme, file,collectionId}) => apiUpload.put(`${ApiConstant.post.updatePostById}/${id}`,{
     link, 
@@ -27,7 +33,7 @@ const postApi = () => ({
     {
       return api.get(`${ApiConstant.post.getByCollectionId}`);
     }
-    return api.get(`${ApiConstant.post.getByCollectionId}/${id}`);
+    return api.get(`${ApiConstant.post.getByCollectionId}?collectionId=${id}`);
   }
 });
 
