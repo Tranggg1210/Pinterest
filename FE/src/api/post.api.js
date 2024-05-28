@@ -27,7 +27,7 @@ const postApi = () => ({
     {
       return api.get(`${ApiConstant.post.getByCollectionId}`);
     }
-    return api.get(`${ApiConstant.post.getByCollectionId}/${id}`);
+    return api.get(`${ApiConstant.post.getByCollectionId}?collectionId=${id}`);
   }
 });
 

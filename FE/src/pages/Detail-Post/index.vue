@@ -1,11 +1,11 @@
 <script setup>
 import { ref, onBeforeMount } from 'vue';
-import { getAllCollection, getCollectionByUserId, isCheckSaveCollection, savePostInCollection } from '@/api/collection.api';
+import { createCollection, getAllCollection, getCollectionByUserId, isCheckSaveCollection, savePostInCollection } from '@/api/collection.api';
 import { getPostById } from '@/api/post.api';
 import { checkFollowByUserId, followerByUserId, getUserById, unFollowerByUserId } from '@/api/user.api';
 import { useLoadingBar, useMessage } from 'naive-ui';
 import { useRouter } from 'vue-router';
-
+import { NIcon } from 'naive-ui'
 const router = useRouter();
 const imageURL = ref('');
 const message = useMessage();
@@ -17,6 +17,8 @@ const isCheckSave = ref(false);
 const table = ref({ name: null });
 const formTableRef = ref(null);
 const loading = ref(false);
+const options = ref ([])
+
 const rulesTable = {
   name: {
     required: true,
@@ -41,7 +43,16 @@ const fetchData = async (apiFunc, successCallback, errorMessage) => {
 
 const loadTableByUserId = () => {
   fetchData(getCollectionByUserId, (result) => {
-    generalOptions.value = result.map(choose => ({ label: choose.name, value: choose.id }));
+    console.log(result);
+    if(result.length > 0)
+    {
+      const data = result.filter(item => item.isDefault === false);
+      options.value = data.map(choose => ({ label: choose.name, key: choose.id }));
+    }
+    options.value.push({
+      label: "📌 Tạo bảng", 
+      key: "create"
+    })
   }, "Lấy danh sách bảng thất bại!!!");
 };
 
@@ -86,6 +97,7 @@ onBeforeMount(async() => {
   handleURLImage(post?.value.thumbnailUrl);
   await checkSaveCollection();
   await loadAllCollection();
+  await loadTableByUserId();
 });
 
 const goBack = () => {
@@ -115,14 +127,52 @@ const handleSaveCollection = async () => {
   try {
     await savePostInCollection({ postId: router.currentRoute.value.params.id });
     await checkSaveCollection();
-    message.success(isCheckSave.value ? 'Lưu bài viết thành công!!!' : 'Hủy lưu bài viết thành công!!!');
+    message.success(isCheckSave.value ? 'Lưu bài viết vào bảng mặc định thành công!!!' : 'Hủy lưu bài viết vào bảng mặc định thành công!!!');
   } catch (error) {
     console.error(error);
     loadingBar.error();
-    message.error(isCheckSave.value ? 'Lưu bài viết thất bại' : 'Hủy lưu bài viết thất bại');
+    message.error(isCheckSave.value ? 'Lưu bài viết vào bảng mặc định thất bại' : 'Hủy lưu bài viết vào bảng mặc định thất bại');
   }
   loadingBar.finish();
 };
+const handleCreateTable = async() => {
+  formTableRef.value?.validate(async (errors) => {
+    if (!errors) {
+      loadingBar.start();
+      try {
+        await createCollection({name: table.value.name});
+        message.success("Tạo bảng thành công!!!");
+        showModal.value = false;
+        await loadTableByUserId();
+      } catch (error) {
+        loadingBar.error()
+        console.log(error);
+        message.error('Tạo bảng thất bại!!!');
+      }
+      loadingBar.finish();
+    }
+  });
+}
+const handleSavePostInCollection = async(key, label) => {
+  try {
+    await savePostInCollection({
+      postId: post?.value.id,
+      collectionId: key.key
+    });
+    message.success(`Lưu vào ${label.label} thành công!!!`)
+  } catch (error) {
+    console.log(error);
+    message.error(`Lỗi không thể lưu vào ${label.label}`)
+  }
+}
+const handleSelect = (key, label) => {
+  if(key === 'create')
+  {
+    showModal.value = true;
+  }else{
+    handleSavePostInCollection(key, label);
+  }
+}
 </script>
 
 <template>
@@ -146,6 +196,16 @@ const handleSaveCollection = async () => {
                 </a>
               </div>
               <div class="option-right">
+                <n-dropdown
+                  :options="options"
+                  trigger="click"
+                  @select="handleSelect"
+                >
+                  <p class="option-right-text">
+                    Hồ sơ
+                    <IconChevronDown size="24" class="icon-down"></IconChevronDown>
+                  </p>
+                </n-dropdown>
                 <button class="btn-post-save" @click="handleSaveCollection">
                   {{ isCheckSave ? "Hủy lưu" : "Lưu" }}
                 </button>
@@ -191,7 +251,7 @@ const handleSaveCollection = async () => {
         <HfNoData />
       </div>
     </div>
-    <n-modal v-model:show="showModal" class="custom-card" preset="card" title="Lưu" style="width: 60%" :bordered="false">
+    <n-modal v-model:show="showModal" class="custom-card" preset="card" title="Tạo bảng" style="width: 40%" :bordered="false">
       <n-form ref="formTableRef" :model="table" :rules="rulesTable" size="large">
         <n-form-item label="Tên bảng" path="name">
           <n-input v-model:value="table.name" placeholder="Tên bảng" class="posts-input" />

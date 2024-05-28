@@ -108,6 +108,22 @@
   }
 }
 
+.option-right{
+  margin-top: -12px;
+  @include flex(center, center);
+  gap: 20px;
+  .option-right-text{
+    font-size: 16px;
+    @include flex(center, center);
+    .icon-down{
+      margin-bottom:-4px;
+    }
+    cursor: pointer;
+    &:hover{
+      color: $primary-color;
+    }
+  }
+}
 
 .detail-right-header{
   @include flex(space-between, center);
@@ -156,7 +172,6 @@
   border: none;
   outline: none;
   cursor: pointer;
-  margin-top: -20px;
 }
 
 .detail-right-title {
@@ -252,4 +267,15 @@
 }
 .dt-footer-top{
   @include flex(center, center);
+}
+.posts-input {
+  border: 2px solid #ccc;
+  padding: 4px 0;
+  border-radius: 4px;
+  font-size: 15px;
+  transition: all 0.4s linear;
+}
+.container-end{
+  @include flex;
+  justify-content: end;
 }
