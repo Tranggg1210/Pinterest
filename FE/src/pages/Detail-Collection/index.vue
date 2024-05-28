@@ -88,6 +88,9 @@ onBeforeMount(async() => {
     await loadPostOfCollection();
   }
 });
+const removePost = (postId) => {
+  posts.value = posts.value.filter(post => post.id !== postId);
+};
 const handleName = (name) => {
   const formattedName = name
     .replace(/\s+/g, ' ')
@@ -212,7 +215,7 @@ const gotoPage = () => {
             <HfLoading v-if="loading"/>
             <div v-else class="container">
               <div class="wide posts-container" v-if="posts.length > 0">
-                <HfPost v-for="post in posts" :key="post.id" :postInfor="post" :isEdit="false"/>
+                <HfPost v-for="post in posts" :key="post.id" :postInfor="post" :isEdit="false" @updateSavedPosts="removePost"/>
               </div>
               <HfNoData v-else />
             </div>
@@ -234,8 +237,11 @@ const gotoPage = () => {
       :rules="rulesCollection"
       size="large"
     >
-    <n-form-item label="Tên bộ sưu tập:" path="name">
+    <n-form-item label="Tên bộ sưu tập:" path="name" v-if="!collectionInfor?.isDefault">
       <n-input v-model:value="collectionForm.name"  placeholder="Tên bộ sưu tập" class="posts-input" />
+    </n-form-item>
+    <n-form-item label="Tên bộ sưu tập:" path="name" v-else>
+      <n-input v-model:value="collectionForm.name" disabled  placeholder="Tên bộ sưu tập" class="posts-input" />
     </n-form-item>
     <n-form-item label="Mô tả bộ sưu tập:" path="description">
       <n-input v-model:value="collectionForm.description"  placeholder="Mô tả bộ sưu tập" class="posts-input" />
