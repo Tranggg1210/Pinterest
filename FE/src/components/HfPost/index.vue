@@ -11,7 +11,7 @@ import {
   savePostInCollection 
 } from '@/api/collection.api';
 
-const { postInfor, isEdit } = defineProps(['postInfor', 'isEdit']);
+const { postInfor, isEdit, isNotDefault } = defineProps(['postInfor', 'isEdit', 'isNotDefault']);
 const emit = defineEmits(['updateSavedProducts', 'deletePost', 'updatePosts']);
 const router = useRouter();
 const message = useMessage();
@@ -179,6 +179,19 @@ const handleSaveCollection = async () => {
     loadingBar.finish();
   }
 };
+const handleSavePostInCollection = async() => {
+  try {
+    await savePostInCollection({
+      postId: postInfor.id,
+      collectionId: isNotDefault
+    });
+    emit('updateSavedPosts', postInfor.id);
+    message.success(`Hủy lưu thành công!!!`)
+  } catch (error) {
+    console.log(error);
+    message.error(`Lỗi không thể hủy lưu`)
+  }
+}
 </script>
 
 <template>
@@ -187,8 +200,11 @@ const handleSaveCollection = async () => {
       <img :src="postInfor?.thumbnailUrl" alt="image" loading="lazy" />
       <div class="model" @click="() => goToDetailProduct(postInfor?.id)">
         <div class="model__header" v-if="!isEdit">
-          <button class="btn-post-save" @click.stop="handleSaveCollection">
+          <button class="btn-post-save" @click.stop="handleSaveCollection" v-if="!isNotDefault">
             {{ isCheckSave ? "Hủy lưu" : "Lưu" }}
+          </button>
+          <button class="btn-post-save" @click.stop="handleSavePostInCollection" v-else>
+            Hủy lưu
           </button>
         </div>
         <div class="model__footer">

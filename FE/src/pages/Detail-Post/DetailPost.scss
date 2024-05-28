@@ -185,6 +185,7 @@
 .detail-right-user {
   @include flex(space-between, center);
   margin-top: 20px;
+  cursor: pointer;
   @include mobile{
     flex-direction: column;
     justify-content: start;

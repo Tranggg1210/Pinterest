@@ -215,7 +215,8 @@ const gotoPage = () => {
             <HfLoading v-if="loading"/>
             <div v-else class="container">
               <div class="wide posts-container" v-if="posts.length > 0">
-                <HfPost v-for="post in posts" :key="post.id" :postInfor="post" :isEdit="false" @updateSavedPosts="removePost"/>
+                <HfPost v-for="post in posts" :key="post.id" :postInfor="post" :isEdit="false" @updateSavedPosts="removePost" v-if="collectionInfor?.isDefault"/>
+                <HfPost v-for="post in posts" :key="`item-${post.id}`" :postInfor="post" :isEdit="false" @updateSavedPosts="removePost" :isNotDefault="collectionInfor.id"  v-else/>
               </div>
               <HfNoData v-else />
             </div>

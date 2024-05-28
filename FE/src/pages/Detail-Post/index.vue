@@ -157,7 +157,7 @@ const handleSavePostInCollection = async(key, label) => {
   try {
     await savePostInCollection({
       postId: post?.value.id,
-      collectionId: key.key
+      collectionId: key
     });
     message.success(`Lưu vào ${label.label} thành công!!!`)
   } catch (error) {
@@ -172,6 +172,9 @@ const handleSelect = (key, label) => {
   }else{
     handleSavePostInCollection(key, label);
   }
+}
+const gotoPage = () => {
+  router.push(`/user-articles/${post.value.user.id}`)
 }
 </script>
 
@@ -216,7 +219,7 @@ const handleSelect = (key, label) => {
               <div class="detail-right-des">{{ post?.detail }}</div>
               <div class="detail-right-hashtab">{{ post?.theme }}</div>
               <div class="detail-right-link" v-if="post?.link">👉Nguồn tham khảo: {{ post.link }} 👈</div>
-              <div class="detail-right-user">
+              <div class="detail-right-user" @click="gotoPage">
                 <div class="user-avatar">
                   <img :src="post.user?.avatarUrl"  alt="user-avatar" v-if="post.user?.avatarUrl" />
                   <img src="@/assets/images/user-avatar.png" alt="user-avatar" v-else>
