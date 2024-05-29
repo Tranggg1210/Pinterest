@@ -34,7 +34,9 @@ const postApi = () => ({
       return api.get(`${ApiConstant.post.getByCollectionId}`);
     }
     return api.get(`${ApiConstant.post.getByCollectionId}?collectionId=${id}`);
-  }
+  },
+  toggleLike: async(id) => api.post(`${ApiConstant.post.toggleLike}?postId=${id}`),
+  checkLike: async(id) => api.get(`${ApiConstant.post.checkLike}/${id}`),
 });
 
 export const { 
@@ -44,5 +46,7 @@ export const {
   getAllPostByUserId,
   deletePostById,
   updatePost,
-  getPostByCollectionId
+  getPostByCollectionId,
+  toggleLike,
+  checkLike
  } = postApi();

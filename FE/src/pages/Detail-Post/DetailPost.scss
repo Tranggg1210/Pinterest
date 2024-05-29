@@ -267,7 +267,12 @@
   }
 }
 .dt-footer-top{
-  @include flex(center, center);
+  margin-top: 16px;
+  @include flex(space-between, center);
+}
+.quality-comment{
+  font-size: large;
+  font-weight: 600;
 }
 .posts-input {
   border: 2px solid #ccc;
@@ -279,4 +284,50 @@
 .container-end{
   @include flex;
   justify-content: end;
+}
+.dt-like,.quality-like{
+  @include flex(center, center);
+  font-size: large;
+  font-weight: 500;
+}
+.quality-like{
+  margin: 0 24px;
+  animation: show 0.8s linear 1 both;
+}
+.toogle-like{
+  width: 44px;
+  height: 44px;
+  @include flex(center,center);
+  background-color: #e6e6e6;
+  cursor: pointer;
+  border-radius: 50%;
+  >svg{
+    margin: 0;
+  }
+  transition: all 0.4s linear;
+  &:hover{
+    background-color: #FFE0E0;
+  }
+  animation: hidden 0.3s linear 1;
+}
+.liked{
+  @extend .toogle-like;
+  background-color: #FFE0E0;
+  animation: show 0.3s linear 1;
+}
+@keyframes show {
+  0%{
+    opacity: 0;
+  }
+  100%{
+    opacity: 1;
+  }
+}
+@keyframes hidden {
+  0%{
+    opacity: 1;
+  }
+  100%{
+    opacity: 0;
+  }
 }

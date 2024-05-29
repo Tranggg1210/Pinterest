@@ -11,7 +11,9 @@ export const ApiConstant = {
     postByUserId: 'Posts/getByUserId',
     deletePostById: 'Posts/delete',
     updatePostById: 'Posts/update',
-    getByCollectionId: 'Posts/getByCollectionId'
+    getByCollectionId: 'Posts/getByCollectionId',
+    toggleLike: 'Posts/toggleLike',
+    checkLike: 'Posts/checkLike'
   },
   user: {
     currentUser: 'Users/getLoginUser',

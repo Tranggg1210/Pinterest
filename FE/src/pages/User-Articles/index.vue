@@ -32,12 +32,18 @@ const handleFullName = (firstName, lastName) => {
   return formattedFullName;
 };
 onBeforeMount(loadUserArticles)
+const goBack = () => {
+  router.back();
+};
 </script>
 <template>
   <div>
     <div class="user-favorite container">
     <HfLoading v-if="loading"/>
       <div class="wide" v-else>
+        <div @click="goBack">
+          <IconArrowLeft class="icon icon-back" />
+        </div>
         <div class="basic-user container">
           <div class="user-background">
             <img
@@ -80,6 +86,9 @@ onBeforeMount(loadUserArticles)
 </template>
 
 <style lang="scss" scoped>
+.wide{
+  position: relative;
+}
 .user-favorite {
   margin-top: 40px;
 }
@@ -143,6 +152,31 @@ onBeforeMount(loadUserArticles)
 .container-end{
   display: flex;
   justify-content: end;
+}
+.icon-back {
+  position: fixed;
+  top: 100px;
+  left: 44px;
+  width: 44px;
+  height: 44px;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.3s linear;
+  background-color: #fff;
+  z-index: 100;
+  &:hover {
+    background-color: #ccc;
+  }
+  @include mobile{
+   display: none;
+  }
+  @include small-tablet{
+    top: 86px;
+    left: 16px;
+  }
+  @include tablet{
+    left: 24px;
+  }
 }
 </style>
 <route lang="yaml">
