@@ -7,7 +7,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'Accept-Language': 'vn',
-    'ngrok-skip-browser-warning': '69420',
+    'ngrok-skip-browser-warning': '69420'
   }
 });
 api.interceptors.request.use((config) => {
@@ -31,7 +31,7 @@ const apiUpload = axios.create({
   headers: {
     'Content-Type': 'multipart/form-data',
     'Accept-Language': 'vn',
-    'ngrok-skip-browser-warning': '69420',
+    'ngrok-skip-browser-warning': '69420'
   }
 });
 apiUpload.interceptors.request.use((config) => {
@@ -63,7 +63,7 @@ const apiPHP = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'Accept-Language': 'vn',
-    'ngrok-skip-browser-warning': '69420',
+    'ngrok-skip-browser-warning': '69420'
   }
 });
 apiPHP.interceptors.request.use((config) => {
@@ -87,7 +87,7 @@ const apiUploadPHP = axios.create({
   headers: {
     'Content-Type': 'multipart/form-data',
     'Accept-Language': 'vn',
-    'ngrok-skip-browser-warning': '69420',
+    'ngrok-skip-browser-warning': '69420'
   }
 });
 apiUploadPHP.interceptors.request.use((config) => {

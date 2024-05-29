@@ -1,10 +1,9 @@
 <script setup>
 const { data } = defineProps(['data']);
-
 </script>
 <template>
   <div class="slider-item">
-    <RouterLink :to="`/detail-collection/${tableInfor?.id}`">
+    <div>
       <div class="slider-content">
           <h3>{{ data?.title || "KHÔNG XÁC ĐỊNH" }}</h3>
           <p>{{ data?.quality || "0" }} {{ data?.desc || "không xác định"}}</p>
@@ -16,7 +15,7 @@ const { data } = defineProps(['data']);
           <img v-else-if="data.id === 4" src="@/assets/images/notification-admin.png" alt="image">
           <img v-else src="@/assets/images/picture.png" alt="image">
       </div>
-    </RouterLink>
+    </div>
   </div>
 </template>
 
@@ -26,9 +25,19 @@ const { data } = defineProps(['data']);
   padding: 24px;
   width: 48% !important;
   border-radius: 20px;
-  a{
+  @include mobile{
+    width: 100% !important;
+  }
+  @include small-tablet{
+    width: 100% !important;
+  }
+  >div{
     display: block;
     @include flex;
+    @include mobile{
+      flex-direction: column-reverse;
+      text-align: center;
+    }
   }
   .slider-img{
     margin: 0 24px;
@@ -44,7 +53,7 @@ const { data } = defineProps(['data']);
     @include mobile{
       width: 60px;
       height: 60px;
-      margin: 0;
+      margin: 0 0 20px 0;
       img{
         width: 60px;
         margin: 0;

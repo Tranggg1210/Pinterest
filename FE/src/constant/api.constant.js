@@ -31,7 +31,7 @@ export const ApiConstant = {
     createCollection: 'Collections/create',
     getCollectionByUserId: 'Collections/getByUserId',
     getCollectionByPostId: 'Collections/getByPostId',
-    savePost: "Posts/toggleCollection",
+    savePost: 'Posts/toggleCollection',
     getById: 'Collections/getById',
     updateBackgound: 'Collections/background',
     updateCollection: 'Collections/update',

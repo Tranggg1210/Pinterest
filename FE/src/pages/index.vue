@@ -26,37 +26,35 @@ const loadPosts = async () => {
     const result = await getAllPost();
     posts.value = result;
     const data = await getCurrentUser();
-    if(data)
-    {
+    if (data) {
       currentUser.save({
         fullname: handleFullName(data.firstName, data.lastName),
         avatar: data.avatarUrl,
         username: data.userName
-      })
+      });
     }
     loading.value = false;
-    } catch (err) {
+  } catch (err) {
     loading.value = false;
     console.log(err);
-    message.error("Tải danh sách bài viết không thành công");
+    message.error('Tải danh sách bài viết không thành công');
   }
 };
 onBeforeMount(() => {
   if (user.loggedIn) {
     loadPosts();
-
   }
 });
 const goToDetailProduct = (id) => {
-  router.push(`/detail-post/${id}`)
-}
+  router.push(`/detail-post/${id}`);
+};
 </script>
 <template>
   <div v-if="user.loggedIn">
-    <HfLoading v-if="loading"/>
+    <HfLoading v-if="loading" />
     <div v-else class="container">
       <div class="wide posts-container" v-if="posts.length > 0">
-        <HfPost v-for="post in posts" :key="post.id" :postInfor="post" :isEdit="false"/>
+        <HfPost v-for="post in posts" :key="post.id" :postInfor="post" :isEdit="false" />
       </div>
       <div v-else>
         <HfNoData />

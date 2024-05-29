@@ -5,11 +5,11 @@ import { useMessage } from 'naive-ui';
 import { useRoute, useRouter } from 'vue-router';
 const message = useMessage();
 const router = useRouter();
-const loadingBar = useLoadingBar()
+const loadingBar = useLoadingBar();
 const route = useRoute();
 
 const account = reactive({
-  email: null,
+  email: null
 });
 const formRef = ref(null);
 const rules = {
@@ -24,18 +24,17 @@ const handleForgotPassword = () => {
     if (!errors) {
       try {
         loadingBar.start();
-        const result = await forgotPassword({email: account.email});
+        const result = await forgotPassword({ email: account.email });
         console.log(result);
-        loadingBar.finish()
-        if(result?.data?.message === "Email chưa được đăng ký")
-        {
+        loadingBar.finish();
+        if (result?.data?.message === 'Email chưa được đăng ký') {
           message.warning(result.data.message);
         }
         // router.push(route.query.redirect || '/');
       } catch (err) {
-        loadingBar.error()
+        loadingBar.error();
         console.log(err);
-        message.error("Lỗi đăng nhập, kiểm tra mật khẩu");
+        message.error('Lỗi đăng nhập, kiểm tra mật khẩu');
       }
     }
   });
@@ -140,14 +139,14 @@ const goBack = () => {
   &:hover {
     background-color: #ccc;
   }
-  @include mobile{
-   display: none;
+  @include mobile {
+    display: none;
   }
-  @include small-tablet{
+  @include small-tablet {
     top: 86px;
     left: 16px;
   }
-  @include tablet{
+  @include tablet {
     left: 24px;
   }
 }

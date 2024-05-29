@@ -1,4 +1,3 @@
-
 <script setup>
 defineProps({
   total: Number,
@@ -36,7 +35,9 @@ defineEmits(['to']);
   margin: 0 3px;
   border-radius: 4px;
   background-color: #de731c7a;
-  transition: width 0.3s, background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    width 0.3s,
+    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
 }
 

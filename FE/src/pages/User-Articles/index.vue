@@ -1,9 +1,9 @@
 <script setup>
-import {useLoadingBar, useMessage } from 'naive-ui';
+import { useLoadingBar, useMessage } from 'naive-ui';
 import { onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
-import {getUserById} from '@/api/user.api.js';
-import {getAllPostByUserId} from '@/api/post.api.js';
+import { getUserById } from '@/api/user.api.js';
+import { getAllPostByUserId } from '@/api/post.api.js';
 
 const message = useMessage();
 const loading = ref(false);
@@ -11,17 +11,17 @@ const router = useRouter();
 const posts = ref([]);
 const user = ref({});
 
-const loadUserArticles = async() => {
-    try {
-        const data = await getUserById(router.currentRoute.value.params.id);
-        user.value = data;
-        const result = await getAllPostByUserId(router.currentRoute.value.params.id);
-        posts.value = result;
-    } catch (error) {
-        console.log(error);
-        message.error("Không thể lấy dữ liệu của người dùng này");
-    }
-}
+const loadUserArticles = async () => {
+  try {
+    const data = await getUserById(router.currentRoute.value.params.id);
+    user.value = data;
+    const result = await getAllPostByUserId(router.currentRoute.value.params.id);
+    posts.value = result;
+  } catch (error) {
+    console.log(error);
+    message.error('Không thể lấy dữ liệu của người dùng này');
+  }
+};
 const handleFullName = (firstName, lastName) => {
   const fullName = `${lastName} ${firstName} `;
   const formattedFullName = fullName
@@ -31,7 +31,7 @@ const handleFullName = (firstName, lastName) => {
 
   return formattedFullName;
 };
-onBeforeMount(loadUserArticles)
+onBeforeMount(loadUserArticles);
 const goBack = () => {
   router.back();
 };
@@ -39,36 +39,29 @@ const goBack = () => {
 <template>
   <div>
     <div class="user-favorite container">
-    <HfLoading v-if="loading"/>
+      <HfLoading v-if="loading" />
       <div class="wide" v-else>
         <div @click="goBack">
           <IconArrowLeft class="icon icon-back" />
         </div>
         <div class="basic-user container">
           <div class="user-background">
-            <img
-              :src="user?.avatarUrl"
-              alt="background"
-              v-if="user?.avatarUrl"
-            />
-            <img
-              v-else
-              src="@/assets/images/user-avatar.png"
-              alt="background"
-              style="width: 72%;"
-            />
+            <img :src="user?.avatarUrl" alt="background" v-if="user?.avatarUrl" />
+            <img v-else src="@/assets/images/user-avatar.png" alt="background" style="width: 72%" />
           </div>
           <h1 class="user-name">
-            {{ user?.firstName ? handleFullName(user?.firstName, user?.lastName) : "Chưa xác định" }}
+            {{
+              user?.firstName ? handleFullName(user?.firstName, user?.lastName) : 'Chưa xác định'
+            }}
           </h1>
           <div class="user-account">
             <p>
-                <IconUsers size="20" />
-                {{ user?.follower || "0"  }} người theo dõi
+              <IconUsers size="20" />
+              {{ user?.follower || '0' }} người theo dõi
             </p>
             <p>
-                <IconUserStar size="20" />
-                {{ user?.following || "0"  }} người đang theo dõi
+              <IconUserStar size="20" />
+              {{ user?.following || '0' }} người đang theo dõi
             </p>
           </div>
           <div>
@@ -86,7 +79,7 @@ const goBack = () => {
 </template>
 
 <style lang="scss" scoped>
-.wide{
+.wide {
   position: relative;
 }
 .user-favorite {
@@ -121,13 +114,12 @@ const goBack = () => {
     @include flex(center, center);
     color: #717171;
     margin-bottom: 18px;
-    >p{
-        padding: 0 16px;
-         @include flex(center, center);
-
+    > p {
+      padding: 0 16px;
+      @include flex(center, center);
     }
-    @include mobile{
-        flex-direction: column;
+    @include mobile {
+      flex-direction: column;
     }
   }
   .btn-container {
@@ -143,13 +135,13 @@ const goBack = () => {
   background-color: #000;
   color: #fff;
 }
-.posts-container{
+.posts-container {
   margin: 40px 0;
 }
-.posts-input{
+.posts-input {
   border: 1px solid #ccc;
 }
-.container-end{
+.container-end {
   display: flex;
   justify-content: end;
 }
@@ -167,14 +159,14 @@ const goBack = () => {
   &:hover {
     background-color: #ccc;
   }
-  @include mobile{
-   display: none;
+  @include mobile {
+    display: none;
   }
-  @include small-tablet{
+  @include small-tablet {
     top: 86px;
     left: 16px;
   }
-  @include tablet{
+  @include tablet {
     left: 24px;
   }
 }

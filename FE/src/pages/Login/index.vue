@@ -8,7 +8,7 @@ import { useRoute } from 'vue-router';
 
 const message = useMessage();
 const authStore = useAuthStore();
-const loadingBar = useLoadingBar()
+const loadingBar = useLoadingBar();
 const router = useRouter();
 const route = useRoute();
 const account = reactive({
@@ -32,7 +32,7 @@ const loginHandler = () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       try {
-        loadingBar.start()
+        loadingBar.start();
         const user = {
           userName: account.email,
           password: account.password
@@ -41,14 +41,14 @@ const loginHandler = () => {
         authStore.save({
           ...data
         });
-        console.log(data);  
-        loadingBar.finish()
+        console.log(data);
+        loadingBar.finish();
         message.success('Đăng nhập thành công. Xin chào ' + account.email);
         // router.push(route.query.redirect || '/');
       } catch (err) {
-        loadingBar.error()
+        loadingBar.error();
         console.log(err);
-        message.error("Lỗi đăng nhập, kiểm tra mật khẩu");
+        message.error('Lỗi đăng nhập, kiểm tra mật khẩu');
       }
     }
   });
@@ -120,7 +120,7 @@ button {
     display: none;
   }
 }
-.password-label{
+.password-label {
   position: relative !important;
 }
 .login {

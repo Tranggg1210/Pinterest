@@ -32,20 +32,20 @@ const loadPosts = () => {
   fetchData(
     getAllPostByUserId,
     posts,
-    "Tải danh sách bài viết thành công",
-    "Tải danh sách bài viết không thành công"
+    'Tải danh sách bài viết thành công',
+    'Tải danh sách bài viết không thành công'
   );
-}
+};
 
 const loadCollections = () => {
   isActiveButton.value = false;
   fetchData(
     getCollectionByUserId,
     tableRef,
-    "Tải danh sách bảng và danh sách bài viết của bảng mặc định thành công",
-    "Tải danh sách bảng và danh sách bài viết của bảng mặc định thất bại"
+    'Tải danh sách bảng và danh sách bài viết của bảng mặc định thành công',
+    'Tải danh sách bảng và danh sách bài viết của bảng mặc định thất bại'
   );
-}
+};
 
 const updateNumberSlides = () => {
   const width = window.innerWidth;
@@ -65,7 +65,7 @@ onBeforeMount(async () => {
   await loadPosts();
 });
 const removePost = (postId) => {
-  posts.value = posts.value.filter(post => post.id !== postId);
+  posts.value = posts.value.filter((post) => post.id !== postId);
 };
 </script>
 
@@ -74,15 +74,12 @@ const removePost = (postId) => {
     <div class="wide">
       <div class="basic-profile container">
         <div class="user-avatar">
-          <img
-            :src="user.currentUser.avatar || '@/assets/images/user-avatar.png'"
-            alt="avatar"
-          />
+          <img :src="user.currentUser.avatar || '@/assets/images/user-avatar.png'" alt="avatar" />
         </div>
-        <h1 class="user-name">{{ user.currentUser.fullname || "Nguyễn Thị Trang" }}</h1>
+        <h1 class="user-name">{{ user.currentUser.fullname || 'Nguyễn Thị Trang' }}</h1>
         <p class="user-account">
           <IconBrandPinterest size="20" />
-          {{ user.currentUser.username || "Nguyễn Thị Trang" }}
+          {{ user.currentUser.username || 'Nguyễn Thị Trang' }}
         </p>
         <div class="btn-container">
           <HfButton :class="{ active: isActiveButton }" @click="loadPosts">Đã tạo</HfButton>
@@ -92,7 +89,14 @@ const removePost = (postId) => {
           <HfLoading v-if="loading" />
           <div v-else class="container">
             <div class="wide posts-container" v-if="posts.length">
-              <HfPost v-for="post in posts" :key="post.id" :postInfor="post" :isEdit="true" @deletePost="removePost" @updatePosts="loadPosts" />
+              <HfPost
+                v-for="post in posts"
+                :key="post.id"
+                :postInfor="post"
+                :isEdit="true"
+                @deletePost="removePost"
+                @updatePosts="loadPosts"
+              />
             </div>
             <HfNoData v-else />
           </div>
@@ -114,12 +118,16 @@ const removePost = (postId) => {
                 >
                   <HfCardCollection
                     v-for="(tableInfor, index) in tableRef"
-                    :class="`collection-item-${index % 6 + 1}`"
+                    :class="`collection-item-${(index % 6) + 1}`"
                     :key="tableInfor.id"
                     :tableInfor="tableInfor"
                   />
                   <template #dots="{ total, currentIndex, to }">
-                    <hf-custom-dots :total="total" :currentIndex="currentIndex" @to="to"></hf-custom-dots>
+                    <hf-custom-dots
+                      :total="total"
+                      :currentIndex="currentIndex"
+                      @to="to"
+                    ></hf-custom-dots>
                   </template>
                 </n-carousel>
               </n-space>

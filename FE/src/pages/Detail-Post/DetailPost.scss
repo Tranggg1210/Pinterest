@@ -1,10 +1,10 @@
 .detail-post {
   margin: 24px 0 0;
   @include flex(center, center);
-  @include mobile{
+  @include mobile {
     margin-top: 20px;
   }
-  @include small-tablet{
+  @include small-tablet {
     margin-top: 20px;
   }
 }
@@ -31,42 +31,43 @@
   &:hover {
     background-color: #ccc;
   }
-  @include mobile{
-   display: none;
+  @include mobile {
+    display: none;
   }
-  @include small-tablet{
+  @include small-tablet {
     top: 86px;
     left: 16px;
   }
-  @include tablet{
+  @include tablet {
     left: 24px;
   }
 }
-.icon-download
-{
+.icon-download {
   width: 42px;
   height: 42px;
   margin-left: -11px;
 }
 .detail-post-container {
   display: flex;
-  box-shadow: 4px 4px 12px 4px #ededed, -2px -2px 12px 4px #ededed;
+  box-shadow:
+    4px 4px 12px 4px #ededed,
+    -2px -2px 12px 4px #ededed;
   width: 80%;
   border-radius: 36px;
   min-height: 84vh;
   overflow: hidden;
-  @include mobile{
+  @include mobile {
     width: 100%;
     flex-direction: column;
     border-radius: 12px;
   }
 
-  @include small-tablet{
+  @include small-tablet {
     width: 100%;
     flex-direction: column;
     border-radius: 12px;
   }
-  @include tablet{
+  @include tablet {
     width: 100%;
   }
   .detail-post-left {
@@ -76,26 +77,26 @@
       height: 100%;
       object-fit: cover;
       border-radius: 35px 0 0 35px;
-      @include mobile{
+      @include mobile {
         border-radius: 0;
       }
-      @include small-tablet{
+      @include small-tablet {
         border-radius: 0;
       }
     }
-    @include mobile{
+    @include mobile {
       width: 100%;
     }
-    @include small-tablet{
+    @include small-tablet {
       width: 100%;
     }
   }
   .detail-post-right {
     width: 50%;
-    @include mobile{
+    @include mobile {
       width: 100%;
     }
-    @include small-tablet{
+    @include small-tablet {
       width: 100%;
     }
   }
@@ -108,58 +109,55 @@
   }
 }
 
-.option-right{
+.option-right {
   margin-top: -12px;
   @include flex(center, center);
   gap: 20px;
-  .option-right-text{
+  .option-right-text {
     font-size: 16px;
     @include flex(center, center);
-    .icon-down{
-      margin-bottom:-4px;
+    .icon-down {
+      margin-bottom: -4px;
     }
     cursor: pointer;
-    &:hover{
+    &:hover {
       color: $primary-color;
     }
   }
 }
 
-.detail-right-header{
+.detail-right-header {
   @include flex(space-between, center);
   padding: 32px 48px 0;
-  @include mobile{
+  @include mobile {
     padding: 20px;
   }
-  @include small-tablet{
+  @include small-tablet {
     padding: 32px 32px 0;
-
   }
-  @include tablet{
+  @include tablet {
     padding: 32px 36px 0;
-
   }
 }
 
-.detail-right-body{
+.detail-right-body {
   height: 60vh;
   overflow-y: scroll;
-  scrollbar-width: none; 
+  scrollbar-width: none;
   -ms-overflow-style: none;
   padding: 0 48px 0;
-  @include mobile{
-    padding:0 20px;
+  @include mobile {
+    padding: 0 20px;
   }
-  @include small-tablet{
+  @include small-tablet {
     padding: 0 32px 0;
-
   }
-  @include tablet{
+  @include tablet {
     padding: 0 36px 0;
   }
 }
 .detail-right-body::-webkit-scrollbar {
-  display: none; 
+  display: none;
 }
 
 .btn-post-save {
@@ -186,7 +184,7 @@
   @include flex(space-between, center);
   margin-top: 20px;
   cursor: pointer;
-  @include mobile{
+  @include mobile {
     flex-direction: column;
     justify-content: start;
     align-items: start;
@@ -199,25 +197,24 @@
       object-fit: cover;
       border-radius: 100rem;
     }
-    >div{
+    > div {
       margin-left: 8px;
     }
     .user-name {
       font-size: 15px;
       margin: 0;
     }
-    .user-follower
-    {
+    .user-follower {
       font-size: 13px;
       color: #a9a9a9;
       margin: 0;
     }
-    @include mobile{
+    @include mobile {
       margin-bottom: 12px;
     }
   }
-  button{
-    margin: 0!important;
+  button {
+    margin: 0 !important;
     padding: 12px 16px;
     font-size: 14px;
   }
@@ -230,10 +227,10 @@
   width: 100%;
   font-size: 18px;
   font-weight: 600;
-  .title{
+  .title {
     font-size: 16px;
   }
-  .icon-comment{
+  .icon-comment {
     width: 28px;
     height: 28px;
     margin: 0;
@@ -242,35 +239,33 @@
 .relate-posts {
   margin: 32px 0 40px;
 }
-.detail-right-hashtab{
+.detail-right-hashtab {
   color: blue;
   margin: 12px 0;
   font-weight: 500;
 }
-.detail-right-link{
-  color: #3B4AE4;
+.detail-right-link {
+  color: #3b4ae4;
   font-weight: 400;
 }
-.detail-right-footer{
+.detail-right-footer {
   border-top: 1px solid rgb(239, 239, 239);
   padding: 0 48px 0;
-  @include mobile{
+  @include mobile {
     padding: 20px;
   }
-  @include small-tablet{
+  @include small-tablet {
     padding: 0 32px 0;
-
   }
-  @include tablet{
+  @include tablet {
     padding: 0 36px 0;
-
   }
 }
-.dt-footer-top{
+.dt-footer-top {
   margin-top: 16px;
   @include flex(space-between, center);
 }
-.quality-comment{
+.quality-comment {
   font-size: large;
   font-weight: 600;
 }
@@ -281,53 +276,54 @@
   font-size: 15px;
   transition: all 0.4s linear;
 }
-.container-end{
+.container-end {
   @include flex;
   justify-content: end;
 }
-.dt-like,.quality-like{
+.dt-like,
+.quality-like {
   @include flex(center, center);
   font-size: large;
   font-weight: 500;
 }
-.quality-like{
+.quality-like {
   margin: 0 24px;
   animation: show 0.8s linear 1 both;
 }
-.toogle-like{
+.toogle-like {
   width: 44px;
   height: 44px;
-  @include flex(center,center);
+  @include flex(center, center);
   background-color: #e6e6e6;
   cursor: pointer;
   border-radius: 50%;
-  >svg{
+  > svg {
     margin: 0;
   }
   transition: all 0.4s linear;
-  &:hover{
-    background-color: #FFE0E0;
+  &:hover {
+    background-color: #ffe0e0;
   }
   animation: hidden 0.3s linear 1;
 }
-.liked{
+.liked {
   @extend .toogle-like;
-  background-color: #FFE0E0;
+  background-color: #ffe0e0;
   animation: show 0.3s linear 1;
 }
 @keyframes show {
-  0%{
+  0% {
     opacity: 0;
   }
-  100%{
+  100% {
     opacity: 1;
   }
 }
 @keyframes hidden {
-  0%{
+  0% {
     opacity: 1;
   }
-  100%{
+  100% {
     opacity: 0;
   }
 }

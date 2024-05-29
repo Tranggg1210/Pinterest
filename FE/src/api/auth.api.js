@@ -12,7 +12,8 @@ const authApi = () => ({
       password
     });
   },
-  forgotPassword: async({email}) => apiDefaultPHP.post(ApiConstant.auth.forgotPassword, {email})
+  forgotPassword: async ({ email }) =>
+    apiDefaultPHP.post(ApiConstant.auth.forgotPassword, { email })
 });
 
-export const { login, register,forgotPassword } = authApi();
+export const { login, register, forgotPassword } = authApi();

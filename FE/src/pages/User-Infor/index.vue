@@ -1,6 +1,11 @@
 <script setup>
 import { onBeforeMount, reactive } from 'vue';
-import { validateDOB, validateFirstName, validateLastName, validatePassword } from '@/utils/validator';
+import {
+  validateDOB,
+  validateFirstName,
+  validateLastName,
+  validatePassword
+} from '@/utils/validator';
 import { changeAvatar, changeInforUser, changePassword, getCurrentUser } from '@/api/user.api';
 import { useCurrentUserStore } from '@/stores/currentUser';
 
@@ -71,21 +76,21 @@ const loadUser = async () => {
     const result = await getCurrentUser();
     userForm.value = result;
     userForm.value.birthday = new Date(userForm.value.birthday).getTime();
-    userForm.value.gender = userForm.value.gender ? 'Male'.toString() : 'Female'
+    userForm.value.gender = userForm.value.gender ? 'Male'.toString() : 'Female';
     user.save({
-        fullname: handleFullName(result.firstName, result.lastName),
-        avatar: result.avatarUrl,
-        username: result.userName
+      fullname: handleFullName(result.firstName, result.lastName),
+      avatar: result.avatarUrl,
+      username: result.userName
     });
   } catch (err) {
     console.log(err);
-    message.error("Lấy thông tin người dùng thất bại");
+    message.error('Lấy thông tin người dùng thất bại');
   }
 };
 
 onBeforeMount(loadUser);
 
-const beforeUpload = async(data) => {
+const beforeUpload = async (data) => {
   try {
     loadingBar.start();
     disabledRef.value = false;
@@ -105,8 +110,8 @@ const beforeUpload = async(data) => {
     return false;
   } catch (err) {
     console.log(err);
-    message.error("Cập nhập ảnh người dùng không thành công!");
-  }finally{
+    message.error('Cập nhập ảnh người dùng không thành công!');
+  } finally {
     loadingBar.finish();
     disabledRef.value = true;
   }
@@ -127,9 +132,9 @@ const handleUpdateUserInformation = async () => {
           lastName: userForm.value.lastName,
           introduction: userForm.value.introduction,
           birthday: dobUser,
-          gender: userForm.value.gender === "Male" ? true : false,
-          country: userForm.value.country,
-        }
+          gender: userForm.value.gender === 'Male' ? true : false,
+          country: userForm.value.country
+        };
         await changeInforUser(newUser);
         loadingBar.finish();
         disabledRef.value = true;
@@ -138,7 +143,7 @@ const handleUpdateUserInformation = async () => {
       } catch (err) {
         console.log(err);
         message.error('Cập nhập thông tin người dùng thất bại!');
-      }finally{
+      } finally {
         loadingBar.finish();
         disabledRef.value = true;
       }
@@ -157,8 +162,8 @@ const handleChangePassword = async () => {
         message.success('Thay đổi mật khẩu thành công!');
       } catch (err) {
         console.log(err);
-        message.error("Thay đổi mật khẩu không thành công, vui lòng kiểm tra mật khẩu cũ!")
-      }finally{
+        message.error('Thay đổi mật khẩu không thành công, vui lòng kiểm tra mật khẩu cũ!');
+      } finally {
         loadingBar.finish();
         disabledRef.value = true;
       }
@@ -184,9 +189,7 @@ const handleChangePassword = async () => {
           </div>
           <div class="user-bio">
             <h2>
-              {{
-                user.currentUser.fullname ? user.currentUser.fullname: 'Không xác định'
-              }}
+              {{ user.currentUser.fullname ? user.currentUser.fullname : 'Không xác định' }}
             </h2>
             <p>
               <IconMail />
