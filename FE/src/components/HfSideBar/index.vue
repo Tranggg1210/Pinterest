@@ -9,19 +9,19 @@
         <ul>
             <li>
                 <RouterLink to="/admin" exact-active-class="active">
-                    <IconHome size="24"/>
+                    <IconHome size="24" class="icon"/>
                     <span>Trang chủ</span>
                 </RouterLink>
             </li>
             <li>
                 <RouterLink to="/admin-posts" exact-active-class="active">
-                    <IconUsers size="24"/>
+                    <IconUsers size="24" class="icon"/>
                     <span>Quản trị người dùng</span>
                 </RouterLink>
             </li>
             <li>
                 <RouterLink to="/admin-users" exact-active-class="active">
-                    <IconNews size="24"/>
+                    <IconNews size="24" class="icon"/>
                     <span>Quản trị bài viết</span>
                 </RouterLink>
             </li>
@@ -48,10 +48,11 @@
     }
     @include small-tablet{
       width: 10%;
-      padding: 24px 0;
+      padding: 8px 0;
     }
     @include tablet{
-      width: 20%;
+      width: 10%;
+      padding: 0px 0;
     }
 }
 .sidebar-logo {
@@ -63,10 +64,15 @@
   svg {
     margin-right: 2px !important;
     @include mobile{
-      margin-top: -8px;
+      margin: -8px 0 0;
+    }
+    @include small-tablet{
+      margin: 0 ;
+      padding: 0;
     }
     @include tablet{
-      display: none;
+      margin: 0;
+      padding: 0;
     }
   }
   h2{
@@ -82,8 +88,13 @@
   }
   @include small-tablet {
     justify-content: center;
-    padding: 0 8px;
+    padding: 8px;
     h2 {
+      display: none;
+    }
+  }
+  @include tablet{
+    h2{
       display: none;
     }
   }
@@ -91,6 +102,12 @@
 ul{
     margin-top: 2rem;
     padding:0 24px;
+    @include mobile{
+      padding: 0;
+    }
+    @include small-tablet{
+      padding: 0;
+    }
 }
 li{
     transition: all 0.3s linear;
@@ -112,7 +129,8 @@ li{
           justify-content: center;
         }
         @include tablet{
-          padding: 12px 20px;
+          padding: 12px 0px;
+          @include flex(center, center)
         }
     }
     &:hover{
@@ -122,6 +140,12 @@ li{
         a{
             color: #fff;
         }
+        @include small-tablet{
+          border-radius: 0;
+        }
+        @include mobile{
+          border-radius: 0;
+        }
     }
 }
 span{
@@ -129,6 +153,9 @@ span{
     display: none;
   }
   @include small-tablet{
+    display: none;
+  }
+  @include tablet{
     display: none;
   }
 }
@@ -143,7 +170,17 @@ span{
     width: 10%;
   }
   @include tablet{
-      width: 20%;
+      width: 10%;
+  }
+}
+.icon{
+  @include mobile{
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+  @include tablet{
+    margin-right: 0 !important;
+    margin-left: 0 !important;
   }
 }
 </style>

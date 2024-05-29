@@ -9,7 +9,6 @@ import { useRoute } from 'vue-router';
 const message = useMessage();
 const authStore = useAuthStore();
 const loadingBar = useLoadingBar()
-const disabledRef = ref(true)
 const router = useRouter();
 const route = useRoute();
 const account = reactive({
@@ -34,7 +33,6 @@ const loginHandler = () => {
     if (!errors) {
       try {
         loadingBar.start()
-        disabledRef.value = false
         const user = {
           userName: account.email,
           password: account.password
@@ -43,12 +41,11 @@ const loginHandler = () => {
         authStore.save({
           ...data
         });
+        console.log(data);  
         loadingBar.finish()
-        disabledRef.value = true
         message.success('Đăng nhập thành công. Xin chào ' + account.email);
-        router.push(route.query.redirect || '/');
+        // router.push(route.query.redirect || '/');
       } catch (err) {
-        disabledRef.value = true
         loadingBar.error()
         console.log(err);
         message.error("Lỗi đăng nhập, kiểm tra mật khẩu");

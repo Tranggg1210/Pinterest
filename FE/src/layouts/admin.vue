@@ -3,6 +3,7 @@
         <HfSideBar class="admin-sidebar"/>
         <div class="admin-right">
             <HfAdminHeader/>
+            <RouterView></RouterView>
         </div>
     </div>
 </template>

@@ -37,5 +37,8 @@ export const ApiConstant = {
     updateCollection: 'Collections/update',
     deleteCollection: 'Collections/delete',
     checkSaveCollection: 'Collections/checkOwnCollection'
+  },
+  admin: {
+    checkAdmin: 'Admin/GetRole'
   }
 };
