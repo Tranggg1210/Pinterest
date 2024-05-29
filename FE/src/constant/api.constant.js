@@ -2,7 +2,8 @@ export const ApiConstant = {
   auth: {
     login: 'Accounts/signIn',
     register: 'Accounts/signUp',
-    changePassword: 'Accounts/changePassword'
+    changePassword: 'Accounts/changePassword',
+    forgotPassword: 'forgot'
   },
   post: {
     postAll: 'Posts/getAll',

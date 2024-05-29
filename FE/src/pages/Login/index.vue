@@ -5,8 +5,6 @@ import { login } from '../../api/auth.api';
 import { validateEmail, validatePassword } from '@/utils/validator';
 import { useAuthStore } from '@/stores/auth';
 import { useRoute } from 'vue-router';
-import { getCurrentUser } from '@/api/user.api';
-import { useCurrentUserStore } from '@/stores/currentUser';
 
 const message = useMessage();
 const authStore = useAuthStore();
@@ -31,12 +29,6 @@ const rules = {
     trigger: 'blur'
   }
 };
-const showForgotPassword = computed(() => {
-  if (!account.password) return true;
-  else {
-    return true;
-  }
-});
 const loginHandler = () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
@@ -78,7 +70,10 @@ const loginHandler = () => {
       <n-form-item path="email" label="Email">
         <n-input v-model:value="account.email" placeholder="Email" class="form-input" />
       </n-form-item>
-      <n-form-item path="password" label="Mật khẩu" style="margin-top: 4px">
+      <n-form-item path="password" label="Mật khẩu" style="margin-top: 4px" class="password-label">
+        <div class="login__wrapper-forgotpass">
+          <RouterLink to="/forgot-password">Quên mật khẩu?</RouterLink>
+        </div>
         <n-input
           v-model:value="account.password"
           placeholder="Mật khẩu"
@@ -87,9 +82,6 @@ const loginHandler = () => {
           class="form-input"
         />
       </n-form-item>
-      <div class="login__wrapper-forgotpass" v-if="showForgotPassword">
-        <!-- <RouterLink to="/forgot-password">Quên mật khẩu?</RouterLink> -->
-      </div>
       <n-form-item>
         <button type="submit" class="login__wrapper-button button-login" @click="loginHandler">
           Đăng nhập
@@ -131,7 +123,9 @@ button {
     display: none;
   }
 }
-
+.password-label{
+  position: relative !important;
+}
 .login {
   width: 40%;
   background: #fff;
@@ -174,6 +168,10 @@ button {
     font-weight: 450;
     margin: -23px 6px 12px;
     text-align: right;
+    position: absolute;
+    bottom: 49px;
+    left: 61%;
+    text-wrap: nowrap;
     a:hover {
       color: #e60023;
     }
