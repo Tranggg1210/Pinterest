@@ -13,11 +13,11 @@ class Message extends Model
     public $timestamps = false;
     use HasFactory;
     public function createMessage(User $auth,Request $request){
-        $this -> ConversationId = $request -> id;
-        $this -> senderId = $auth -> Id;
-        $this -> receiverId = $request -> receiver_id;
+        $this -> ConversationId = $request -> conversation_id ?? $request -> id;
+        $this -> SenderId = $auth -> Id;
+        $this -> RecipientId = $request -> receiver_id;
         $this -> Content = $request -> content;
-        $this -> createdAt = date_create();
+        $this -> DateSent = date_create();
         $this -> save();
         return true;
     }

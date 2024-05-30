@@ -14,7 +14,7 @@ namespace PixelPalette.Entities
 
         public int Id { get; set; }
         public int UserId { get; set; }
-        public string? Caption { get; set; }
+        public string Caption { get; set; } = null!;
         public string? Detail { get; set; }
         public string? Theme { get; set; }
         public string? Link { get; set; }

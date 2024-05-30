@@ -3,12 +3,27 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace PixelPalette.Migrations
+namespace PixelPalette.Data.Migrations
 {
-    public partial class UltimateLy : Migration
+    public partial class Inittial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Role",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NormalizedName = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Role", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "User",
                 columns: table => new
@@ -30,7 +45,8 @@ namespace PixelPalette.Migrations
                     NormalizedUserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     NormalizedEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -56,7 +72,8 @@ namespace PixelPalette.Migrations
                         name: "Collection_UserId_foreign",
                         column: x => x.UserId,
                         principalTable: "User",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -125,7 +142,8 @@ namespace PixelPalette.Migrations
                         name: "FK_Notification_User",
                         column: x => x.UserId,
                         principalTable: "User",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -151,6 +169,30 @@ namespace PixelPalette.Migrations
                         column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserRole",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRole", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_UserRole_Role_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Role",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserRole_User_UserId",
+                        column: x => x.UserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -206,12 +248,14 @@ namespace PixelPalette.Migrations
                         name: "Comment_PostId_foreign",
                         column: x => x.PostId,
                         principalTable: "Post",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "Comment_UserId_foreign",
                         column: x => x.UserId,
                         principalTable: "User",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -230,12 +274,14 @@ namespace PixelPalette.Migrations
                         name: "FK_LikePost_Post",
                         column: x => x.PostId,
                         principalTable: "Post",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_LikePost_User",
                         column: x => x.UserId,
                         principalTable: "User",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -254,12 +300,14 @@ namespace PixelPalette.Migrations
                         name: "FK_Ownership_Collection",
                         column: x => x.CollectionId,
                         principalTable: "Collection",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Ownership_Post",
                         column: x => x.PostId,
                         principalTable: "Post",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -343,6 +391,13 @@ namespace PixelPalette.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Role_NormalizedName",
+                table: "Role",
+                column: "NormalizedName",
+                unique: true,
+                filter: "[NormalizedName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_User_Email",
                 table: "User",
                 column: "Email");
@@ -350,7 +405,14 @@ namespace PixelPalette.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_User_UserName",
                 table: "User",
-                column: "UserName");
+                column: "UserName",
+                unique: true,
+                filter: "[UserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRole_RoleId",
+                table: "UserRole",
+                column: "RoleId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -374,6 +436,9 @@ namespace PixelPalette.Migrations
                 name: "Ownership");
 
             migrationBuilder.DropTable(
+                name: "UserRole");
+
+            migrationBuilder.DropTable(
                 name: "Conversation");
 
             migrationBuilder.DropTable(
@@ -381,6 +446,9 @@ namespace PixelPalette.Migrations
 
             migrationBuilder.DropTable(
                 name: "Post");
+
+            migrationBuilder.DropTable(
+                name: "Role");
 
             migrationBuilder.DropTable(
                 name: "User");

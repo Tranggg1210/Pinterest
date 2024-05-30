@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Mail\ForgotMail;
 use App\Models\Account;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Lcobucci\JWT\Signer\Rsa\Sha256;
 /**
  * @OA\Post(
  *  path="/api/forgot",
@@ -46,18 +48,23 @@ class ForgotController extends Controller
         // ]);
         $user = User::where('Email', $request->email)->first();
             if ($user) {
-                $password = Str::random(8);
-                $user->Token = Str::random(32);
-                $user->PasswordHash = Hash::make($password);
+<<<<<<< HEAD
+                $password = Str::random(10).'@';
+                // $user->Token = Str::random(32);
+                $user->PasswordHash = hash('sha256',$password);
+=======
+                $password = Str::random(8).'0@';
+                // $user->Token = Str::random(32);
+                $user->PasswordHash = hash('sha256', $password,'1XSCRZH2yY343yFrWcalanVEfvtJYg5VgOTUx8MHk4WpwtYKTIfbzytqp08xCL8Y');
+>>>>>>> b8e26522a181b02af799a05911243d116b646bbb
                 $user->save();
-                dd(Mail::to($user->Email)->send(new ForgotMail($user, $password)));
                try {
                     Mail::to($user->Email)->send(new ForgotMail($user, $password));
                     return response()->json([
                         'status' => true,
                         'message' => 'Reset password thành công !',
                     ], 200);
-               }catch(\Throwable $th){
+               }catch(\Exception $exception){
                     return response()->json([
                         'status' => false,
                         'error' => 'Không thể kết nối được đến gmail !',

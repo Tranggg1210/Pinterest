@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -28,11 +29,20 @@ class Handler extends ExceptionHandler
             //
         });
     }
-    // public function render($request, Throwable $e)
-    // {
-    //     if ($e instanceof MethodNotAllowedHttpException) {
-    //         echo "<h1>Truy cập không hợp lệ</h1>";
-    //         return;
-    //     }
-    // }
+    public function __invoke()
+    {
+        return response() -> json([
+            'status' => 'error',
+           'message' => $e->getMessage(),
+        ]);
+    }
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof Exception) {
+            return redirect() -> route('not-found');
+        }
+        if ($e instanceof MethodNotAllowedHttpException) {
+            return redirect() -> route('forbidden');
+        }
+    }
 }

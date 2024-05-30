@@ -8,5 +8,7 @@
         public string? BackgroundId { get; set; }
         public string? BackgroundUrl { get; set; }
         public string? Description { get; set; }
+        public int PostCount { get; set; }
+        public bool IsDefault { get; set; } = false;
     }
 }

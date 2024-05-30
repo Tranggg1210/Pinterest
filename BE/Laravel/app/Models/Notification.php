@@ -21,8 +21,8 @@ class Notification extends Model
             );
         }
         $notification = new Notification();
-        $notification->userId = $user -> Id;
-        $notification->data = $data;
+        $notification->UserId = $user -> Id;
+        $notification->Data = $data;
         $notification->CreatedAt = date_create();
         $notification->save();
         return $notification;
@@ -30,9 +30,12 @@ class Notification extends Model
     public function getAllNotifications($userId){
         return $this->where('UserId',$userId)->get();
     }
-    // public function deleteNotification($id){
-    //     $notification = Notification::find($id);
-    //     $notification->delete();
-    //     return $notification;
-    // }
+    public function deleteNotification($id){
+        $notification = Notification::find($id);
+        $notification->delete();
+        return $notification;
+    }
+    public function getCountNotifications(){
+        return $this-> all() ->count();
+    }
 }

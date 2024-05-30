@@ -31,10 +31,10 @@ namespace PixelPalette.Repositories
         public async Task<string> CreateToken()
         {
             var signingCredentials = GetSigningCredentials();
-            var claims = GetClaims();
+            var claims = await GetClaims();
             var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
             var token = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-            
+
             _user!.Token = token;
             _context.Users.Update(_user);
             await _context.SaveChangesAsync();
@@ -46,10 +46,19 @@ namespace PixelPalette.Repositories
         {
             var key = Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]);
             var secret = new SymmetricSecurityKey(key);
-            return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
+            return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256Signature);
         }
 
-        private List<Claim> GetClaims() => new List<Claim> { new Claim(ClaimTypes.Name, _user!.UserName) };
+        private async Task<List<Claim>> GetClaims()
+        {
+            var authClaims = new List<Claim> { new Claim(ClaimTypes.Name, _user!.UserName) };
+            var userRoles = await _userManager.GetRolesAsync(_user!);
+            foreach (var role in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, role.ToString()));
+            }
+            return authClaims;
+        }
 
         private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
         {
@@ -66,16 +75,23 @@ namespace PixelPalette.Repositories
         {
             _user = await _userManager.FindByNameAsync(model.UserName);
             var result = (_user != null && await _userManager.CheckPasswordAsync(_user, model.Password));
-            if (!result) 
+
+            if (!result)
                 return false;
-            
+
             return result;
         }
 
         public async Task<IdentityResult> SignUpAsync(SignUpModel model)
         {
             var user = _mapper.Map<User>(model);
-            return await _userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, "Member");
+            }
+            return result;
         }
         public async Task<bool> ChangePasswordAsync(string userName, ChangePasswordParams entryParams)
         {

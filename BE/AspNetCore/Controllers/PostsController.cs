@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using PixelPalette.Entities;
 using PixelPalette.Helpers;
 using PixelPalette.Interfaces;
@@ -16,7 +17,6 @@ namespace PixelPalette.Controllers
     {
         private readonly IPostRepository _repo;
         private readonly UserManager<User> _userManager;
-        private Thumbnail? _thumbnail = null;
 
         public PostsController(IPostRepository repo, UserManager<User> userManager)
         {
@@ -24,7 +24,7 @@ namespace PixelPalette.Controllers
             _userManager = userManager;
         }
         [HttpGet("getAll")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult<IEnumerable<PostModel>>> GetAll()
         {
             try
@@ -37,7 +37,7 @@ namespace PixelPalette.Controllers
             }
         }
         [HttpGet("getById/{id}")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult<PostModel>> GetById(int id)
         {
             try
@@ -51,13 +51,16 @@ namespace PixelPalette.Controllers
             }
         }
 
-        [HttpGet("getByCollectionId/{collectionId}")]
-        [Authorize]
-        public async Task<ActionResult<IEnumerable<PostModel>>> GetByCollectionId(int collectionId)
+        [HttpGet("getByCollectionId")]
+        [Authorize(Roles = "Member")]
+        public async Task<ActionResult<IEnumerable<PostModel>>> GetByCollectionId(int? collectionId)
         {
             try
             {
-                return Ok(await _repo.GetPostByCollectionIdAsync(collectionId));
+                string userName = _userManager.GetUserName(HttpContext.User);
+                var user = await _userManager.FindByNameAsync(userName);
+                var collections = await _repo.GetPostByCollectionIdAsync(user.Id, collectionId);
+                return collections != null ? Ok(collections) : Ok(Enumerable.Empty<PostModel>());
             }
             catch (Exception ex)
             {
@@ -66,14 +69,18 @@ namespace PixelPalette.Controllers
         }
 
         [HttpGet("getByUserId")]
-        [Authorize]
-        public async Task<ActionResult<IEnumerable<PostModel>>> GetByUserId()
+        [Authorize(Roles = "Member")]
+        public async Task<ActionResult<IEnumerable<PostModel>>> GetByUserId(int? userId)
         {
             try
             {
-                string userName = _userManager.GetUserName(HttpContext.User);
-                var user = await _userManager.FindByNameAsync(userName);
-                return Ok(await _repo.GetPostByUserIdAsync(user.Id));
+                if (userId == null)
+                {
+                    string userName = _userManager.GetUserName(HttpContext.User);
+                    var user = await _userManager.FindByNameAsync(userName);
+                    userId = user.Id;
+                }
+                return Ok(await _repo.GetPostByUserIdAsync((int)userId));
             }
             catch (Exception ex)
             {
@@ -82,15 +89,16 @@ namespace PixelPalette.Controllers
         }
 
         [HttpPost("create")]
-        [Authorize]
-        public async Task<ActionResult<PostModel>> Create(PostCreateParams entryParams)
+        [Authorize(Roles = "Member")]
+        public async Task<ActionResult<PostModel>> Create([FromForm] PostCreateParams entryParams, IFormFile file)
         {
             try
             {
                 string userName = _userManager.GetUserName(HttpContext.User);
                 var user = await _userManager.FindByNameAsync(userName);
-                var post = await _repo.AddPostAsync(user.Id, entryParams);
-                return Ok(post);
+                var post = await _repo.AddPostAsync(user.Id, entryParams, file);
+                if (post != null) return Ok(post);
+                return BadRequest(false);
             }
             catch (Exception ex)
             {
@@ -99,12 +107,14 @@ namespace PixelPalette.Controllers
         }
 
         [HttpPost("toggleCollection")]
-        [Authorize]
-        public async Task<ActionResult> ToggleCollection(int postId, int collectionId)
+        [Authorize(Roles = "Member")]
+        public async Task<ActionResult> ToggleCollection(int postId, int? collectionId)
         {
             try
             {
-                var result = await _repo.OwnershipAsync(postId, collectionId);
+                string userName = _userManager.GetUserName(HttpContext.User);
+                var user = await _userManager.FindByNameAsync(userName);
+                var result = await _repo.OwnershipAsync(user.Id, postId, collectionId);
                 return !result ? NotFound("Not found") : Ok(true);
             }
             catch (Exception ex)
@@ -114,7 +124,7 @@ namespace PixelPalette.Controllers
         }
 
         [HttpPost("toggleLike")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult> ToggleLike(int postId)
         {
             try
@@ -131,7 +141,7 @@ namespace PixelPalette.Controllers
         }
 
         [HttpDelete("delete/{id}")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult> Delete(int id)
         {
             try
@@ -146,18 +156,15 @@ namespace PixelPalette.Controllers
         }
 
         [HttpPut("update/{id}")]
-        [Authorize]
-        public async Task<ActionResult<PostModel>> Update(PostUpdateParams entryParams)
+        [Authorize(Roles = "Member")]
+        public async Task<ActionResult<PostModel>> Update(int id, [FromForm] PostUpdateParams entryParams, IFormFile? file)
         {
             try
             {
-                if (_thumbnail != null)
-                {
-                    string userName = _userManager.GetUserName(HttpContext.User);
-                    var user = await _userManager.FindByNameAsync(userName);
-                    var post = await _repo.UpdatePostAsync(user.Id, entryParams, _thumbnail);
-                    if (post != null) return Ok(post);
-                }
+                string userName = _userManager.GetUserName(HttpContext.User);
+                var user = await _userManager.FindByNameAsync(userName);
+                var post = await _repo.UpdatePostAsync(id, entryParams, user.Id, file);
+                if (post != null) return Ok(post);
                 return BadRequest(false);
             }
             catch (Exception ex)
@@ -166,30 +173,20 @@ namespace PixelPalette.Controllers
             }
         }
 
-        [HttpPost("upload")]
-        [Authorize]
-        public async Task<ActionResult<Thumbnail>> Upload(IFormFile file)
+        [HttpGet("checkLike/{postId}")]
+        [Authorize(Roles = "Member")]
+        public async Task<ActionResult<bool>> CheckLike(int postId)
         {
-            var result = await _repo.UploadThumbnailAsync(file);
-            if (result != null)
+            try
             {
-                _thumbnail = new Thumbnail
-                {
-                    PublicId = result.PublicId,
-                    Url = result.SecureUrl.AbsoluteUri
-                };
-                return Ok(_thumbnail);
+                string userName = _userManager.GetUserName(HttpContext.User);
+                var user = await _userManager.FindByNameAsync(userName);
+                return Ok(await _repo.checkLikeAsync(postId, user.Id));
             }
-            return BadRequest(false);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
+            }
         }
-
-        [HttpDelete("cancel")]
-        [Authorize]
-        public async Task<ActionResult> Cancel(string publicId)
-        {
-            var result = await _repo.DeleteThumbnailAsync(publicId);
-            return !result ? BadRequest(false) : Ok(true);
-        }
-
     }
 }

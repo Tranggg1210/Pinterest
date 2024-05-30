@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using PixelPalette.Helpers;
 
 namespace PixelPalette.Extensions
 {
@@ -15,7 +16,7 @@ namespace PixelPalette.Extensions
         {
             services.AddCors(opts =>
                 {
-                    opts.AddDefaultPolicy(builder =>
+                    opts.AddPolicy("Policy", builder =>
                         builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
                     );
                 }
@@ -60,18 +61,21 @@ namespace PixelPalette.Extensions
 
         public static void ConfigureIdentity(this IServiceCollection services)
         {
-            services.AddIdentityCore<User>(o =>
+            services.AddIdentity<User, Role>(o =>
             {
                 o.Password.RequireDigit = true;
                 o.Password.RequireLowercase = false;
                 o.Password.RequireUppercase = false;
                 o.Password.RequireNonAlphanumeric = false;
-                o.Password.RequiredLength = 10;
+                o.Password.RequiredLength = 8;
                 o.User.RequireUniqueEmail = true;
             })
-                .AddEntityFrameworkStores<PixelPaletteContext>()
+                .AddRoles<Role>()
+                .AddRoleManager<RoleManager<Role>>()
+                .AddSignInManager<SignInManager<User>>()
+                .AddRoleValidator<RoleValidator<Role>>()
                 .AddDefaultTokenProviders()
-                .AddSignInManager<SignInManager<User>>();
+                .AddEntityFrameworkStores<PixelPaletteContext>();
         }
         public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration)
         {
