@@ -1,8 +1,9 @@
 <script setup>
+import { useCurrentUserStore } from '@/stores/currentUser';
 import { useRouter } from 'vue-router';
 
-const user = ref({});
 const router = useRouter();
+const user = useCurrentUserStore();
 const options = [
   {
     id: 1,
@@ -29,6 +30,7 @@ const options = [
     desc: 'thông báo'
   }
 ];
+console.log(user);
 const handleFullName = (firstName, lastName) => {
   const fullName = `${lastName} ${firstName} `;
   const formattedFullName = fullName
@@ -39,7 +41,7 @@ const handleFullName = (firstName, lastName) => {
   return formattedFullName;
 };
 const goToPage = () => {
-  router.push('/user-infor');
+  router.push('/');
 };
 </script>
 <template>
@@ -47,13 +49,13 @@ const goToPage = () => {
     <div class="home-banner container">
       <div class="basic-user">
         <div class="user-background">
-          <img :src="user?.avatarUrl" alt="background" v-if="user?.avatarUrl" />
+          <img :src="user?.currentUser.avatar" alt="background" v-if="user?.currentUser.avatar" />
           <img v-else src="@/assets/images/user-avatar.png" alt="background" style="width: 72%" />
         </div>
         <h1 class="user-name">
-          {{ user?.firstName ? handleFullName(user?.firstName, user?.lastName) : 'Chưa xác định' }}
+          {{ user?.currentUser.fullname !== 'Null Null' ? user.currentUser.fullname  : 'Admin' }}
         </h1>
-        <n-button type="warning" @click="goToPage">Chỉnh sửa profile</n-button>
+        <n-button type="warning" @click="goToPage">Về trang chủ của thành viên</n-button>
       </div>
     </div>
     <div class="card-quality">

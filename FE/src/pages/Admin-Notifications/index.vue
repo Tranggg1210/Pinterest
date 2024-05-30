@@ -1,13 +1,13 @@
 <template>
-  <div>dasjkfl;</div>
+<div>dasjkfl;</div>
 </template>
 
 <script setup></script>
 
 <style lang="scss" scoped></style>
 <route lang="yaml">
-name: Admin-Posts
+name: Admin-Notifications
 meta:
-  layout: admin
-  requiresAuth: true
+layout: admin
+requiresAuth: true
 </route>

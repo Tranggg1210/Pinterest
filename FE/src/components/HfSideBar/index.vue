@@ -1,4 +1,20 @@
-<script setup></script>
+<script setup>
+import { useAuthStore } from '@/stores/auth';
+import { useCurrentUserStore } from '@/stores/currentUser';
+import { useMessage } from 'naive-ui';
+import { useRouter } from 'vue-router';
+
+const user = useAuthStore();
+const currentU = useCurrentUserStore();
+const message = useMessage();
+const router = useRouter();
+const handleLogout = () => {
+  user.clear();
+  currentU.clear();
+  message.success('Đăng xuất thành công!');
+  router.push('/');
+};
+</script>
 <template>
   <div>
     <nav class="sidebar">
@@ -24,6 +40,24 @@
             <IconNews size="24" class="icon" />
             <span>Quản trị bài viết</span>
           </RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/admin-posts" exact-active-class="active">
+            <IconBell size="24" class="icon" />
+            <span>Quản trị thông báo</span>
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/admin-account" exact-active-class="active">
+            <IconUserCircle size="24" class="icon" />
+            <span>Quản trị tài khoản</span>
+          </RouterLink>
+        </li>
+        <li @click="handleLogout">
+          <div class="logout">
+            <IconLogout size="24" class="icon" />
+            <span>Đăng xuất</span>
+          </div>
         </li>
       </ul>
     </nav>
@@ -112,7 +146,7 @@ li {
   transition: all 0.3s linear;
   cursor: pointer;
   @include flex(start, center);
-  a {
+  a,.logout {
     padding: 12px 24px;
     @include flex(start, center);
     width: 100%;
@@ -145,6 +179,11 @@ li {
     @include mobile {
       border-radius: 0;
     }
+  }
+}
+.logout{
+  &:hover{
+    color: #fff;
   }
 }
 span {
