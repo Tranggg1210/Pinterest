@@ -9,7 +9,7 @@ const message = useMessage();
 const loadingBar = useLoadingBar();
 const router = useRouter();
 const showModal = ref(false);
-const generalOptions = ref([])
+const generalOptions = ref([]);
 const posts = reactive({
   link: null,
   caption: null,
@@ -20,7 +20,7 @@ const posts = reactive({
 });
 const table = ref({
   name: null
-})
+});
 const formRef = ref(null);
 const formTableRef = ref(null);
 const rules = {
@@ -36,7 +36,7 @@ const rules = {
       }
     },
     trigger: ['blur', 'input']
-  },
+  }
 };
 const rulesTable = {
   name: {
@@ -51,22 +51,20 @@ const rulesTable = {
       }
     },
     trigger: ['blur', 'input']
-  },
+  }
 };
-const loadTableByUserId = async() => {
+const loadTableByUserId = async () => {
   try {
     const result = await getCollectionByUserId();
-    let data = result?.map(choose => (
-      {label: choose.name, value: choose.id}
-    ));
+    let data = result?.map((choose) => ({ label: choose.name, value: choose.id }));
     generalOptions.value = data;
   } catch (error) {
     console.log(error);
-    message.error("Lấy danh sách bảng thất bại!!!")
+    message.error('Lấy danh sách bảng thất bại!!!');
   }
-}
-onBeforeMount(loadTableByUserId)
-const beforeUpload = async(data) => {
+};
+onBeforeMount(loadTableByUserId);
+const beforeUpload = async (data) => {
   try {
     loadingBar.start();
     if (
@@ -84,18 +82,17 @@ const beforeUpload = async(data) => {
     return false;
   } catch (err) {
     console.log(err);
-    message.error("Cập nhập ảnh người dùng không thành công!");
-  }finally{
+    message.error('Cập nhập ảnh người dùng không thành công!');
+  } finally {
     loadingBar.finish();
   }
 };
 
-const handleCreatePost = async() => {
+const handleCreatePost = async () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
-      if(!posts.file)
-      {
-        message.error("Vui lòng upload ảnh của bài viết");
+      if (!posts.file) {
+        message.error('Vui lòng upload ảnh của bài viết');
         return;
       }
       loadingBar.start();
@@ -104,33 +101,33 @@ const handleCreatePost = async() => {
         message.success('Tạo bài viết thành công!!!');
         setTimeout(() => {
           router.push('/');
-        }, 1000)
+        }, 1000);
       } catch (err) {
-        loadingBar.error()
-        message.error("Tạo bài viết thất bại");
+        loadingBar.error();
+        message.error('Tạo bài viết thất bại');
       }
       loadingBar.finish();
     }
   });
-}
-const handleCreateTable = async() => {
+};
+const handleCreateTable = async () => {
   formTableRef.value?.validate(async (errors) => {
     if (!errors) {
       loadingBar.start();
       try {
-        await createCollection({name: table.value.name});
-        message.success("Tạo bảng thành công!!!");
+        await createCollection({ name: table.value.name });
+        message.success('Tạo bảng thành công!!!');
         showModal.value = false;
         await loadTableByUserId();
       } catch (error) {
-        loadingBar.error()
+        loadingBar.error();
         console.log(error);
         message.error('Tạo bảng thất bại!!!');
       }
       loadingBar.finish();
     }
   });
-}
+};
 </script>
 
 <template>
@@ -139,10 +136,7 @@ const handleCreateTable = async() => {
       <h1 class="title">Tạo bài viết</h1>
       <div class="handle-posts">
         <div class="image-uploaded">
-          <n-upload
-            directory-dnd
-            @before-upload="beforeUpload"
-          >
+          <n-upload directory-dnd @before-upload="beforeUpload">
             <n-upload-dragger class="upload-dragger">
               <div style="margin-bottom: 12px">
                 <IconUpload size="40" style="opacity: 0.3" />
@@ -155,14 +149,13 @@ const handleCreateTable = async() => {
           </n-upload>
         </div>
         <div class="infor-uploaded">
-          <n-form
-            ref="formRef"
-            :model="posts"
-            :rules="rules"
-            size="large"
-          >
+          <n-form ref="formRef" :model="posts" :rules="rules" size="large">
             <n-form-item label="Tiêu đề" path="caption">
-              <n-input v-model:value="posts.caption"  placeholder="Thêm tiêu đề" class="posts-input" />
+              <n-input
+                v-model:value="posts.caption"
+                placeholder="Thêm tiêu đề"
+                class="posts-input"
+              />
             </n-form-item>
             <n-form-item label="Mô tả" path="detail">
               <n-input
@@ -177,30 +170,33 @@ const handleCreateTable = async() => {
               />
             </n-form-item>
             <n-form-item path="collectionId" label="Bảng">
-                <n-select
-                    class="posts-input posts-select"
-                    :bordered="false"
-                    v-model:value="posts.collectionId"
-                    placeholder="Chọn bảng"
-                    :options="generalOptions"
-                />
-                <n-button type="success" class="btn-create-table" @click="showModal = true">
-                  Tạo bảng
-                </n-button>
+              <n-select
+                class="posts-input posts-select"
+                :bordered="false"
+                v-model:value="posts.collectionId"
+                placeholder="Chọn bảng"
+                :options="generalOptions"
+              />
+              <n-button type="success" class="btn-create-table" @click="showModal = true">
+                Tạo bảng
+              </n-button>
             </n-form-item>
             <n-form-item label="Hashtab" path="theme">
-              <n-input v-model:value="posts.theme" placeholder="Thêm hashtab cho bài viết" class="posts-input" />
+              <n-input
+                v-model:value="posts.theme"
+                placeholder="Thêm hashtab cho bài viết"
+                class="posts-input"
+              />
             </n-form-item>
             <n-form-item label="Nguồn" path="link">
-              <n-input v-model:value="posts.link" placeholder="Thêm nguồn cho bài viết" class="posts-input" />
+              <n-input
+                v-model:value="posts.link"
+                placeholder="Thêm nguồn cho bài viết"
+                class="posts-input"
+              />
             </n-form-item>
             <n-form-item class="btn-container">
-              <HfButton
-                type="submit"
-                @click="handleCreatePost"
-              >
-                Đăng
-              </HfButton>
+              <HfButton type="submit" @click="handleCreatePost"> Đăng </HfButton>
             </n-form-item>
           </n-form>
         </div>
@@ -215,34 +211,33 @@ const handleCreateTable = async() => {
     style="width: 60%"
     :bordered="false"
   >
-  <n-form
-    ref="formTableRef"
-    :model="table"
-    :rules="rulesTable"
-    size="large"
-  >
-    <n-form-item label="Tên bảng" path="name">
-      <n-input v-model:value="table.name"  placeholder="Tên bảng" class="posts-input" />
-    </n-form-item>
-    <n-form-item class="container-end">
-        <n-button @click="() => {
-          showModal = false;
-          table.name = ''
-        }">
+    <n-form ref="formTableRef" :model="table" :rules="rulesTable" size="large">
+      <n-form-item label="Tên bảng" path="name">
+        <n-input v-model:value="table.name" placeholder="Tên bảng" class="posts-input" />
+      </n-form-item>
+      <n-form-item class="container-end">
+        <n-button
+          @click="
+            () => {
+              showModal = false;
+              table.name = '';
+            }
+          "
+        >
           Hủy
         </n-button>
-        <n-button type="success" style="color: white; margin-left:12px ;" @click="handleCreateTable">
+        <n-button type="success" style="color: white; margin-left: 12px" @click="handleCreateTable">
           Tạo bảng
         </n-button>
-    </n-form-item>
-  </n-form>
+      </n-form-item>
+    </n-form>
   </n-modal>
 </template>
 
 <style lang="scss" scoped src="./Posts.scss"></style>
 <route lang="yaml">
-  name: Posts
-  meta:
-    layout: default
-    requiresAuth: true
+name: Posts
+meta:
+  layout: default
+  requiresAuth: true
 </route>

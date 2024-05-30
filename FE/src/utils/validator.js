@@ -51,7 +51,8 @@ function validatePassword(_, password) {
   if (password.trim() === '') {
     return new Error('Vui lòng nhập mật khẩu!');
   }
-  const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{10,}$/;
+  const regex =
+    /^(?=.*[A-Za-z])(?=.*\d).*[!@#$%^&*(),.?":{}|<>]?[A-Za-z\d!@#$%^&*(),.?":{}|<>]{10,}$/;
   if (!regex.test(password)) {
     // Chữ cái
     if (!/[a-zA-Z]/.test(password)) {

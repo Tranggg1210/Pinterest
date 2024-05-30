@@ -2,7 +2,8 @@ export const ApiConstant = {
   auth: {
     login: 'Accounts/signIn',
     register: 'Accounts/signUp',
-    changePassword: 'Accounts/changePassword'
+    changePassword: 'Accounts/changePassword',
+    forgotPassword: 'forgot'
   },
   post: {
     postAll: 'Posts/getAll',
@@ -11,7 +12,9 @@ export const ApiConstant = {
     postByUserId: 'Posts/getByUserId',
     deletePostById: 'Posts/delete',
     updatePostById: 'Posts/update',
-    getByCollectionId: 'Posts/getByCollectionId'
+    getByCollectionId: 'Posts/getByCollectionId',
+    toggleLike: 'Posts/toggleLike',
+    checkLike: 'Posts/checkLike'
   },
   user: {
     currentUser: 'Users/getLoginUser',
@@ -28,11 +31,14 @@ export const ApiConstant = {
     createCollection: 'Collections/create',
     getCollectionByUserId: 'Collections/getByUserId',
     getCollectionByPostId: 'Collections/getByPostId',
-    savePost: "Posts/toggleCollection",
+    savePost: 'Posts/toggleCollection',
     getById: 'Collections/getById',
     updateBackgound: 'Collections/background',
     updateCollection: 'Collections/update',
     deleteCollection: 'Collections/delete',
     checkSaveCollection: 'Collections/checkOwnCollection'
+  },
+  admin: {
+    checkAdmin: 'Admin/GetRole'
   }
 };

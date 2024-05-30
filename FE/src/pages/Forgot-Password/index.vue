@@ -1,40 +1,66 @@
 <script setup>
-import { computed, reactive } from 'vue';
+import { forgotPassword } from '@/api/auth.api';
 import { validateEmail } from '@/utils/validator';
-import { useBreakpoints } from '@/composables/useBreakpoints';
-const { width, device } = useBreakpoints();
-const search = reactive({
-  email: ''
+import { useMessage } from 'naive-ui';
+import { useRoute, useRouter } from 'vue-router';
+const message = useMessage();
+const router = useRouter();
+const loadingBar = useLoadingBar();
+const route = useRoute();
+
+const account = reactive({
+  email: null
 });
 const formRef = ref(null);
-const message = useMessage();
-
-const isShowBtnForgotPassword = computed(() => validateEmail(search.email));
-const handleForgotPassword = async () => {
-  console.log('Forgot-Password');
+const rules = {
+  email: {
+    required: true,
+    validator: validateEmail,
+    trigger: 'blur'
+  }
+};
+const handleForgotPassword = () => {
+  formRef.value?.validate(async (errors) => {
+    if (!errors) {
+      try {
+        loadingBar.start();
+        const result = await forgotPassword({ email: account.email });
+        console.log(result);
+        loadingBar.finish();
+        if (result?.data?.message === 'Email chưa được đăng ký') {
+          message.warning(result.data.message);
+        }
+        // router.push(route.query.redirect || '/');
+      } catch (err) {
+        loadingBar.error();
+        console.log(err);
+        message.error('Lỗi đăng nhập, kiểm tra mật khẩu');
+      }
+    }
+  });
+};
+const goBack = () => {
+  router.back();
 };
 </script>
 
 <template>
   <div class="forgot-password container">
     <div class="wide">
+      <div @click="goBack">
+        <IconArrowLeft class="icon icon-back" />
+      </div>
       <h1>Chúng ta hãy tìm tài khoản PixelPalette của bạn</h1>
-      <p>Email, tên hoặc tên người dùng của bạn là gì?</p>
-      <n-form class="form-search" :label-width="80" :model="search" ref="formRef" size="large">
-        <n-form-item path="search.email" label="" class="inp-search">
-          <n-input
-            v-model:value="search.email"
-            placeholder="Nhập gmail của bạn"
-            style="padding: 5px; border: 1px solid #f1f1f1; text-align: left; border-radius: 32px"
-          />
+      <n-form class="form-search" ref="formRef" :model="account" :rules="rules" size="large">
+        <n-form-item path="email" label="Email">
+          <n-input v-model:value="account.email" placeholder="Email" class="form-input" />
+        </n-form-item>
+        <n-form-item>
+          <button type="submit" class="button-fg" @click="handleForgotPassword">
+            Đặt lại mật khẩu
+          </button>
         </n-form-item>
       </n-form>
-      <HfButton
-        @click="handleForgotPassword"
-        class="btn-forgot-password"
-        v-show="isShowBtnForgotPassword"
-        >Gửi lại mật khẩu mới</HfButton
-      >
     </div>
   </div>
 </template>
@@ -42,7 +68,6 @@ const handleForgotPassword = async () => {
 <style lang="scss" scoped>
 .forgot-password {
   margin-top: 40px;
-  text-align: center;
   h1 {
     font-weight: 500;
     @include mobile {
@@ -63,33 +88,31 @@ const handleForgotPassword = async () => {
       width: 70%;
     }
   }
-  p {
-    margin: 14px 0 0;
-  }
   .form-search {
     width: 80%;
-    @include flex(space-between, center);
-    .inp-search {
-      width: 100%;
-    }
-    button {
-      padding: 14px 18px;
-      @include mobile {
-        padding: 12px;
-        @include flex(center, center);
-        margin-left: 0;
-      }
+    margin-top: 32px;
+    .form-input {
+      border-radius: 40px;
+      border: 2px solid #ccc;
+      outline: none;
+      padding: 5px;
+      margin-bottom: 2px;
+      text-align: left;
     }
     @include mobile() {
       width: 100%;
     }
   }
-  .btn-forgot-password {
-    margin-top: 0px;
-    width: 80%;
-    padding: 14px 0;
+  .button-fg {
+    width: 100%;
+    padding: 16px 0;
     background-color: $primary-color;
+    border-radius: 50px;
+    border: none;
+    margin: 0;
+    transition: all 0.3s linear;
     color: $white-color;
+    outline: none;
     &:hover {
       background-color: $black-color;
     }
@@ -100,6 +123,31 @@ const handleForgotPassword = async () => {
 
   @include mobile {
     margin-top: 20px;
+  }
+}
+.icon-back {
+  position: fixed;
+  top: 100px;
+  left: 44px;
+  width: 44px;
+  height: 44px;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.3s linear;
+  background-color: #fff;
+  z-index: 100;
+  &:hover {
+    background-color: #ccc;
+  }
+  @include mobile {
+    display: none;
+  }
+  @include small-tablet {
+    top: 86px;
+    left: 16px;
+  }
+  @include tablet {
+    left: 24px;
   }
 }
 </style>

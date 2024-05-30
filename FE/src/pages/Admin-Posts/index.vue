@@ -1,18 +1,12 @@
 <template>
-    <div>
-dasjkfl;
-    </div>
+  <div>dasjkfl;</div>
 </template>
 
-<script setup>
+<script setup></script>
 
-</script>
-
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
 <route lang="yaml">
-    name: Admin-Posts
-    meta:
-      layout: admin
+name: Admin-Posts
+meta:
+  layout: admin
 </route>

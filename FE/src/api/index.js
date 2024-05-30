@@ -7,7 +7,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
     'Accept-Language': 'vn',
-    'ngrok-skip-browser-warning': '69420',
+    'ngrok-skip-browser-warning': '69420'
   }
 });
 api.interceptors.request.use((config) => {
@@ -31,7 +31,7 @@ const apiUpload = axios.create({
   headers: {
     'Content-Type': 'multipart/form-data',
     'Accept-Language': 'vn',
-    'ngrok-skip-browser-warning': '69420',
+    'ngrok-skip-browser-warning': '69420'
   }
 });
 apiUpload.interceptors.request.use((config) => {
@@ -58,5 +58,60 @@ const apiDefault = axios.create({
     'ngrok-skip-browser-warning': '69420'
   }
 });
+const apiPHP = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL_PHP}/api`,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept-Language': 'vn',
+    'ngrok-skip-browser-warning': '69420'
+  }
+});
+apiPHP.interceptors.request.use((config) => {
+  const accessToken = JSON.parse(localStorage.getItem(LocalStorage.auth))?.token;
+  config.headers.Authorization = `Bearer ${accessToken}`;
+  return config;
+}, Promise.reject);
+apiPHP.interceptors.response.use(
+  (value) => value.data,
+  (error) => {
+    if (error.code === 401) {
+      localStorage.removeItem(LocalStorage.auth);
+      router.push('/login');
+    }
+    return Promise.reject(error);
+  }
+);
 
-export { api, apiDefault, apiUpload };
+const apiUploadPHP = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL_PHP}/api`,
+  headers: {
+    'Content-Type': 'multipart/form-data',
+    'Accept-Language': 'vn',
+    'ngrok-skip-browser-warning': '69420'
+  }
+});
+apiUploadPHP.interceptors.request.use((config) => {
+  const accessToken = JSON.parse(localStorage.getItem(LocalStorage.auth))?.token;
+  config.headers.Authorization = `Bearer ${accessToken}`;
+  return config;
+}, Promise.reject);
+apiUploadPHP.interceptors.response.use(
+  (value) => value.data,
+  (error) => {
+    if (error.code === 401) {
+      localStorage.removeItem(LocalStorage.auth);
+      router.push('/login');
+    }
+    return Promise.reject(error);
+  }
+);
+
+const apiDefaultPHP = axios.create({
+  baseURL: `${import.meta.env.VITE_API_URL_PHP}/api`,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept-Language': 'vn',
+    'ngrok-skip-browser-warning': '69420'
+  }
+});
+export { api, apiDefault, apiUpload, apiPHP, apiUploadPHP, apiDefaultPHP };

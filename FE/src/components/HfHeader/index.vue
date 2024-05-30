@@ -35,7 +35,6 @@ const loginRedirectRouters = ref([
   { label: 'Đăng ký', key: '/sign-up' }
 ]);
 
-
 const handleScroll = () => {
   isScrolled.value = window.scrollY >= 160;
 };
@@ -74,8 +73,13 @@ const goToPage = (key) => {
         <router-link class="btn-home" to="/posts" exact-active-class="active" v-if="user.loggedIn">
           <HfButton> Tạo </HfButton>
         </router-link>
-        <router-link class="btn-create-mobile" to="/posts" exact-active-class="active" v-if="user.loggedIn">
-          <HfButton> <IconPlus/> </HfButton>
+        <router-link
+          class="btn-create-mobile"
+          to="/posts"
+          exact-active-class="active"
+          v-if="user.loggedIn"
+        >
+          <HfButton> <IconPlus /> </HfButton>
         </router-link>
       </div>
       <div class="header-search" @click="showSearchModel = true" v-if="user.loggedIn">
@@ -160,7 +164,12 @@ const goToPage = (key) => {
           title="message"
           class="menu-logined-icon"
         />
-        <n-dropdown v-if="user.loggedIn" :options="loggedInRoutersDropdown" show-arrow @select="goToPage">
+        <n-dropdown
+          v-if="user.loggedIn"
+          :options="loggedInRoutersDropdown"
+          show-arrow
+          @select="goToPage"
+        >
           <div
             style="
               display: flex;
@@ -170,7 +179,12 @@ const goToPage = (key) => {
             "
             @click="() => goToPage('/profile-favorite')"
           >
-            <img src="@/assets/images/user-avatar.png" alt="avatar" class="user-avatar" v-if="!currentU" />
+            <img
+              src="@/assets/images/user-avatar.png"
+              alt="avatar"
+              class="user-avatar"
+              v-if="!currentU.currentUser.avatar"
+            />
             <img :src="currentU.currentUser.avatar" alt="avatar" class="user-avatar" v-else />
             <IconChevronDown />
           </div>
