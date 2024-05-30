@@ -25,7 +25,7 @@ namespace PixelPalette.Controllers
         }
 
         [HttpGet("getAll")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<UserModel>>> GetAll()
         {
             try
@@ -38,7 +38,7 @@ namespace PixelPalette.Controllers
             }
         }
         [HttpGet("getById/{id}")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult<UserModel>> GetUser(int id)
         {
             try
@@ -53,7 +53,7 @@ namespace PixelPalette.Controllers
         }
 
         [HttpGet("getLoginUser")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult<UserModel>> GetLoginUser()
         {
             try
@@ -69,48 +69,14 @@ namespace PixelPalette.Controllers
             }
         }
 
-        [HttpPost("follower/{followingId}")]
-        [Authorize]
-        public async Task<ActionResult> Follower(int followingId)
-        {
-            try
-            {
-                string userName = _userManager.GetUserName(HttpContext.User);
-                var user = await _userManager.FindByNameAsync(userName);
-                var result = await _repo.FollowHandleAsync(user.Id, followingId);
-                return !result ? NotFound("Not found") : Ok(true);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message.ToString());
-            }
-        }
-
-        [HttpPost("unfollower/{followingId}")]
-        [Authorize]
-        public async Task<ActionResult> Unfollower(int followingId)
-        {
-            try
-            {
-                string userName = _userManager.GetUserName(HttpContext.User);
-                var user = await _userManager.FindByNameAsync(userName);
-                var result = await _repo.UnfollowHandleAsync(user.Id, followingId);
-                return !result ? NotFound("Not found") : Ok(true);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message.ToString());
-            }
-        }
-
         [HttpDelete("delete/{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Delete(int id)
         {
             try
             {
                 var result = await _repo.DeleteUserAsync(id);
-                return result ? NotFound("Not found") : Ok(true);
+                return !result ? NotFound("Not found") : Ok(true);
             }
             catch (Exception ex)
             {
@@ -119,7 +85,7 @@ namespace PixelPalette.Controllers
         }
 
         [HttpPut("avatar")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult> Avatar(IFormFile file)
         {
             try
@@ -138,7 +104,7 @@ namespace PixelPalette.Controllers
         }
 
         [HttpPut("profile")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult<UserModel>> Profile(ProfileParams entryParams)
         {
             try
@@ -147,23 +113,6 @@ namespace PixelPalette.Controllers
                 var user = await _userManager.FindByNameAsync(userName);
                 var profile = await _repo.UpdateProfileAsync(user.Id, entryParams);
                 return profile == null ? NotFound("Not found") : Ok(profile);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message.ToString());
-            }
-        }
-
-        [HttpPut("account")]
-        [Authorize]
-        public async Task<ActionResult<UserModel>> Account(AccountParams entryParams)
-        {
-            try
-            {
-                string userName = _userManager.GetUserName(HttpContext.User);
-                var user = await _userManager.FindByNameAsync(userName);
-                var account = await _repo.UpdateAccountAsync(user.Id, entryParams);
-                return account == null ? NotFound("Not found") : Ok(account);
             }
             catch (Exception ex)
             {

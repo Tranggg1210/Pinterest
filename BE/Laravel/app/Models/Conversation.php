@@ -5,6 +5,7 @@ namespace App\Models;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Conversation extends Model
 {
@@ -14,9 +15,9 @@ class Conversation extends Model
     use HasFactory;
     public function existConversation(User $user,User $connector){
         $conversation = Conversation::where('creatorID',$user->Id)
-                            -> where('connectorId',$connector -> Id)
-                            -> orWhere('creatorID',$connector->Id)
-                            -> where('connectorId',$user -> Id)
+                            -> where('ConnectorId',$connector -> Id)
+                            -> orWhere('CreatorID',$connector->Id)
+                            -> where('ConnectorId',$user -> Id)
                             -> first();
             if($conversation){
                 return $conversation;
@@ -24,9 +25,9 @@ class Conversation extends Model
             return false;
     }
     public function createConversation(User $user,User $connector){
-            $this->creatorID = $user -> Id;
-            $this->connectorId = $connector -> Id;
-            $this-> createdAt = date_create();
+            $this->CreatorID = $user -> Id;
+            $this->ConnectorId = $connector -> Id;
+            $this->CreatedAt = date_create();
             $this->save();
             return $this;
     }

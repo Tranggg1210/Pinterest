@@ -49,7 +49,7 @@ namespace PixelPalette.Controllers
             return Ok(new { token = token });
         }
         [HttpPut("changePassword")]
-        [Authorize]
+        [Authorize(Roles = "Member")]
         public async Task<ActionResult> ChangePassword(ChangePasswordParams entryParams)
         {
             string userName = _userManager.GetUserName(HttpContext.User);

@@ -19,6 +19,7 @@ namespace PixelPalette.Entities
             MessageSenders = new HashSet<Message>();
             Notifications = new HashSet<Notification>();
             Posts = new HashSet<Post>();
+            UserRoles = new HashSet<IdentityUserRole<int>>();
         }
 
         public string? FirstName { get; set; }
@@ -44,5 +45,6 @@ namespace PixelPalette.Entities
         public virtual ICollection<Message> MessageSenders { get; set; }
         public virtual ICollection<Notification> Notifications { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
+        public ICollection<IdentityUserRole<int>> UserRoles { get; set; }
     }
 }

@@ -4,7 +4,6 @@
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public int? CollectionId { get; set; }
         public string? Link { get; set; }
         public string? Caption { get; set; }
         public string? Detail { get; set; }

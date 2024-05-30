@@ -8,7 +8,7 @@ use Laravel\Scout\Searchable;
 
 class Post extends Model
 {
-    protected $table = 'post';
+    protected $table = 'Post';
     protected $primaryKey = 'Id';
     const SEARCHABLE_FIELDS = ['Caption', 'Detail'];
 
@@ -25,5 +25,8 @@ class Post extends Model
     }
     public function getLatestPost(User $user){
         return $this->where('user_id', $user->Id)->latest()->first();
+    }
+    public function getCountPost(){
+        return $this-> all() -> count();
     }
 }

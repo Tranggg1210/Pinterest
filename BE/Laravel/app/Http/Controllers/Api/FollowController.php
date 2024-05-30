@@ -48,7 +48,7 @@ class FollowController extends Controller
             ]);
         }
         $follow = new Follow;
-        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> get('Id','UserName', 'FirstName', 'LastName', 'Email', 'Country');
+        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> first();
         $FollowerUser = $user;
         $FollowingUser = User::where('Id',$request -> UserId) -> first();
         if(!$FollowingUser){
@@ -97,8 +97,17 @@ class FollowController extends Controller
                 //         'message' => 'Chưa follow'
                 //     ]);
                 // }
-                if($follow -> checkFollow($FollowerUser,$FollowingUser)-> Status == "1"){
-                    $follow -> Unfollow($FollowerUser, $FollowingUser);
+                // if(!is_null($follow -> checkFollow($FollowerUser,$FollowingUser))){
+                //     $follow -> Unfollow($FollowerUser, $FollowingUser);
+                //     return response()->json([
+                //         'id_user' => $FollowerUser -> Id,
+                //         'id_user_following' => $FollowingUser -> Id,
+                //         'follow' => false,
+                //         'status' => 200,
+                //         'message' => 'Đã bỏ follow'
+                //     ]);
+                // }
+                $follow -> Unfollow($FollowerUser, $FollowingUser);
                     return response()->json([
                         'id_user' => $FollowerUser -> Id,
                         'id_user_following' => $FollowingUser -> Id,
@@ -106,16 +115,15 @@ class FollowController extends Controller
                         'status' => 200,
                         'message' => 'Đã bỏ follow'
                     ]);
-                }
             }
         }
     }
-    public function getAllFollowers(){
+    public function getAllFollowers(Request $request){
         // $user = auth()->user();
-        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> get('Id','UserName', 'FirstName', 'LastName', 'Email', 'Country');
+        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> first();
         if($user){
             $follow = new Follow();
-            $followers = $follow -> getAllFollowers($user);
+            $followers = $follow -> getAllFollowingUsers($user);
             $data = [];
             foreach($followers as $follower){
                 $user = (new User()) -> getInformationUser($follower['FollowingUserId']);

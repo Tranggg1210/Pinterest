@@ -16,6 +16,8 @@ namespace PixelPalette.Entities
         public string? Description { get; set; }
         public string? BackgroundId { get; set; }
         public string? BackgroundUrl { get; set; }
+        public int PostCount { get; set; }
+        public bool IsDefault { get; set; } = false;
 
         public virtual User User { get; set; } = null!;
         public virtual ICollection<Ownership> Ownerships { get; set; }

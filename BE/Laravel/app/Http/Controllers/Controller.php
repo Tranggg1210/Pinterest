@@ -14,15 +14,6 @@ use Illuminate\Routing\Controller as BaseController;
  *      version="1.0.0",
  *      title="Api",
  * )
- * @OA\SecurityScheme(
- *     type="http",
- *     name="Token based Based",
- *     in="header",
- *     scheme="bearer",
- *     bearerFormat="JWT",
- *     securityScheme="bearerAuth",
- *
- * )
  */
 class Controller extends BaseController
 {
