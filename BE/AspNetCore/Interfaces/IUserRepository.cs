@@ -11,7 +11,5 @@ namespace PixelPalette.Interfaces
         Task<UserModel> UpdateProfileAsync(int id, ProfileParams entryParams);
         Task<bool> DeleteUserAsync(int id);
         Task<string> EditAvatarAsync(int id, IFormFile file);
-        Task<bool> FollowHandleAsync(int id, int followingId);
-        Task<bool> UnfollowHandleAsync(int id, int followingId);
     }
 }

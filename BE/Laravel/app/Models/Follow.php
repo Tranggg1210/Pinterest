@@ -8,19 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class Follow extends Model
 {
     protected $table = 'Follower';
-    protected $fillable = ['FollowerUserId', 'FollowingUserId', 'Status'];
+    protected $fillable = ['FollowerUserId', 'FollowingUserId'];
     public $timestamps = false;
     use HasFactory;
 
     public function checkFollow(User $Auth,User $followingUser){
-        return $this->where('FollowerUserId', $Auth -> Id)->where('FollowingUserId', $followingUser -> Id) -> get('Status') -> first();
+        return $this->where('FollowerUserId', $Auth -> Id)->where('FollowingUserId', $followingUser -> Id) -> first();
     }
 
     public function follow(User $Auth,User $followingUser){
         $follow = new Follow();
         $follow->FollowerUserId = $Auth -> Id;
         $follow->FollowingUserId = $followingUser -> Id;
-        $follow->Status = 1;
+        // $follow->Status = 1;
         $follow->save();
     }
 
@@ -33,4 +33,5 @@ class Follow extends Model
     public function getAllFollowingUsers(User $Auth){
         return $this->where('FollowerUserId', $Auth -> Id)->orderBy('FollowingUserId','desc') -> get('FollowingUserId'); // giảm dần để tối ưu thời gian tìm bài post
     }
+
 }

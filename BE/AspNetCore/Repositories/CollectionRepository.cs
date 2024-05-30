@@ -113,5 +113,19 @@ namespace PixelPalette.Repositories
                 .ToListAsync();
             return _mapper.Map<IEnumerable<CollectionModel>>(collections);
         }
+
+        public async Task<int> CountPostByCollectionId(int id)
+        {
+            return await _context.Ownerships!
+                .Where(o => o.CollectionId == id)
+                .CountAsync();
+        }
+
+        public async Task<bool> CheckOwnCollectionAsync(int postId, int userId)
+        {
+            return await _context.Ownerships
+                .Join(_context.Collections, o => o.CollectionId, c => c.Id, (o, c) => new { o, c })
+                .AnyAsync(oc => oc.c.UserId == userId && oc.c.IsDefault && oc.o.PostId == postId);
+        }
     }
 }

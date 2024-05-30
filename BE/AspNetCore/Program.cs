@@ -33,6 +33,8 @@ builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ICollectionRepository, CollectionRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddScoped<IFollowRepository, FollowRepository>();
+
 
 builder.Services.AddScoped<IPhotoService, PhotoService>();
 builder.Services.AddScoped<ITool, ApplicationTool>();

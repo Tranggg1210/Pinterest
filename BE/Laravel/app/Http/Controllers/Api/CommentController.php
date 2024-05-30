@@ -9,7 +9,7 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
 /**
- * @OA\Post(
+ * @OA\Get(
  *     path="/api/comments/{PostId}",
  *     operationId="Comment",
  *     tags={"Comment"},

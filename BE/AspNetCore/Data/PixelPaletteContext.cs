@@ -49,6 +49,8 @@ namespace PixelPalette.Data
 
                 entity.Property(e => e.Name).HasMaxLength(255);
 
+                entity.Property(e => e.PostCount).HasDefaultValueSql("('0')");
+
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Collections)
                     .HasForeignKey(d => d.UserId)
@@ -225,7 +227,7 @@ namespace PixelPalette.Data
 
                 entity.HasIndex(e => e.UserId, "IX_Post_UserId");
 
-                entity.Property(e => e.Caption).HasMaxLength(255);
+                entity.Property(e => e.Caption).HasMaxLength(255).IsRequired();
 
                 entity.Property(e => e.Like).HasDefaultValueSql("('0')");
 

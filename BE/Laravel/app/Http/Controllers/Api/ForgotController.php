@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Lcobucci\JWT\Signer\Rsa\Sha256;
 /**
  * @OA\Post(
  *  path="/api/forgot",
@@ -46,11 +47,10 @@ class ForgotController extends Controller
         // ]);
         $user = User::where('Email', $request->email)->first();
             if ($user) {
-                $password = Str::random(8);
-                $user->Token = Str::random(32);
-                $user->PasswordHash = Hash::make($password);
+                $password = Str::random(10).'@';
+                // $user->Token = Str::random(32);
+                $user->PasswordHash = hash('sha256',$password);
                 $user->save();
-                dd(Mail::to($user->Email)->send(new ForgotMail($user, $password)));
                try {
                     Mail::to($user->Email)->send(new ForgotMail($user, $password));
                     return response()->json([

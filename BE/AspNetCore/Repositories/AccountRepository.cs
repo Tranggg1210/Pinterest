@@ -16,16 +16,14 @@ namespace PixelPalette.Repositories
     {
         private readonly PixelPaletteContext _context;
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<Role> _roleManager;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private User? _user;
 
-        public AccountRepository(PixelPaletteContext context, IMapper mapper, UserManager<User> userManager, RoleManager<Role> roleManager, IConfiguration configuration)
+        public AccountRepository(PixelPaletteContext context, IMapper mapper, UserManager<User> userManager, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
-            _roleManager = roleManager;
             _configuration = configuration;
             _mapper = mapper;
         }

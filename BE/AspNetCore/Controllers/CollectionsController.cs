@@ -71,11 +71,27 @@ namespace PixelPalette.Controllers
 
         [HttpGet("getByPostId/{postId}")]
         [Authorize(Roles = "Member")]
-        public async Task<ActionResult<IEnumerable<PostModel>>> GetByCollectionId(int postId)
+        public async Task<ActionResult<IEnumerable<PostModel>>> GetByPostId(int postId)
         {
             try
             {
                 return Ok(await _repo.GetCollectionByPostIdAsync(postId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
+            }
+        }
+
+        [HttpGet("checkOwnCollection/{postId}")]
+        [Authorize(Roles = "Member")]
+        public async Task<ActionResult<bool>> CheckOwnCollection(int postId)
+        {
+            try
+            {
+                string userName = _userManager.GetUserName(HttpContext.User);
+                var user = await _userManager.FindByNameAsync(userName);
+                return Ok(await _repo.CheckOwnCollectionAsync(postId, user.Id));
             }
             catch (Exception ex)
             {

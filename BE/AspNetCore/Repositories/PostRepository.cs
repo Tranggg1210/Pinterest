@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CloudinaryDotNet.Actions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using PixelPalette.Data;
 using PixelPalette.Entities;
 using PixelPalette.Helpers;
@@ -35,33 +36,62 @@ namespace PixelPalette.Repositories
             var post = _mapper.Map<Post>(model);
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
+
+            if (entryParams.CollectionId != null)
+                await OwnershipAsync(userId, post.Id, entryParams.CollectionId);
+
             return _mapper.Map<PostModel>(post);
         }
 
-        public async Task<bool> OwnershipAsync(int postId, int collectionId)
+        public async Task<bool> OwnershipAsync(int userId, int postId, int? collectionId)
         {
-            var ownership = await _context.Ownerships
-                .FirstOrDefaultAsync(o => o.PostId == postId && o.CollectionId == collectionId);
-            if (ownership != null)
+            if (collectionId == null)
             {
-                _context.Ownerships.Remove(ownership);
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            else
-            {
-                var post = await _context.Posts.FindAsync(postId);
-                var collection = await _context.Collections.FindAsync(collectionId);
-                if (post != null && collection != null)
+                var collectionDefault = _context.Collections.FirstOrDefault(c => c.UserId == userId &&
+                    c.Name.Equals("Bảng mặc định"));
+                if (collectionDefault == null)
                 {
-                    ownership = new Ownership
+                    var collectionNew = new Entities.Collection
                     {
-                        PostId = postId,
-                        CollectionId = collectionId
+                        UserId = userId,
+                        Name = "Bảng mặc định",
+                        IsDefault = true
                     };
-                    await _context.AddAsync(ownership);
+                    _context.Collections.Add(collectionNew);
+                    await _context.SaveChangesAsync();
+                    collectionDefault = collectionNew;
+                }
+                collectionId = collectionDefault!.Id;
+            }
+            var collection = await _context.Collections.FindAsync(collectionId);
+            if (collection != null)
+            {
+                var ownership = await _context.Ownerships
+                    .FirstOrDefaultAsync(o => o.PostId == postId && o.CollectionId == collectionId);
+                if (ownership != null)
+                {
+                    if (collection.PostCount > 0) collection.PostCount--;
+                    _context.Ownerships.Remove(ownership);
+                    _context.Collections.Update(collection);
                     await _context.SaveChangesAsync();
                     return true;
+                }
+                else
+                {
+                    var post = await _context.Posts.FindAsync(postId);
+                    if (post != null)
+                    {
+                        ownership = new Ownership
+                        {
+                            PostId = postId,
+                            CollectionId = (int)collectionId!
+                        };
+                        collection.PostCount++;
+                        await _context.AddAsync(ownership);
+                        _context.Collections.Update(collection);
+                        await _context.SaveChangesAsync();
+                        return true;
+                    }
                 }
             }
             return false;
@@ -72,11 +102,28 @@ namespace PixelPalette.Repositories
             var deletePost = _context.Posts!.SingleOrDefault(p => p.Id == id);
             if (deletePost != null)
             {
+                var collections = await _context.Ownerships!
+                    .Where(o => o.PostId == id)
+                    .Join(_context.Collections, o => o.CollectionId, c => c.Id, (o, c) => c)
+                    .Select(r => new Entities.Collection
+                    {
+                        Id = r.Id,
+                        UserId = r.UserId,
+                        Name = r.Name,
+                        Description = r.Description,
+                        BackgroundId = r.BackgroundId,
+                        BackgroundUrl = r.BackgroundUrl,
+                        PostCount = r.PostCount - 1,
+                        IsDefault = r.IsDefault
+                    })
+                    .ToListAsync();
+                _context.Collections!.UpdateRange(collections);
                 var deleteResult = await _photoService.DeletePhotoAsync(deletePost.ThumbnailId);
                 if (deleteResult.Error != null || deleteResult.Result == "not found") return false;
 
                 _context.Posts!.Remove(deletePost);
                 await _context.SaveChangesAsync();
+
                 return true;
             }
             return false;
@@ -88,8 +135,18 @@ namespace PixelPalette.Repositories
             return _mapper.Map<IEnumerable<PostModel>>(posts);
         }
 
-        public async Task<IEnumerable<PostModel>> GetPostByCollectionIdAsync(int collectionId)
+        public async Task<IEnumerable<PostModel>> GetPostByCollectionIdAsync(int userId, int? collectionId)
         {
+            if (collectionId == null)
+            {
+                var collectionDefault = _context.Collections
+                    .FirstOrDefault(c => c.UserId == userId && c.Name.Equals("Bảng mặc định"));
+                if (collectionDefault == null)
+                {
+                    return null!;
+                }
+                collectionId = collectionDefault!.Id;
+            }
             var posts = await _context.Ownerships!
                 .Where(o => o.CollectionId == collectionId)
                 .Join(_context.Posts, o => o.PostId, p => p.Id, (o, p) => p)
@@ -111,11 +168,35 @@ namespace PixelPalette.Repositories
             return _mapper.Map<IEnumerable<PostModel>>(posts);
         }
 
-        public async Task<PostModel> UpdatePostAsync(int id, PostUpdateParams entryParams)
+        public async Task<PostModel> UpdatePostAsync(int id, PostUpdateParams entryParams, int userId, IFormFile? file)
         {
             var updatePost = await _context.Posts!.FindAsync(id);
             if (updatePost != null)
             {
+                if (file != null)
+                {
+                    var addResult = await _photoService.AddPhotoAsync(file);
+                    if (addResult.Error != null) return null!;
+
+                    var deleteResult = await _photoService.DeletePhotoAsync(updatePost.ThumbnailId);
+                    if (deleteResult.Error != null || deleteResult.Result == "not found") return null!;
+
+                    updatePost.ThumbnailId = addResult.PublicId;
+                    updatePost.ThumbnailUrl = addResult.SecureUrl.AbsoluteUri;
+                }
+
+
+                if (entryParams.CollectionId != null)
+                {
+                    var IsExist = await _context.Ownerships
+                        .Where(o => o.PostId == id)
+                        .AnyAsync(o => o.CollectionId == entryParams.CollectionId);
+                    if (!IsExist)
+                    {
+                        await OwnershipAsync(userId, id, entryParams.CollectionId);
+                    }
+                }
+
                 _tools.Duplicate(entryParams, ref updatePost);
                 _context.Posts!.Update(updatePost);
                 await _context.SaveChangesAsync();
@@ -156,6 +237,24 @@ namespace PixelPalette.Repositories
                 }
             }
             return false;
+        }
+        public async Task<bool> UpdatePostCountForCollection(int collectionId)
+        {
+            var collection = await _context.Collections.FindAsync(collectionId);
+            if (collection != null)
+            {
+                collection.PostCount = await _context.Ownerships!
+                    .Where(o => o.CollectionId == collectionId)
+                    .CountAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> checkLikeAsync(int postId, int userId)
+        {
+            return await _context.LikePosts
+                 .AnyAsync(l => l.UserId == userId && l.PostId == postId);
         }
     }
 }

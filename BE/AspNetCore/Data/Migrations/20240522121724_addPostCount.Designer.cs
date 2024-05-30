@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PixelPalette.Data;
 
@@ -11,9 +12,10 @@ using PixelPalette.Data;
 namespace PixelPalette.Data.Migrations
 {
     [DbContext(typeof(PixelPaletteContext))]
-    partial class PixelPaletteContextModelSnapshot : ModelSnapshot
+    [Migration("20240522121724_addPostCount")]
+    partial class addPostCount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

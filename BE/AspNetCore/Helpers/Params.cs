@@ -7,14 +7,11 @@
         public string ComfirmPassword { get; set; } = null!;
     }
 
-    public class AccountParams
-    {
-    }
-
     public class PostCreateParams
     {
+        public int? CollectionId { get; set; }
         public string? Link { get; set; }
-        public string? Caption { get; set; }
+        public string Caption { get; set; } = null!;
         public string? Detail { get; set; }
         public string? Theme { get; set; }
     }
@@ -25,6 +22,7 @@
         public string? Link { get; set; }
         public string? Caption { get; set; }
         public string? Detail { get; set; }
+        public string? Theme { get; set; }
     }
 
     public class ProfileParams
@@ -53,4 +51,6 @@
         public string PublicId { get; set; } = null!;
         public string Url { get; set; } = null!;
     }
+
+
 }

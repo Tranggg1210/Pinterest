@@ -4,8 +4,10 @@ namespace PixelPalette.Interfaces
 {
     public interface IAdminRepository
     {
-        Task<IEnumerable<UserRoleModel>> GetUsersWithRole();
-        Task<IList<string>> EditRoles(int id, List<string> roles);
+        Task<IEnumerable<UserRoleModel>> GetAllRolesAsync();
+        Task<IList<string>> EditRoleAsync(int id, List<string> roles);
+        Task<UserRoleModel> GetRoleByUserIdAsync(int id);
+
 
     }
 }

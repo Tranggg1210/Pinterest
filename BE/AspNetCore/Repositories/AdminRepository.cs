@@ -21,16 +21,16 @@ namespace PixelPalette.Repositories
             _userManager = userManager;
             _roleManager = roleManager;
         }
-        public async Task<IList<string>> EditRoles(int id, List<string> roles)
+        public async Task<IList<string>> EditRoleAsync(int id, List<string> roles)
         {
-            var selectedRoles =roles.Select(s => char.ToUpperInvariant(s[0]) + s.Substring(1)).ToList();
-            
+            var selectedRoles = roles.Select(s => char.ToUpperInvariant(s[0]) + s.Substring(1)).ToList();
+
             var user = await _context.Users.FindAsync(id);
             if (user == null) return null!;
 
             var userRoles = await _userManager.GetRolesAsync(user);
 
-            foreach(string role in selectedRoles) 
+            foreach (string role in selectedRoles)
             {
                 if (!await _roleManager.RoleExistsAsync(role))
                 {
@@ -47,7 +47,7 @@ namespace PixelPalette.Repositories
             return await _userManager.GetRolesAsync(user);
         }
 
-        public async Task<IEnumerable<UserRoleModel>> GetUsersWithRole()
+        public async Task<IEnumerable<UserRoleModel>> GetAllRolesAsync()
         {
             var roles = await _userManager.Users
                 .Include(d => d.UserRoles)
@@ -60,6 +60,19 @@ namespace PixelPalette.Repositories
                 })
                 .ToListAsync();
             return roles;
+        }
+
+        public async Task<UserRoleModel> GetRoleByUserIdAsync(int id)
+        {
+            var role = await _userManager.Users
+                .Include(d => d.UserRoles)
+                .FirstOrDefaultAsync(d => d.Id == id);
+            return role == null ? null! : new UserRoleModel
+            {
+                Id = role.Id,
+                UserName = role.UserName,
+                Roles = role.UserRoles.Select(ur => _context.Roles.FirstOrDefault(r => r.Id == ur.RoleId)!.Name).ToList()
+            };
         }
     }
 }

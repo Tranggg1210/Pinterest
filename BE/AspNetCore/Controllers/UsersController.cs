@@ -69,40 +69,6 @@ namespace PixelPalette.Controllers
             }
         }
 
-        [HttpPost("follower/{followingId}")]
-        [Authorize(Roles = "Member")]
-        public async Task<ActionResult> Follower(int followingId)
-        {
-            try
-            {
-                string userName = _userManager.GetUserName(HttpContext.User);
-                var user = await _userManager.FindByNameAsync(userName);
-                var result = await _repo.FollowHandleAsync(user.Id, followingId);
-                return !result ? NotFound("Not found") : Ok(true);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message.ToString());
-            }
-        }
-
-        [HttpPost("unfollower/{followingId}")]
-        [Authorize(Roles = "Member")]
-        public async Task<ActionResult> Unfollower(int followingId)
-        {
-            try
-            {
-                string userName = _userManager.GetUserName(HttpContext.User);
-                var user = await _userManager.FindByNameAsync(userName);
-                var result = await _repo.UnfollowHandleAsync(user.Id, followingId);
-                return !result ? NotFound("Not found") : Ok(true);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message.ToString());
-            }
-        }
-
         [HttpDelete("delete/{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Delete(int id)

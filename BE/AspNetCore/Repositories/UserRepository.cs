@@ -84,52 +84,5 @@ namespace PixelPalette.Repositories
             }
             return null!;
         }
-
-        public async Task<bool> FollowHandleAsync(int id, int followingId)
-        {
-            if (id != followingId)
-            {
-                var user = await _context.Users!.FindAsync(id);
-                var following = await _context.Users!.FindAsync(followingId);
-                if (user != null && following != null)
-                {
-                    var follwer = new Follower
-                    {
-                        FollowerUserId = id,
-                        FollowingUserId = followingId
-                    };
-                    await _context.Followers.AddAsync(follwer);
-                    user.Following++;
-                    _context.Update(user);
-                    following.Follower++;
-                    _context.Update(following);
-                    await _context.SaveChangesAsync();
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public async Task<bool> UnfollowHandleAsync(int id, int followingId)
-        {
-            if (id != followingId)
-            {
-                var follower = await _context.Followers
-                    .FirstOrDefaultAsync(f => f.FollowerUserId == id && f.FollowingUserId == followingId);
-                if (follower != null)
-                {
-                    var user = await _context.Users!.FindAsync(id);
-                    var following = await _context.Users!.FindAsync(followingId);
-                    _context.Followers.Remove(follower);
-                    user!.Following--;
-                    _context.Update(user);
-                    following!.Follower--;
-                    _context.Update(following);
-                    await _context.SaveChangesAsync();
-                    return true;
-                }
-            }
-            return false;
-        }
     }
 }
