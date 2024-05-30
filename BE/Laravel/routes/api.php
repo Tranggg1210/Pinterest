@@ -8,8 +8,10 @@ use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\SearchController;
+use App\Http\Controllers\Api\StatisticController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -54,3 +56,8 @@ Route::group(['middleware' => 'api',], function ($router) {
     Route::post('comments/{PostId?}', [CommentController::class,'sendcomment']) -> name('comment');
     Route::delete('del-comment/{commentId?}', [CommentController::class,'deleteComment']) ;
     Route::put('edit-comment/{commentId?}', [CommentController::class,'editComment']) ;
+
+    // Thống kế số lượng
+    Route::get('/count-post',[StatisticController::class,'countPosts']) -> name('countPost');
+    Route::get('/count-user',[StatisticController::class,'countUsers']) -> name('countUser');
+    Route::get('/count-notification',[StatisticController::class,'countNotifies']) -> name('countNotifies');

@@ -34,5 +34,8 @@ class User extends Authenticatable implements JWTSubject
     public function getInformationUser($id){
         return $this->where('Id', $id)->latest()->first('Id','UserName', 'FirstName', 'LastName', 'Email', 'Country');
     }
+    public function getCountUser(){
+        return $this-> all() -> count();
+    }
 }
 

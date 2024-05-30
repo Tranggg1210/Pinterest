@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Events\CommentPublished;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
+use App\Models\Notification;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -72,7 +73,7 @@ use Illuminate\Support\Facades\Validator;
  *     @OA\Response(response=403,description="Không có quyền sửa"),
  *     @OA\Response(response=404,description="Không tồn tại comment"),
  * ),
- * @OA\Post(
+ * @OA\Get(
  *     path="/api/get-comment/{PostId}",
  *     tags={"Comment"},
  *     summary="Lấy toàn bộ comment của bài viết",
@@ -125,6 +126,21 @@ class CommentController extends Controller
             // $content = $request -> content;
             //
             event(new CommentPublished($comment)); // Tạo event khi comment thành công
+            // Lưu vào thông báo comment vào db
+            $notify = new Notification();
+            $data = [
+                'post_id' => $request -> PostId,
+                'comment' => [
+                    'id' => $comment -> Id,
+                    'content' => $comment -> Content,
+                    'created_at' => $comment -> CreatedAt,
+                    'user' => [
+                        'id' => $user -> Id,
+                        'name' => $user -> LastName . " " . $user -> FirstName,
+                    ],
+                ],
+            ];
+            $notify -> createNotification($user,json_encode($data,JSON_UNESCAPED_UNICODE));
             return response()->json([
                 'status' => 200,
                 'message' => 'Bình luận thành công',

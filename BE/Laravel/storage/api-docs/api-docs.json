@@ -282,13 +282,13 @@
             }
         },
         "/api/get-comment/{PostId}": {
-            "post": {
+            "get": {
                 "tags": [
                     "Comment"
                 ],
                 "summary": "Lấy toàn bộ comment của bài viết",
                 "description": "Lấy toàn bộ comment của bài viết",
-                "operationId": "effec46c1cdb0a7e11bd87f4c866bde5",
+                "operationId": "836b1c07c6978268d11abed9781c41f5",
                 "parameters": [
                     {
                         "name": "PostId",
@@ -452,6 +452,48 @@
                     },
                     "405": {
                         "description": "Method Not Allowed"
+                    }
+                }
+            }
+        },
+        "/api/count-post": {
+            "get": {
+                "tags": [
+                    "Thống kê"
+                ],
+                "summary": "Số lượng bài post",
+                "operationId": "f2107d69e2f65e0cac3ccd09159cc88f",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/api/count-user": {
+            "get": {
+                "tags": [
+                    "Thống kê"
+                ],
+                "summary": "Số lượng người dùng",
+                "operationId": "00b688d888e5a7558a342031472218ae",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/api/count-notification": {
+            "get": {
+                "tags": [
+                    "Thống kê"
+                ],
+                "summary": "Số lượng thông báo",
+                "operationId": "4c58619bafc21217f672ae19e3b77d50",
+                "responses": {
+                    "200": {
+                        "description": "Success"
                     }
                 }
             }
