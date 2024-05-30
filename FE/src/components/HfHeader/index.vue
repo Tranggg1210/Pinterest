@@ -183,7 +183,7 @@ const goToPage = (key) => {
               src="@/assets/images/user-avatar.png"
               alt="avatar"
               class="user-avatar"
-              v-if="!currentU"
+              v-if="!currentU.currentUser.avatar"
             />
             <img :src="currentU.currentUser.avatar" alt="avatar" class="user-avatar" v-else />
             <IconChevronDown />

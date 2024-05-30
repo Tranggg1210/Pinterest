@@ -5,12 +5,16 @@ import { login } from '../../api/auth.api';
 import { validateEmail, validatePassword } from '@/utils/validator';
 import { useAuthStore } from '@/stores/auth';
 import { useRoute } from 'vue-router';
+import { getCurrentUser } from '@/api/user.api';
+import { checkAdmin } from '@/api/admin.api';
+import { useCurrentUserStore } from '@/stores/currentUser';
 
 const message = useMessage();
 const authStore = useAuthStore();
 const loadingBar = useLoadingBar();
 const router = useRouter();
 const route = useRoute();
+const currentUser = useCurrentUserStore();
 const account = reactive({
   email: null,
   password: null
@@ -28,6 +32,15 @@ const rules = {
     trigger: 'blur'
   }
 };
+const handleFullName = (firstName, lastName) => {
+  const fullName = `${lastName} ${firstName} `;
+  const formattedFullName = fullName
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/(^|\s)\S/g, (match) => match.toUpperCase());
+
+  return formattedFullName;
+};
 const loginHandler = () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
@@ -41,10 +54,26 @@ const loginHandler = () => {
         authStore.save({
           ...data
         });
-        console.log(data);
+        const currentUserData = await getCurrentUser();
+        if (currentUserData) {
+          currentUser.save({
+            fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
+            avatar: currentUserData.avatarUrl,
+            username: currentUserData.userName
+          });
+        }
+        const isAdmin = await checkAdmin(currentUserData.id);
         loadingBar.finish();
         message.success('Đăng nhập thành công. Xin chào ' + account.email);
-        // router.push(route.query.redirect || '/');
+        if(isAdmin?.roles.length === 1 && isAdmin?.roles[0] === 'Member')
+        {
+          router.push(route.query.redirect || '/');
+        }else{
+          if(isAdmin?.roles.length === 2 && isAdmin.roles.includes('Admin'))
+          {
+            router.push(route.query.redirect || '/admin');
+          }
+        }
       } catch (err) {
         loadingBar.error();
         console.log(err);

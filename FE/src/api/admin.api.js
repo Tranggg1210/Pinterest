@@ -1,8 +1,8 @@
 import { ApiConstant } from "@/constant/api.constant";
-import { api } from (".")
+import { api } from ".";
 
-const adminApi = () => {
-    checkAdmin: async(id) => api.get(`${ApiConstant.checkAdmin}/${id}`)
-}
+const adminApi = () => ({
+    checkAdmin: async(id) => api.get(`${ApiConstant.admin.checkAdmin}/${id}`)
+})
 
-export const {checkAdmin} = adminApi;
+export const { checkAdmin } = adminApi();

@@ -3,36 +3,16 @@ import { onBeforeMount } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import HfFeature from '@/components/HfFeature/HfFeature.vue';
 import { getAllPost } from '@/api/post.api';
-import { getCurrentUser } from '@/api/user.api';
-import { useCurrentUserStore } from '@/stores/currentUser';
 const posts = ref([]);
 const user = useAuthStore();
 const message = useMessage();
-const currentUser = useCurrentUserStore();
 const loading = ref(true);
 
-const handleFullName = (firstName, lastName) => {
-  const fullName = `${lastName} ${firstName} `;
-  const formattedFullName = fullName
-    .replace(/\s+/g, ' ')
-    .trim()
-    .replace(/(^|\s)\S/g, (match) => match.toUpperCase());
-
-  return formattedFullName;
-};
 const loadPosts = async () => {
   loading.value = true;
   try {
     const result = await getAllPost();
     posts.value = result;
-    const data = await getCurrentUser();
-    if (data) {
-      currentUser.save({
-        fullname: handleFullName(data.firstName, data.lastName),
-        avatar: data.avatarUrl,
-        username: data.userName
-      });
-    }
     loading.value = false;
   } catch (err) {
     loading.value = false;

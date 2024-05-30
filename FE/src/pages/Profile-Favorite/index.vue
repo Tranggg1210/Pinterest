@@ -74,7 +74,8 @@ const removePost = (postId) => {
     <div class="wide">
       <div class="basic-profile container">
         <div class="user-avatar">
-          <img :src="user.currentUser.avatar || '@/assets/images/user-avatar.png'" alt="avatar" />
+          <img :src="user.currentUser.avatar" alt="avatar" v-if="user.currentUser.avatar"/>
+          <img src="@/assets/images/user-avatar.png" alt="avatar" v-else/>
         </div>
         <h1 class="user-name">{{ user.currentUser.fullname || 'Nguyễn Thị Trang' }}</h1>
         <p class="user-account">

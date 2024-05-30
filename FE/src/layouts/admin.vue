@@ -12,9 +12,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  &-sidebar {
-    width: 20%;
-  }
   &-right {
     flex-grow: 1;
   }

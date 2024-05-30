@@ -1,4 +1,5 @@
 <script setup>
+
 const themeOverrides = {
   common: {
     baseColor: '#e60023',
@@ -25,6 +26,12 @@ const themeOverrides = {
     buttonColorActive: '#4FB233',
     buttonTextColorActive: '#FFF',
     color: '#fff'
+  },
+  Checkbox: {
+    sizeMedium: '15px',
+    fontSizeMedium: '15px',
+    borderRadius: '4px',
+    textColor: '#313131',
   }
 };
 </script>

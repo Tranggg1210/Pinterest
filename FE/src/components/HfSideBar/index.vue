@@ -1,32 +1,34 @@
 <script setup></script>
 <template>
-  <nav class="sidebar">
-    <router-link to="/admin" class="sidebar-logo">
-      <IconBrandPinterest size="36" />
-      <h2>PixelPalette</h2>
-    </router-link>
-    <ul>
-      <li>
-        <RouterLink to="/admin" exact-active-class="active">
-          <IconHome size="24" class="icon" />
-          <span>Trang chủ</span>
-        </RouterLink>
-      </li>
-      <li>
-        <RouterLink to="/admin-posts" exact-active-class="active">
-          <IconUsers size="24" class="icon" />
-          <span>Quản trị người dùng</span>
-        </RouterLink>
-      </li>
-      <li>
-        <RouterLink to="/admin-users" exact-active-class="active">
-          <IconNews size="24" class="icon" />
-          <span>Quản trị bài viết</span>
-        </RouterLink>
-      </li>
-    </ul>
-  </nav>
-  <div class="buffer-zone"></div>
+  <div>
+    <nav class="sidebar">
+      <router-link to="/admin" class="sidebar-logo">
+        <IconBrandPinterest size="36" />
+        <h2>PixelPalette</h2>
+      </router-link>
+      <ul>
+        <li>
+          <RouterLink to="/admin" exact-active-class="active">
+            <IconHome size="24" class="icon" />
+            <span>Trang chủ</span>
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/admin-users" exact-active-class="active">
+            <IconUsers size="24" class="icon" />
+            <span>Quản trị người dùng</span>
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/admin-posts" exact-active-class="active">
+            <IconNews size="24" class="icon" />
+            <span>Quản trị bài viết</span>
+          </RouterLink>
+        </li>
+      </ul>
+    </nav>
+    <div class="buffer-zone"></div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -38,16 +40,17 @@
   left: 0;
   bottom: 0;
   z-index: 40;
-  width: 18%;
+  width: 273px;
   @include mobile {
+    width: 58px;
     padding: 24px 0;
   }
   @include small-tablet {
-    width: 10%;
+    width: 60px;
     padding: 8px 0;
   }
   @include tablet {
-    width: 10%;
+    width: 72px;
     padding: 0px 0;
   }
 }
@@ -56,7 +59,7 @@
   color: $primary-color;
   margin-right: 6px;
   border-bottom: 1px solid #ccc;
-  padding: 12px 0;
+  padding: 12px 0 !important;
   svg {
     margin-right: 2px !important;
     @include mobile {
@@ -68,7 +71,7 @@
     }
     @include tablet {
       margin: 0;
-      padding: 0;
+      padding: 0px;
     }
   }
   h2 {
@@ -96,7 +99,7 @@
   }
 }
 ul {
-  margin-top: 2rem;
+  margin-top: 1rem;
   padding: 0 24px;
   @include mobile {
     padding: 0;
@@ -160,29 +163,29 @@ span {
   color: #fff;
 }
 .buffer-zone {
-  display: inline;
-  width: 18%;
+  width: 273px!important;
   @include mobile {
-    width: 18%;
-    padding: 0 24px;
+    width: 58px !important;
   }
   @include small-tablet {
-    width: 10%;
-    padding: 8px 29px;
+    width: 60px !important;
   }
   @include tablet {
-    width: 10%;
-    padding: 0 38px;
+    width: 72px !important;
   }
 }
 .icon {
   @include mobile {
     margin-right: 0 !important;
     margin-left: 0 !important;
+    width: 22px;
+    height: 22px;
   }
   @include tablet {
     margin-right: 0 !important;
     margin-left: 0 !important;
+    width: 26px;
+    height: 26px;
   }
 }
 </style>
