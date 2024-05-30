@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'use_absolute_path' => false,
     'default' => 'default',
     'documentations' => [
         'default' => [

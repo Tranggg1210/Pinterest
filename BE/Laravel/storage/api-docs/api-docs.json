@@ -195,16 +195,103 @@
                         "description": "Không tồn tại bình luận đã phản hồi trong bài viết này"
                     }
                 }
+<<<<<<< HEAD
+=======
+            }
+        },
+        "/api/del-comment/{commentId?}": {
+            "delete": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Xoá comment",
+                "description": "Xoá cmt theo Id",
+                "operationId": "218a3fa8c2074be77d09e020f6fd44de",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "commentId": {
+                                                "type": "interger"
+                                            }
+                                        },
+                                        "type": "object",
+                                        "example": {
+                                            "commentId": "Id bài post"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Deleted successfully"
+                    },
+                    "403": {
+                        "description": "Không có quyền xoá"
+                    },
+                    "404": {
+                        "description": "Không tồn tại comment"
+                    }
+                }
+            }
+        },
+        "/api/edit-comment/{commentId?}": {
+            "put": {
+                "tags": [
+                    "Comment"
+                ],
+                "summary": "Sửa comment",
+                "description": "Sửa cmt theo Id",
+                "operationId": "5751df9a2dda020246d4061d0bffd5af",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "properties": {
+                                            "commentId": {
+                                                "type": "interger"
+                                            }
+                                        },
+                                        "type": "object",
+                                        "example": {
+                                            "commentId": "Id bài post"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Modified successfully"
+                    },
+                    "403": {
+                        "description": "Không có quyền sửa"
+                    },
+                    "404": {
+                        "description": "Không tồn tại comment"
+                    }
+                }
+>>>>>>> b8e26522a181b02af799a05911243d116b646bbb
             }
         },
         "/api/get-comment/{PostId}": {
-            "post": {
+            "get": {
                 "tags": [
                     "Comment"
                 ],
                 "summary": "Lấy toàn bộ comment của bài viết",
                 "description": "Lấy toàn bộ comment của bài viết",
-                "operationId": "effec46c1cdb0a7e11bd87f4c866bde5",
+                "operationId": "836b1c07c6978268d11abed9781c41f5",
                 "parameters": [
                     {
                         "name": "PostId",
@@ -371,6 +458,51 @@
                     }
                 }
             }
+<<<<<<< HEAD
+=======
+        },
+        "/api/count-post": {
+            "get": {
+                "tags": [
+                    "Thống kê"
+                ],
+                "summary": "Số lượng bài post",
+                "operationId": "f2107d69e2f65e0cac3ccd09159cc88f",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/api/count-user": {
+            "get": {
+                "tags": [
+                    "Thống kê"
+                ],
+                "summary": "Số lượng người dùng",
+                "operationId": "00b688d888e5a7558a342031472218ae",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/api/count-notification": {
+            "get": {
+                "tags": [
+                    "Thống kê"
+                ],
+                "summary": "Số lượng thông báo",
+                "operationId": "4c58619bafc21217f672ae19e3b77d50",
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+>>>>>>> b8e26522a181b02af799a05911243d116b646bbb
         }
     }
 }

@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Events\CommentPublished;
 use App\Http\Controllers\Controller;
 use App\Models\Comment;
+use App\Models\Notification;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 /**
  * @OA\Get(
  *     path="/api/comments/{PostId}",
@@ -32,7 +35,45 @@ use Illuminate\Http\Request;
  *     @OA\Response(response=404,description="Không tồn tại bài viết"),
  *     @OA\Response(response=502,description="Không tồn tại bình luận đã phản hồi trong bài viết này"),
  * ),
- * @OA\Post(
+  * @OA\Delete(
+ *     path="/api/del-comment/{commentId?}",
+ *     tags={"Comment"},
+ *     summary="Xoá comment",
+ *     description="Xoá cmt theo Id",
+*    @OA\RequestBody(
+ *         @OA\JsonContent(
+ *             allOf = {
+ *                  @OA\Schema(
+ *                      @OA\Property(property="commentId",type="interger"),
+ *                      example={"commentId":"Id bài post"}
+ *                  )
+ *              }
+ *         )
+ *     ),
+ *     @OA\Response(response=200,description="Deleted successfully"),
+ *     @OA\Response(response=403,description="Không có quyền xoá"),
+ *     @OA\Response(response=404,description="Không tồn tại comment"),
+ * ),
+  * @OA\Put(
+ *     path="/api/edit-comment/{commentId?}",
+ *     tags={"Comment"},
+ *     summary="Sửa comment",
+ *     description="Sửa cmt theo Id",
+*    @OA\RequestBody(
+ *         @OA\JsonContent(
+ *             allOf = {
+ *                  @OA\Schema(
+ *                      @OA\Property(property="commentId",type="interger"),
+ *                      example={"commentId":"Id bài post"}
+ *                  )
+ *              }
+ *         )
+ *     ),
+ *     @OA\Response(response=200,description="Modified successfully"),
+ *     @OA\Response(response=403,description="Không có quyền sửa"),
+ *     @OA\Response(response=404,description="Không tồn tại comment"),
+ * ),
+ * @OA\Get(
  *     path="/api/get-comment/{PostId}",
  *     tags={"Comment"},
  *     summary="Lấy toàn bộ comment của bài viết",
@@ -83,8 +124,23 @@ class CommentController extends Controller
             }
             $comment -> save();
             // $content = $request -> content;
-            // 
-            event(new CommentPublished($comment)); // Tạo event khi comment thành công 
+            //
+            event(new CommentPublished($comment)); // Tạo event khi comment thành công
+            // Lưu vào thông báo comment vào db
+            $notify = new Notification();
+            $data = [
+                'post_id' => $request -> PostId,
+                'comment' => [
+                    'id' => $comment -> Id,
+                    'content' => $comment -> Content,
+                    'created_at' => $comment -> CreatedAt,
+                    'user' => [
+                        'id' => $user -> Id,
+                        'name' => $user -> LastName . " " . $user -> FirstName,
+                    ],
+                ],
+            ];
+            $notify -> createNotification($user,json_encode($data,JSON_UNESCAPED_UNICODE));
             return response()->json([
                 'status' => 200,
                 'message' => 'Bình luận thành công',
@@ -112,6 +168,64 @@ class CommentController extends Controller
                'status' => 404,
                'data_comment' => false,
                'message' => 'Không tìm thấy bài viết này'
+            ]);
+        }
+    }
+    public function editComment(Request $request){
+        $validator = Validator::make($request->all(), [
+            'commentId' => 'required',
+            'Content' => 'required'
+        ]);
+        if($validator -> fails()){
+            return response()->json([
+                'error' => $validator->errors()
+            ]);
+        }else{
+            $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> first();
+            $comment = Comment::where('Id',$request -> commentId) -> first();
+            if($comment){
+                if($comment -> UserId == $user -> Id){
+                    $comment -> Content = $request -> Content;
+                    $comment -> save();
+                    return response()->json([
+                    'status' => 200,
+                    'message' => 'Sửa bình luận thành công',
+                    'content_modified' => $comment-> Content
+                    ]);
+                }else{
+                    return response()->json([
+                    'status' => 403,
+                    'message' => 'Bạn không có quyền sửa bình luận này'
+                    ]);
+                }
+            }else{
+                return response()->json([
+                'status' => 404,
+                'message' => 'Bình luận không tồn tại'
+                ]);
+            }
+        }
+    }
+    public function deleteComment(Request $request){
+        $user = User::where('Token',explode(' ',$request->header('Authorization'))[1]) -> first();
+        $comment = Comment::where('Id',$request -> commentId) -> first();
+        if($comment){
+            if($comment -> UserId == $user-> Id){
+                $comment -> delete();
+                return response()->json([
+                   'status' => 200,
+                   'message' => 'Xóa bình luận thành công'
+                ]);
+            }else{
+                return response()->json([
+                   'status' => 403,
+                   'message' => 'Bạn không có quyền xóa bình luận này'
+                ]);
+            }
+        }else{
+            return response()->json([
+               'status' => 404,
+               'message' => 'Bình luận không tồn tại'
             ]);
         }
     }
