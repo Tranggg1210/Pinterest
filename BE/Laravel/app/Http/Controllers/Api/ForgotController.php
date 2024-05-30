@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\ForgotMail;
 use App\Models\Account;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -57,7 +58,7 @@ class ForgotController extends Controller
                         'status' => true,
                         'message' => 'Reset password thành công !',
                     ], 200);
-               }catch(\Throwable $th){
+               }catch(\Exception $exception){
                     return response()->json([
                         'status' => false,
                         'error' => 'Không thể kết nối được đến gmail !',

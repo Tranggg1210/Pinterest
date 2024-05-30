@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    dd();
-    // return view('welcome');
+    return view('welcome');
 });
+Route::get('/forbidden', function () {
+    return view('errors.403');
+}) -> name('forbidden');
+Route::get('/not-found', function () {
+    return view('errors.404');
+}) -> name('not-found');
