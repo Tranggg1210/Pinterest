@@ -65,7 +65,8 @@ const loginHandler = () => {
             currentUser.save({
               fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
               avatar: currentUserData.avatarUrl,
-              username: currentUserData.userName
+              username: currentUserData.userName,
+              isAdmin: false
             });
           }
         }else{
