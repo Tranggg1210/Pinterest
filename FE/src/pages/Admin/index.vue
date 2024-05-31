@@ -30,16 +30,6 @@ const options = [
     desc: 'thông báo'
   }
 ];
-console.log(user);
-const handleFullName = (firstName, lastName) => {
-  const fullName = `${lastName} ${firstName} `;
-  const formattedFullName = fullName
-    .replace(/\s+/g, ' ')
-    .trim()
-    .replace(/(^|\s)\S/g, (match) => match.toUpperCase());
-
-  return formattedFullName;
-};
 const goToPage = () => {
   router.push('/');
 };

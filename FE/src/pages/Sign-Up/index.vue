@@ -74,22 +74,30 @@ const registerHandler = () => {
           ...result.data
         });
         const currentUserData = await getCurrentUser();
-        if (currentUserData) {
-          currentUser.save({
-            fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
-            avatar: currentUserData.avatarUrl,
-            username: currentUserData.userName
-          });
-        }
         const isAdmin = await checkAdmin(currentUserData.id);
         loadingBar.finish();
         message.success('Đăng nhập thành công. Xin chào ' + account.email);
         if(isAdmin?.roles.length === 1 && isAdmin?.roles[0] === 'Member')
         {
           router.push(route.query.redirect || '/');
+          if (currentUserData) {
+            currentUser.save({
+              fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
+              avatar: currentUserData.avatarUrl,
+              username: currentUserData.userName
+            });
+          }
         }else{
           if(isAdmin?.roles.length === 2 && isAdmin.roles.includes('Admin'))
           {
+            if (currentUserData) {
+            currentUser.save({
+              fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
+              avatar: currentUserData.avatarUrl,
+              username: currentUserData.userName,
+              isAdmin: true
+            });
+        }
             router.push(route.query.redirect || '/admin');
           }
         }

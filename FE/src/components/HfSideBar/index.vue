@@ -42,7 +42,7 @@ const handleLogout = () => {
           </RouterLink>
         </li>
         <li>
-          <RouterLink to="/admin-posts" exact-active-class="active">
+          <RouterLink to="/admin-notifications" exact-active-class="active">
             <IconBell size="24" class="icon" />
             <span>Quản trị thông báo</span>
           </RouterLink>

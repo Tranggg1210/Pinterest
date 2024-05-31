@@ -77,10 +77,10 @@ const removePost = (postId) => {
           <img :src="user.currentUser.avatar" alt="avatar" v-if="user.currentUser.avatar"/>
           <img src="@/assets/images/user-avatar.png" alt="avatar" v-else/>
         </div>
-        <h1 class="user-name">{{ user.currentUser.fullname || 'Nguyễn Thị Trang' }}</h1>
+        <h1 class="user-name">{{ user.currentUser.fullname ? (user.currentUser.fullname !== 'Null Null' ? user.currentUser.fullname : 'Admin') : 'User' }}</h1>
         <p class="user-account">
           <IconBrandPinterest size="20" />
-          {{ user.currentUser.username || 'Nguyễn Thị Trang' }}
+          {{ user.currentUser.username || 'User' }}
         </p>
         <div class="btn-container">
           <HfButton :class="{ active: isActiveButton }" @click="loadPosts">Đã tạo</HfButton>

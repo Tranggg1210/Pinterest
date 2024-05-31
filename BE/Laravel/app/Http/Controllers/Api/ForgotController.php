@@ -48,15 +48,9 @@ class ForgotController extends Controller
         // ]);
         $user = User::where('Email', $request->email)->first();
             if ($user) {
-<<<<<<< HEAD
-                $password = Str::random(10).'@';
-                // $user->Token = Str::random(32);
-                $user->PasswordHash = hash('sha256',$password);
-=======
                 $password = Str::random(8).'0@';
                 // $user->Token = Str::random(32);
                 $user->PasswordHash = hash('sha256', $password,'1XSCRZH2yY343yFrWcalanVEfvtJYg5VgOTUx8MHk4WpwtYKTIfbzytqp08xCL8Y');
->>>>>>> b8e26522a181b02af799a05911243d116b646bbb
                 $user->save();
                try {
                     Mail::to($user->Email)->send(new ForgotMail($user, $password));
