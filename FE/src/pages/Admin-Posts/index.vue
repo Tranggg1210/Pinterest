@@ -1,10 +1,73 @@
 <script setup>
-import { getAllPost } from '@/api/post.api';
-import { NButton, useMessage } from 'naive-ui';
+import { createPost, deletePostById, getAllPost, updatePost } from '@/api/post.api';
+import { NButton, useLoadingBar, useMessage } from 'naive-ui';
 import { h, onBeforeMount } from 'vue';
 
 const posts = ref([]);
 const loading = ref(false);
+const loadingBar = useLoadingBar();
+const pagination = ref({ pageSize: 4 });
+const message = useMessage();
+const showModal = ref(false);
+const postValue = reactive({
+  link: null,
+  caption: null,
+  detail: null,
+  theme: null,
+  file: null
+});
+const formRef = ref(null);
+const rules = {
+  caption: {
+    required: true,
+    validator: (_, caption) => {
+      if (caption === null || typeof caption === 'undefined') {
+        return new Error('Vui lòng nhập tiêu đề bài viết!');
+      }
+
+      if (caption.trim() === '') {
+        return new Error('Vui lòng nhập tiêu đề bài viết!');
+      }
+    },
+    trigger: ['blur', 'input']
+  }
+};
+
+const loadPosts = async() => {
+  try {
+    const result = await getAllPost();
+    posts.value = result;
+  } catch (error) {
+    console.log(error);
+  }
+}
+onBeforeMount(async() => {
+  try {
+    loading.value = true;
+    await loadPosts();
+    loading.value = false;
+    message.success("Tải danh sách bài viết thành công");
+  } catch (error) {
+    loading.value = false;
+    message.error('Tải danh sách bài viết thất bại')
+  }
+
+});
+const handleDeletePost = async (id) => {
+  try {
+    loadingBar.start();
+    await deletePostById(id);
+    message.success('Xóa bài viết thành công!!!');
+    await loadPosts();
+  } catch (error) {
+    message.error('Xóa bài viết thất bại');
+  } finally {
+    loadingBar.finish();
+  }
+};
+const oldDataBeforeUpdate = ref({}); 
+const isEdit = ref(false);
+
 const columns = [
   {
     title: 'ID',
@@ -51,61 +114,59 @@ const columns = [
     key: 'theme',
   },
   {
-    title: 'Action',
-    key: 'actions',
-    render (row) {
-      return h(
-        NButton,
+  title: 'Actions',
+  key: 'actions',
+  render(row) {
+    const buttons = [
         {
-          strong: true,
-          tertiary: true,
-          size: 'small',
+          label: 'Chỉnh sửa',
+          type: 'info',
+          onClick: () => {
+            oldDataBeforeUpdate.value = row;
+            isEdit.value = true;
+            postValue.link = row.link;
+            postValue.caption = row.caption;
+            postValue.detail = row.detail;
+            postValue.theme = row.theme;
+            postValue.file = row.thumbnailUrl;
+            showModal.value = true;
+          }
         },
-        { default: () => 'Play' }
-      )
+        {
+          label: 'Xóa',
+          type: 'primary',
+          onClick: () => {
+            handleDeletePost(row.id);
+          }
+        }
+      ];
+
+      return h(
+        'div',
+        {
+          style: {
+            display: 'flex',
+            gap: '8px'
+          }
+        },
+        buttons.map((btn) =>
+          h(
+            NButton,
+            {
+              strong: true,
+              tertiary: true,
+              size: 'small',
+              type: btn.type,
+              onClick: btn.onClick
+            },
+            { default: () => btn.label }
+          )
+        )
+      );
     }
   }
 ]
 
-const pagination = ref({ pageSize: 5 });
-const message = useMessage();
-const showModal = ref(false);
-const postValue = reactive({
-  link: null,
-  caption: null,
-  detail: null,
-  theme: null,
-  file: null
-});
-const formRef = ref(null);
-const rules = {
-  caption: {
-    required: true,
-    validator: (_, caption) => {
-      if (caption === null || typeof caption === 'undefined') {
-        return new Error('Vui lòng nhập tiêu đề bài viết!');
-      }
-
-      if (caption.trim() === '') {
-        return new Error('Vui lòng nhập tiêu đề bài viết!');
-      }
-    },
-    trigger: ['blur', 'input']
-  }
-};
-const loadPosts = async() => {
-  try {
-    loading.value = true;
-    const result = await getAllPost();
-    posts.value = result;
-    loading.value = false;
-    message.success("Tải danh sách bài viết thành công");
-  } catch (error) {
-    loading.value = false;
-    message.error('Tải danh sách bài viết thất bại')
-  }
-}
-onBeforeMount(loadPosts);
 const beforeUpload = async (data) => {
   try {
     loadingBar.start();
@@ -117,7 +178,7 @@ const beforeUpload = async (data) => {
     message.error('Vui lòng nhập đúng định dạng ảnh');
     return false;
   } catch (error) {
-    message.error('Cập nhập ảnh người dùng không thành công!');
+    message.error('Lỗi tải ảnh lên   không thành công!');
   } finally {
     loadingBar.finish();
   }
@@ -133,14 +194,31 @@ const handleCreatePost = async () => {
       try {
         await createPost(postValue);
         message.success('Tạo bài viết thành công!!!');
-        setTimeout(() => {
-          router.push('/');
-        }, 1000);
+        await loadPosts();
+        showModal.value = false;
       } catch (err) {
         loadingBar.error();
         message.error('Tạo bài viết thất bại');
       }
       loadingBar.finish();
+    }
+  });
+};
+const handleUpdatePost = async () => {
+  formRef.value?.validate(async (errors) => {
+    if (!errors) {
+      try {
+        loadingBar.start();
+        if (posts.file === oldDataBeforeUpdate.value.thumbnailUrl) postValue.file = null;
+        await updatePost(oldDataBeforeUpdate.value.id, postValue);
+        message.success('Cập nhập bài viết thành công!!!');
+        await loadPosts();
+        showModal.value = false;
+      } catch (error) {
+        message.error('Cập nhập bài viết thất bại');
+      } finally {
+        loadingBar.finish();
+      }
     }
   });
 };
@@ -167,7 +245,7 @@ const handleCreatePost = async () => {
       v-model:show="showModal"
       class="custom-card"
       preset="card"
-      title="Thêm bài viết"
+      :title="isEdit ? 'Chỉnh sửa bài viết' : 'Thêm bài viết'"
       style="width: 60%"
       :bordered="false"
     >
@@ -216,17 +294,15 @@ const handleCreatePost = async () => {
           <n-button
             @click="() => {
               showModal = false;
-              postValue.link = '',
-              postValue.caption = '',
-              postValue.detail = '',
-              postValue.theme = '',
-              postValue.file = ''
             }"
           >
             Hủy
           </n-button>
-          <n-button type="success" style="color: white; margin-left: 12px" @click="handleCreatePost">
+          <n-button type="success" style="color: white; margin-left: 12px" @click="handleCreatePost" v-if="!isEdit">
             Tạo bài viết
+          </n-button>
+          <n-button type="success" style="color: white; margin-left: 12px" @click="handleUpdatePost" v-else>
+            Chỉnh sửa bài viết
           </n-button>
         </n-form-item>
       </n-form>
@@ -239,7 +315,7 @@ const handleCreatePost = async () => {
 .admin-posts
 {
   overflow-x: scroll;
-  padding: 40px;
+  padding: 20px 40px 40px;
 }
 .admin-header{
   @include flex(space-between, center);
