@@ -1,5 +1,5 @@
 <script setup>
-import { deleteNotification, getNotication } from '@/api/notification.api';
+import { createNotification, deleteNotification, getNotication } from '@/api/notification.api';
 import { NButton, useDialog, useLoadingBar, useMessage } from 'naive-ui';
 import { h, onBeforeMount } from 'vue';
 import moment from 'moment';
@@ -10,6 +10,26 @@ const loadingBar = useLoadingBar();
 const pagination = ref({ pageSize: 4 });
 const message = useMessage();
 const dialog = useDialog();
+const showModal = ref(false);
+const notificationValue = ref({
+  data: null
+});
+const formRef = ref(null);
+const rules = {
+  data: {
+    required: true,
+    validator: (_, data) => {
+      if (data === null || typeof data === 'undefined') {
+        return new Error('Vui lòng nhập nội dung thông báo!');
+      }
+
+      if (data.trim() === '') {
+        return new Error('Vui lòng nhập nội dung thông báo!');
+      }
+    },
+    trigger: ['blur', 'input']
+  }
+};
 const loadNotifications = async() => {
     try {
         const result = await getNotication();
@@ -19,7 +39,7 @@ const loadNotifications = async() => {
     }
 }
 onBeforeMount(async() => {
-    try {
+  try {
     loading.value = true;
     await loadNotifications();
     loading.value = false;
@@ -29,6 +49,28 @@ onBeforeMount(async() => {
     message.error('Tải danh sách thông báo thất bại')
   }
 });
+const handleCreateNotification = async() => {
+  formRef.value?.validate(async (errors) => {
+    if (!errors) {
+      try {
+        loadingBar.start();
+        await createNotification({
+          data: notificationValue.value.data
+        });
+        await loadNotifications();
+        showModal.value = false;
+        message.success("Tạo thông báo thành công!");
+        loadingBar.finish();
+      } catch (error) {
+        console.log(error);
+        loadingBar.error();
+        message.error("Lỗi, tạo thông báo thất bại");
+      }finally{
+        loadingBar.finish();
+      }
+    }
+  });
+}
 const handleDeleteNotificationById = async(id) => {
   try {
     loadingBar.start();
@@ -97,6 +139,9 @@ const columns = [
     <div class="admin-notifications">
     <div class="admin-header">
       <h2>Danh sách thông báo</h2>
+      <n-button type="warning" @click="showModal = true">
+        Thêm thông báo
+      </n-button>
     </div>
      <HfLoading v-if="loading"></HfLoading>
     <div v-else>
@@ -108,67 +153,22 @@ const columns = [
         :pagination="pagination"
       />
     </div>
-    <!-- <n-modal
+    <n-modal
       v-model:show="showModal"
       class="custom-card"
       preset="card"
-      title="Chỉnh sửa thông tin người dùng"
+      title="Tạo thông báo"
       style="width: 60%"
       :bordered="false"
     >
-      <n-form :label-width="80" :model="userValue" :rules="rules" ref="formRef" size="large">
-        <n-form-item label="Họ đệm:" path="lastName" style="margin-bottom: 8px">
+      <n-form :label-width="80" :model="notificationValue" :rules="rules" ref="formRef" size="large">
+        <n-form-item label="Nội dung thông báo:" path="data">
           <n-input
-            v-model:value="userValue.lastName"
-            placeholder=""
-            type="text"
-            class="input"
-          />
-        </n-form-item>
-        <n-form-item label="Tên:" path="firstName" style="margin-bottom: 8px">
-          <n-input
-            v-model:value="userValue.firstName"
-            placeholder=""
-            type="text"
-            class="input"
-          />
-        </n-form-item>
-        <n-form-item label="Ngày sinh:" path="birthday" style="margin-bottom: 8px">
-          <n-date-picker
-            style="width: 100%"
-            v-model:value="userValue.birthday"
-            placeholder="2003-10-27"
-            type="date"
-            class="input"
-          />
-        </n-form-item>
-        <n-form-item label="Giới tính:" path="gender">
-          <n-radio-group v-model:value="userValue.gender" name="gender">
-            <n-radio value="Male"> Nam </n-radio>
-            <n-radio value="Female"> Nữ </n-radio>
-          </n-radio-group>
-        </n-form-item>
-        <n-form-item label="Ảnh đại diện:" path="avatarUrl">
-          <n-upload @before-upload="beforeUpload">
-            <n-button>Upload ảnh</n-button>
-          </n-upload>
-        </n-form-item>
-        <n-form-item label="Giới thiệu:" path="introduction" style="margin-bottom: 8px">
-          <n-input
-            v-model:value="userValue.introduction"
-            placeholder=""
-            type="textarea"
-            class="input"
-            :autosize="{ minRows: 1, maxRows: 3 }"
-          />
-        </n-form-item>
-        <n-form-item label="Địa chỉ:" path="country">
-          <n-input
-            v-model:value="userValue.country"
+            v-model:value="notificationValue.data"
             type="textarea"
             placeholder=""
             class="input"
-            :autosize="{ minRows: 1, maxRows: 3 }"
+            :autosize="{ minRows: 1, maxRows: 6 }"
           />
         </n-form-item>
         <n-form-item class="container-end">
@@ -179,12 +179,12 @@ const columns = [
           >
             Hủy
           </n-button>
-          <n-button type="success" style="color: white; margin-left: 12px" @click="handleUpdateUserInformation" >
-            Chỉnh sửa
+          <n-button type="success" style="color: white; margin-left: 12px" @click="handleCreateNotification" >
+            Tạo thông báo 
           </n-button>
         </n-form-item>
       </n-form>
-    </n-modal> -->
+    </n-modal>
   </div>
 </template>
 
