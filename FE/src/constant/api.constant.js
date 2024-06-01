@@ -25,7 +25,8 @@ export const ApiConstant = {
     followUser: 'Follow/follower',
     unFollowUser: 'Follow/unfollower',
     checkFollow: 'Follow/checkFollower',
-    getAll: 'Users/getAll'
+    getAll: 'Users/getAll',
+    userUpdate: 'Users/update'
   },
   collection: {
     collectionAll: 'Posts/getAll',
@@ -41,5 +42,8 @@ export const ApiConstant = {
   },
   admin: {
     checkAdmin: 'Admin/GetRole'
+  },
+  analysises:{
+    getNotication: 'Analysises/getNotifications'
   }
 };

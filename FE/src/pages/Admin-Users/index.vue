@@ -1,5 +1,5 @@
 <script setup>
-import { changeAvatar, changeInforUser, deleteUser, getAllUser } from '@/api/user.api';
+import { changeAvatar, changeInforUser, changeInforUserById, deleteUser, getAllUser } from '@/api/user.api';
 import { NButton, useDialog, useLoadingBar, useMessage } from 'naive-ui';
 import { h, onBeforeMount } from 'vue';
 import moment from 'moment';
@@ -73,37 +73,31 @@ const handleDeleteUser = async (id) => {
     loadingBar.finish();
   }
 };
-const handleUpdateUserInformation = async () => {
-  formRef.value?.validate(async (errors) => {
-    if (!errors) {
-      try {
-        loadingBar.start();
-        let day = new Date(userValue.birthday).getDate();
-        let month = new Date(userValue.birthday).getMonth() + 1;
-        let year = new Date(userValue.birthday).getFullYear();
-        let dobUser = year + '-' + month + '-' + day;
-        const newUser = {
-          firstName: userValue.firstName,
-          lastName: userValue.lastName,
-          introduction: userValue.introduction,
-          birthday: dobUser,
-          gender: userValue.gender === 'Male' ? true : false,
-          country: userValue.country
-        };
-        await changeInforUser(newUser);
-        loadingBar.finish();
-        message.success('Cập nhập thông tin thành công!');
-        await loadUsers();
-      } catch (err) {
-        console.log(err);
-        message.error('Cập nhập thông tin người dùng thất bại!');
-      } finally {
-        loadingBar.finish();
-      }
+
+const beforeUpload = async (data) => {
+  try {
+    loadingBar.start();
+    if (
+      data.file.file?.type === 'image/png' ||
+      data.file.file?.type === 'image/jpg' ||
+      data.file.file?.type === 'image/jpeg' ||
+      data.file.file?.type === 'image/gif'
+    ) {
+      userValue.avatarUrl = data.file.file
+      loadingBar.finish();
+      return true;
     }
-  });
+    message.error('Vui lòng nhập đúng định dạng ảnh');
+    return false;
+  } catch (err) {
+    console.log(err);
+    message.error('Cập nhập ảnh người dùng không thành công!');
+  } finally {
+    loadingBar.finish();
+  }
 };
 
+const userIDDelete = ref(-1);
 const columns = [
   {
     title: 'ID',
@@ -160,14 +154,14 @@ const columns = [
           label: 'Chỉnh sửa',
           type: 'info',
           onClick: () => {
-            userValue.firstName = row.firstName,
-            userValue.lastName = row.lastName,
-            userValue.birthday = new Date(row.birthday).getTime(),
-            userValue.introduction = row.introduction,
-            userValue.gender = row.gender ? 'Male'.toString() : 'Female',
-            userValue.country = row.country,
+            userValue.firstName = row.firstName;
+            userValue.lastName = row.lastName;
+            userValue.birthday = new Date(row.birthday).getTime();
+            userValue.introduction = row.introduction;
+            userValue.gender = row.gender ? 'Male'.toString() : 'Female';
+            userValue.country = row.country;
+            userIDDelete.value = row.id;
             showModal.value = true;
-            
           }
         },
         {
@@ -213,28 +207,37 @@ const columns = [
     }
   }
 ]
-
-const beforeUpload = async (data) => {
-  try {
-    loadingBar.start();
-    if (
-      data.file.file?.type === 'image/png' ||
-      data.file.file?.type === 'image/jpg' ||
-      data.file.file?.type === 'image/jpeg' ||
-      data.file.file?.type === 'image/gif'
-    ) {
-      await changeAvatar(data.file);
-      loadingBar.finish();
-      return true;
+const handleUpdateUserInformation = async () => {
+  formRef.value?.validate(async (errors) => {
+    if (!errors) {
+      try {
+        loadingBar.start();
+        let day = new Date(userValue.birthday).getDate();
+        let month = new Date(userValue.birthday).getMonth() + 1;
+        let year = new Date(userValue.birthday).getFullYear();
+        let dobUser = year + '-' + month + '-' + day;
+        const newUser = {
+          firstName: userValue.firstName,
+          lastName: userValue.lastName,
+          introduction: userValue.introduction,
+          birthday: dobUser,
+          gender: userValue.gender === 'Male' ? true : false,
+          country: userValue.country,
+          avatarUrl: userValue.avatarUrl
+        };
+        await changeInforUserById(userIDDelete.value,newUser);
+        loadingBar.finish();
+        message.success('Cập nhập thông tin thành công!');
+        showModal.value = false;
+        await loadUsers();
+      } catch (err) {
+        console.log(err);
+        message.error('Cập nhập thông tin người dùng thất bại!');
+      } finally {
+        loadingBar.finish();
+      }
     }
-    message.error('Vui lòng nhập đúng định dạng ảnh');
-    return false;
-  } catch (err) {
-    console.log(err);
-    message.error('Cập nhập ảnh người dùng không thành công!');
-  } finally {
-    loadingBar.finish();
-  }
+  });
 };
 
 </script>

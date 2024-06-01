@@ -1,11 +1,18 @@
-<script setup></script>
+<script setup>
+import { useCurrentUserStore } from '@/stores/currentUser';
+
+  const currentU = useCurrentUserStore();
+</script>
 <template>
   <div class="header">
     <RouterLink
       style="display: flex; justify-content: space-between; align-items: center; cursor: pointer"
       to="/user-infor"
     >
-      <img src="@/assets/images/user-avatar.png" alt="avatar" class="user-avatar" />
+      <div class="avatar">
+        <img src="@/assets/images/user-avatar.png" alt="avatar" class="user-avatar" v-if="!currentU.currentUser.avatar"/>
+        <img :src="currentU.currentUser.avatar" alt="avatar" class="user-avatar" v-else/>
+      </div>
       <span>Admin!</span>
     </RouterLink>
   </div>
@@ -19,14 +26,20 @@
   img {
     width: 36px;
     height: 36px;
+  }
+  a:hover {
+    opacity: 0.6;
+  }
+  .avatar{
+    height: 36px;
+    width: 36px;
+    border-radius: 50%;
+    overflow: hidden;
     margin-right: 6px;
     @include mobile {
       width: 28px;
       height: 28px;
     }
-  }
-  a:hover {
-    opacity: 0.6;
   }
 }
 </style>
