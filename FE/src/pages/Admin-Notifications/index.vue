@@ -14,7 +14,6 @@ const loadNotifications = async() => {
     try {
         const result = await getNotication();
         notifications.value = result;
-        console.log(result);
     } catch (error) {
         console.log(error);
     }
