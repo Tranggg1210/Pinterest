@@ -84,7 +84,7 @@ const userIdEditRole = ref(-1);
 const handleEditRole = async() => {
     try {
         loadingBar.start();
-        if(roles.role === 'Member')
+        if(roles.value.role === 'Member')
         {
             await editRoles(userIdEditRole.value, ['Member']);
         }else{
@@ -92,11 +92,41 @@ const handleEditRole = async() => {
         }
         await loadAccountList();
         showModalEdit.value = false;
-        message.success("Chỉnh sửa quyền của người dùng thành công");4
+        message.success("Chỉnh sửa quyền của người dùng thành công");
         loadingBar.finish();
     } catch (error) {
         loadingBar.error()
         message.error('Lỗi, không thể chỉnh sửa quyền của người dùng này')
+    }finally{
+        loadingBar.finish();
+    }
+}
+const handleBlockUser = async(id) => {
+  try {
+      loadingBar.start();
+      await editRoles(id, ['Blocker']);
+      await loadAccountList();
+      showModalEdit.value = false;
+      message.success("Khóa người dùng thành công!");
+      loadingBar.finish();
+    } catch (error) {
+        loadingBar.error()
+        message.error('Lỗi, không thể khóa người dùng!')
+    }finally{
+        loadingBar.finish();
+    }
+}
+const handleOpenBlockUser = async(id) => {
+  try {
+      loadingBar.start();
+      await editRoles(id, ['Member']);
+      await loadAccountList();
+      showModalEdit.value = false;
+      message.success("Mở khóa người dùng thành công!");
+      loadingBar.finish();
+    } catch (error) {
+        loadingBar.error()
+        message.error('Lỗi, không thể mở khóa người dùng!')
     }finally{
         loadingBar.finish();
     }
@@ -140,6 +170,7 @@ const columns = [
   title: 'Actions',
   key: 'actions',
   render(row) {
+    const isLocked = row.roles.includes('Blocker');
     const buttons = [
         {
           label: 'Chỉnh sửa quyền',
@@ -156,16 +187,21 @@ const columns = [
           }
         },
         {
-          label: 'Khóa tài khoản',
+          label: isLocked ? 'Mở khóa tài khoản' : 'Khóa tài khoản',
           type: 'primary',
           onClick: () => {
             dialog.warning({
-              title: 'Khóa tài khoản',
-              content: 'Bạn có chắc chắn muốn khóa tài khoản này?',
+              title: isLocked ? 'Mở khóa tài khoản' : 'Khóa tài khoản',
+              content: isLocked ? 'Bạn có chắc chắn muốn mở khóa tài khoản này?' : 'Bạn có chắc chắn muốn khóa tài khoản này?' ,
               positiveText: 'Hủy',
-              negativeText: 'Khóa tài khoản',
+              negativeText: isLocked ? 'Mở khóa tài khoản' : 'Khóa tài khoản',
               onNegativeClick:  () => {
-                // handleDeletePost(row.id);
+                if(isLocked)
+                {
+                  handleOpenBlockUser(row.id)
+                }else{
+                  handleBlockUser(row.id)
+                }
               },
               onPositiveClick: () => {}
             });
