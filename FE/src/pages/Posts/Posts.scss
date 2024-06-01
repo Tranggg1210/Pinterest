@@ -112,6 +112,5 @@
   }
 }
 .container-end {
-  display: block;
   @include flex(end, center);
 }

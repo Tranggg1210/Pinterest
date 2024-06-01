@@ -87,3 +87,13 @@ svg {
   color: #656769;
   text-align: center;
 }
+.input {
+  border: 2px solid #ccc;
+  padding: 4px 0;
+  border-radius: 4px;
+  font-size: 15px;
+  transition: all 0.4s linear;
+}
+.container-end{
+  @include flex(end, center);
+}

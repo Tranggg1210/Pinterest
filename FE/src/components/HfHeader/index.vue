@@ -27,6 +27,13 @@ const loggedInRoutersDropdown = ref([
   { label: 'Đăng xuất', key: 'logout' }
 ]);
 
+const loggedInRoutersDropdownAdmin = ref([
+  { label: 'Trang chủ admin', key: '/admin' },
+  { label: 'Thông tin cá nhân', key: '/user-infor' },
+  { label: 'Hồ sơ của bạn', key: '/profile-favorite' },
+  { label: 'Đăng xuất', key: 'logout' }
+]);
+
 const loginRedirectRouters = ref([
   { label: 'Giới thiệu', key: '/introduce' },
   { label: 'Về chúng tôi', key: '/about-us' },
@@ -166,7 +173,7 @@ const goToPage = (key) => {
         />
         <n-dropdown
           v-if="user.loggedIn"
-          :options="loggedInRoutersDropdown"
+          :options="currentU.currentUser.isAdmin ? loggedInRoutersDropdownAdmin : loggedInRoutersDropdown"
           show-arrow
           @select="goToPage"
         >

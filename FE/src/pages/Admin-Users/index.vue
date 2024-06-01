@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue'
-import { NDataTable } from 'naive-ui'
+import { h, ref } from 'vue'
+import { NButton, NDataTable } from 'naive-ui'
 
 const columns = [
   {
@@ -42,18 +42,21 @@ const columns = [
   {
     title: 'Address',
     key: 'address',
-    filterOptions: [
-      {
-        label: 'London',
-        value: 'London'
-      },
-      {
-        label: 'New York',
-        value: 'New York'
-      }
-    ],
-    filter(value, row) {
-      return ~row.address.indexOf(value)
+  },
+  {
+    title: 'Action',
+    key: 'actions',
+    render (row) {
+      return h(
+        NButton,
+        {
+          strong: true,
+          tertiary: true,
+          size: 'small',
+          onClick: () => play(row)
+        },
+        { default: () => 'Play' }
+      )
     }
   }
 ]
@@ -140,4 +143,5 @@ const clearSorter = () => {
 name: Admin-Users
 meta:
   layout: admin
+  requiresAuth: true
 </route>
