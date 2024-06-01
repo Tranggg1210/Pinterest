@@ -24,7 +24,8 @@ export const ApiConstant = {
     getUserById: 'Users/getById',
     followUser: 'Follow/follower',
     unFollowUser: 'Follow/unfollower',
-    checkFollow: 'Follow/checkFollower'
+    checkFollow: 'Follow/checkFollower',
+    getAll: 'Users/getAll'
   },
   collection: {
     collectionAll: 'Posts/getAll',

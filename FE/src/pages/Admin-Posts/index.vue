@@ -1,6 +1,6 @@
 <script setup>
 import { createPost, deletePostById, getAllPost, updatePost } from '@/api/post.api';
-import { NButton, useLoadingBar, useMessage } from 'naive-ui';
+import { NButton, useDialog, useLoadingBar, useMessage } from 'naive-ui';
 import { h, onBeforeMount } from 'vue';
 
 const posts = ref([]);
@@ -9,6 +9,7 @@ const loadingBar = useLoadingBar();
 const pagination = ref({ pageSize: 4 });
 const message = useMessage();
 const showModal = ref(false);
+const dialog = useDialog();
 const postValue = reactive({
   link: null,
   caption: null,
@@ -136,7 +137,16 @@ const columns = [
           label: 'Xóa',
           type: 'primary',
           onClick: () => {
-            handleDeletePost(row.id);
+            dialog.warning({
+              title: 'Xóa bài viết',
+              content: 'Bạn có chắc chắn muốn xóa bài viết này?',
+              positiveText: 'Hủy',
+              negativeText: 'Xóa bài viết',
+              onNegativeClick:  () => {
+                handleDeletePost(row.id);
+              },
+              onPositiveClick: () => {}
+            });
           }
         }
       ];
@@ -178,7 +188,7 @@ const beforeUpload = async (data) => {
     message.error('Vui lòng nhập đúng định dạng ảnh');
     return false;
   } catch (error) {
-    message.error('Lỗi tải ảnh lên   không thành công!');
+    message.error('Lỗi tải ảnh lên không thành công!');
   } finally {
     loadingBar.finish();
   }

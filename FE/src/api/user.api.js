@@ -2,6 +2,7 @@ import { ApiConstant } from '@/constant/api.constant';
 import { api, apiUpload } from '.';
 
 const userApi = () => ({
+  getAllUser: async () => api.get(ApiConstant.user.getAll),
   getCurrentUser: async () => api.get(ApiConstant.user.currentUser),
   changeAvatar: async ({ file }) => apiUpload.put(ApiConstant.user.changeAvatar, { file }),
   changeInforUser: async ({ firstName, lastName, introduction, birthday, gender, country }) =>
@@ -23,6 +24,7 @@ const userApi = () => ({
 });
 
 export const {
+  getAllUser,
   getCurrentUser,
   changeAvatar,
   changeInforUser,
