@@ -1,5 +1,5 @@
 <script setup>
-import { getNotication } from '@/api/notification.api';
+import { deleteNotification, getNotication } from '@/api/notification.api';
 import { NButton, useDialog, useLoadingBar, useMessage } from 'naive-ui';
 import { h, onBeforeMount } from 'vue';
 import moment from 'moment';
@@ -30,6 +30,21 @@ onBeforeMount(async() => {
     message.error('Tải danh sách thông báo thất bại')
   }
 });
+const handleDeleteNotificationById = async(id) => {
+  try {
+    loadingBar.start();
+    await deleteNotification(id);
+    message.success("Xóa thông báo thành công!");
+    await loadNotifications();
+    loadingBar.finish();
+  } catch (error) {
+    console.log(error);
+    loadingBar.error();
+    message.error("Xóa thông báo thất bại");
+  }finally{
+    loadingBar.finish();
+  }
+}
 const columns = [
   {
     title: 'ID',
@@ -46,7 +61,7 @@ const columns = [
   {
     title: 'Ngày tạo',
     key: 'createdAt',
-    render: (text) => moment(text).format('YYYY-MM-DD')
+    render: (row) => moment(row.createdAt).format('YYYY-MM-DD')
   },
   {
   title: 'Actions',
@@ -59,7 +74,18 @@ const columns = [
           tertiary: true,
           type: 'primary',
           size: 'small',
-          onClick: () => play(row)
+          onClick: () => {
+            dialog.warning({
+              title: 'Xóa thông báo',
+              content: 'Bạn có chắc chắn muốn xóa thông báo này?',
+              positiveText: 'Hủy',
+              negativeText: 'Xóa thông báo',
+              onNegativeClick:  () => {
+                handleDeleteNotificationById(row.id);
+              },
+              onPositiveClick: () => {}
+            });
+          }
         },
         { default: () => "Xóa" }
       )

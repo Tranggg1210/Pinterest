@@ -44,6 +44,7 @@ export const ApiConstant = {
     checkAdmin: 'Admin/GetRole'
   },
   analysises:{
-    getNotication: 'Analysises/getNotifications'
+    getNotication: 'Analysises/getNotifications',
+    deleteNotication: 'Analysises/delete'
   }
 };

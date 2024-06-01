@@ -134,12 +134,12 @@ const columns = [
   {
     title: 'Ngày sinh',
     key: 'birthday',
-    render: (text) => moment(text).format('YYYY-MM-DD')
+    render: (row) => moment(row.birthday).format('YYYY-MM-DD')
   },
   {
     title: 'Giới tính',
     key: 'gender',
-    render: (text) => text ? 'Nam' : 'Nữ'
+    render: (row) => row.gender ? 'Nam' : 'Nữ'
   },
   {
     title: 'Địa chỉ',
