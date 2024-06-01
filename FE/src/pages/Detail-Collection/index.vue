@@ -148,7 +148,7 @@ const handleUpdateCollection = async () => {
 const handleDeleteCollection = () => {
   dialog.warning({
     title: 'Xóa bộ sưu tập',
-    content: 'Bạn có chắc chắn muốn xóa bộ sưu tập này này?',
+    content: 'Bạn có chắc chắn muốn xóa bộ sưu tập này?',
     positiveText: 'Hủy',
     negativeText: 'Xóa bộ sưu tập',
     onNegativeClick: async () => {

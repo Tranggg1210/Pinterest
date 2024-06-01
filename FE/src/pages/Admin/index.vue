@@ -1,38 +1,56 @@
 <script setup>
+import { getAnalysisToday } from '@/api/admin.api';
 import { useCurrentUserStore } from '@/stores/currentUser';
+import { useMessage } from 'naive-ui';
+import { onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const user = useCurrentUserStore();
-const options = [
-  {
-    id: 1,
-    title: 'Số lượt truy cập trong ngày',
-    quality: 0,
-    desc: 'lượt truy cập'
-  },
-  {
-    id: 2,
-    title: 'Số lượng người dùng',
-    quality: 0,
-    desc: 'người dùng'
-  },
-  {
-    id: 3,
-    title: 'Số lượng bài viết',
-    quality: 0,
-    desc: 'bài viết'
-  },
-  {
-    id: 4,
-    title: 'Số lượng thông báo',
-    quality: 0,
-    desc: 'thông báo'
-  }
-];
+const message = useMessage();
+const options = ref([]);
+const loading = ref(false);
 const goToPage = () => {
   router.push('/');
 };
+const loadAnalysisToday = async() => {
+  try {
+    loading.value = true;
+    const result = await getAnalysisToday();
+    options.value = [
+      {
+        id: 1,
+        title: 'Số lượt truy cập trong ngày',
+        quality: result?.accessCountInDay,
+        desc: 'lượt truy cập'
+      },
+      {
+        id: 2,
+        title: 'Số lượng người dùng',
+        quality: result?.userCount,
+        desc: 'người dùng'
+      },
+      {
+        id: 3,
+        title: 'Số lượng bài viết',
+        quality: result?.postCount,
+        desc: 'bài viết'
+      },
+      {
+        id: 4,
+        title: 'Số lượng thông báo',
+        quality: result?.notificationCount,
+        desc: 'thông báo'
+      }
+    ];
+    loading.value = false;
+  } catch (error) {
+    console.log(error);
+    loading.value = false;
+    message.error("Tải thông tin thất bại")
+  }
+}
+onBeforeMount(loadAnalysisToday);
 </script>
 <template>
   <div class="home-admin">
@@ -48,8 +66,8 @@ const goToPage = () => {
         <n-button type="warning" @click="goToPage">Về trang chủ của thành viên</n-button>
       </div>
     </div>
-    <div class="card-quality">
-      <div>
+    <div class="card-quality" v-if="!loading">
+      <div v-if="options.length > 0">
         <HfCardHomeAdmin
           v-for="item in options"
           :class="`collection-item-${item.id}`"
@@ -57,7 +75,9 @@ const goToPage = () => {
           :data="item"
         />
       </div>
+      <HfNoData v-else></HfNoData>
     </div>
+    <HfLoading v-else/>
   </div>
 </template>
 

@@ -2,6 +2,7 @@ import { ApiConstant } from '@/constant/api.constant';
 import { api, apiUpload } from '.';
 
 const userApi = () => ({
+  getAllUser: async () => api.get(ApiConstant.user.getAll),
   getCurrentUser: async () => api.get(ApiConstant.user.currentUser),
   changeAvatar: async ({ file }) => apiUpload.put(ApiConstant.user.changeAvatar, { file }),
   changeInforUser: async ({ firstName, lastName, introduction, birthday, gender, country }) =>
@@ -19,10 +20,21 @@ const userApi = () => ({
   getUserById: async (id) => api.get(`${ApiConstant.user.getUserById}/${id}`),
   followerByUserId: async (id) => api.post(`${ApiConstant.user.followUser}/${id}`),
   unFollowerByUserId: async (id) => api.post(`${ApiConstant.user.unFollowUser}/${id}`),
-  checkFollowByUserId: async (id) => api.get(`${ApiConstant.user.checkFollow}/${id}`)
+  checkFollowByUserId: async (id) => api.get(`${ApiConstant.user.checkFollow}/${id}`),
+  changeInforUserById: async (id,{ firstName, lastName, introduction, birthday, gender, country,avatarUrl }) =>
+    apiUpload.put(`${ApiConstant.user.userUpdate}/?id=${id}`, {
+      firstName,
+      lastName,
+      introduction,
+      birthday,
+      gender,
+      country,
+      avatarUrl
+    }),
 });
 
 export const {
+  getAllUser,
   getCurrentUser,
   changeAvatar,
   changeInforUser,
@@ -31,5 +43,6 @@ export const {
   getUserById,
   followerByUserId,
   unFollowerByUserId,
-  checkFollowByUserId
+  checkFollowByUserId,
+  changeInforUserById
 } = userApi();
