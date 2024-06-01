@@ -11,7 +11,6 @@ import {
 import { useRoute, useRouter } from 'vue-router';
 import { getCurrentUser } from '@/api/user.api';
 import { useCurrentUserStore } from '@/stores/currentUser';
-import { checkAdmin } from '@/api/admin.api';
 import { useLoadingBar } from 'naive-ui';
 
 const message = useMessage();
@@ -74,34 +73,17 @@ const registerHandler = () => {
           ...result.data
         });
         const currentUserData = await getCurrentUser();
-        const isAdmin = await checkAdmin(currentUserData.id);
+        if (currentUserData) {
+          currentUser.save({
+            fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
+            avatar: currentUserData.avatarUrl,
+            username: currentUserData.userName,
+            isAdmin: false
+          });
+        }
         loadingBar.finish();
         message.success('Đăng nhập thành công. Xin chào ' + account.email);
-        if(isAdmin?.roles.length === 1 && isAdmin?.roles[0] === 'Member')
-        {
-          router.push(route.query.redirect || '/');
-          if (currentUserData) {
-            currentUser.save({
-              fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
-              avatar: currentUserData.avatarUrl,
-              username: currentUserData.userName,
-              isAdmin: false
-            });
-          }
-        }else{
-          if(isAdmin?.roles.length === 2 && isAdmin.roles.includes('Admin'))
-          {
-            if (currentUserData) {
-            currentUser.save({
-              fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
-              avatar: currentUserData.avatarUrl,
-              username: currentUserData.userName,
-              isAdmin: true
-            });
-        }
-            router.push(route.query.redirect || '/admin');
-          }
-        }
+        router.push(route.query.redirect || '/');
       } catch (err) {
         loadingBar.error();
         message.error('Đăng ký không thành công');

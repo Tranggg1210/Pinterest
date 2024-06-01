@@ -51,37 +51,47 @@ const loginHandler = () => {
           password: account.password
         };
         const { data } = await login(user);
-        authStore.save({
-          ...data
-        });
-        const currentUserData = await getCurrentUser();
-        const isAdmin = await checkAdmin(currentUserData.id);
-        loadingBar.finish();
-        message.success('Đăng nhập thành công. Xin chào ' + account.email);
-        if(isAdmin?.roles.length === 1 && isAdmin?.roles[0] === 'Member')
+        if(data)
         {
-          router.push(route.query.redirect || '/');
-          if (currentUserData) {
-            currentUser.save({
-              fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
-              avatar: currentUserData.avatarUrl,
-              username: currentUserData.userName,
-              isAdmin: false
-            });
-          }
-        }else{
-          if(isAdmin?.roles.length === 2 && isAdmin.roles.includes('Admin'))
+          const isAdmin = await checkAdmin(account.email);
+          if(isAdmin?.roles.includes('Blocker'))
           {
-            if (currentUserData) {
-              currentUser.save({
-                fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
-                avatar: currentUserData.avatarUrl,
-                username: currentUserData.userName,
-                isAdmin: true
-              });
+            message.warning("Tài khoản đã bị khóa, vui lòng liên hệ đội kỹ thuật");
+            authStore.clear();
+            currentUser.clear();
+            router.push("/contact");
+            loadingBar.finish();
+            return;
+          }else {
+            authStore.save({
+              ...data
+            });
+            const currentUserData = await getCurrentUser();
+            if(isAdmin?.roles.includes('Member') && isAdmin.roles.length === 1)
+            {
+              if (currentUserData) {
+                currentUser.save({
+                  fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
+                  avatar: currentUserData.avatarUrl,
+                  username: currentUserData.userName,
+                  isAdmin: false
+                });
+                router.push(route.query.redirect || '/');
+              }
+            }else if(isAdmin?.roles.includes('Admin') && isAdmin.roles.length === 2){
+              if (currentUserData) {
+                currentUser.save({
+                  fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
+                  avatar: currentUserData.avatarUrl,
+                  username: currentUserData.userName,
+                  isAdmin: true
+                });
+              }
+              router.push(route.query.redirect || '/admin');
             }
-            router.push(route.query.redirect || '/admin');
+            message.success('Đăng nhập thành công. Xin chào ' + account.email);
           }
+          loadingBar.finish();
         }
       } catch (err) {
         loadingBar.error();
