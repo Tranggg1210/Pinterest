@@ -53,5 +53,11 @@ export const ApiConstant = {
   account: {
     getAllAccount: 'Admin/GetAllRoles',
     editAccount: 'Admin/EditRole'
+  },
+  comment: {
+    getCommentByPostId: 'get-comment',
+    create: 'comments',
+    delete: 'del-comment',
+    update: 'edit-comment'
   }
 };
