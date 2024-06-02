@@ -30,26 +30,26 @@ const rules = {
     trigger: ['blur', 'input']
   }
 };
-const loadNotifications = async() => {
-    try {
-        const result = await getNotication();
-        notifications.value = result;
-    } catch (error) {
-        console.log(error);
-    }
-}
-onBeforeMount(async() => {
+const loadNotifications = async () => {
+  try {
+    const result = await getNotication();
+    notifications.value = result;
+  } catch (error) {
+    console.log(error);
+  }
+};
+onBeforeMount(async () => {
   try {
     loading.value = true;
     await loadNotifications();
     loading.value = false;
-    message.success("Tải danh sách thông báo thành công");
+    message.success('Tải danh sách thông báo thành công');
   } catch (error) {
     loading.value = false;
-    message.error('Tải danh sách thông báo thất bại')
+    message.error('Tải danh sách thông báo thất bại');
   }
 });
-const handleCreateNotification = async() => {
+const handleCreateNotification = async () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       try {
@@ -59,40 +59,40 @@ const handleCreateNotification = async() => {
         });
         await loadNotifications();
         showModal.value = false;
-        message.success("Tạo thông báo thành công!");
+        message.success('Tạo thông báo thành công!');
         loadingBar.finish();
       } catch (error) {
         console.log(error);
         loadingBar.error();
-        message.error("Lỗi, tạo thông báo thất bại");
-      }finally{
+        message.error('Lỗi, tạo thông báo thất bại');
+      } finally {
         loadingBar.finish();
       }
     }
   });
-}
-const handleDeleteNotificationById = async(id) => {
+};
+const handleDeleteNotificationById = async (id) => {
   try {
     loadingBar.start();
     await deleteNotification(id);
-    message.success("Xóa thông báo thành công!");
+    message.success('Xóa thông báo thành công!');
     await loadNotifications();
     loadingBar.finish();
   } catch (error) {
     console.log(error);
     loadingBar.error();
-    message.error("Xóa thông báo thất bại");
-  }finally{
+    message.error('Xóa thông báo thất bại');
+  } finally {
     loadingBar.finish();
   }
-}
+};
 const columns = [
   {
     title: 'ID',
     key: 'id',
     defaultSortOrder: false,
     sorter: {
-      compare: (a, b) => a.id - b.id,
+      compare: (a, b) => a.id - b.id
     }
   },
   {
@@ -105,10 +105,10 @@ const columns = [
     render: (row) => moment(row.createdAt).format('YYYY-MM-DD')
   },
   {
-  title: 'Actions',
-  key: 'actions',
-  render(row) {
-    return h(
+    title: 'Actions',
+    key: 'actions',
+    render(row) {
+      return h(
         NButton,
         {
           strong: true,
@@ -121,29 +121,27 @@ const columns = [
               content: 'Bạn có chắc chắn muốn xóa thông báo này?',
               positiveText: 'Hủy',
               negativeText: 'Xóa thông báo',
-              onNegativeClick:  () => {
+              onNegativeClick: () => {
                 handleDeleteNotificationById(row.id);
               },
               onPositiveClick: () => {}
             });
           }
         },
-        { default: () => "Xóa" }
-      )
+        { default: () => 'Xóa' }
+      );
     }
   }
-]
+];
 </script>
 
 <template>
-    <div class="admin-notifications">
+  <div class="admin-notifications">
     <div class="admin-header">
       <h2>Danh sách thông báo</h2>
-      <n-button type="warning" @click="showModal = true">
-        Thêm thông báo
-      </n-button>
+      <n-button type="warning" @click="showModal = true"> Thêm thông báo </n-button>
     </div>
-     <HfLoading v-if="loading"></HfLoading>
+    <HfLoading v-if="loading"></HfLoading>
     <div v-else>
       <n-data-table
         class="data-table"
@@ -161,7 +159,13 @@ const columns = [
       style="width: 60%"
       :bordered="false"
     >
-      <n-form :label-width="80" :model="notificationValue" :rules="rules" ref="formRef" size="large">
+      <n-form
+        :label-width="80"
+        :model="notificationValue"
+        :rules="rules"
+        ref="formRef"
+        size="large"
+      >
         <n-form-item label="Nội dung thông báo:" path="data">
           <n-input
             v-model:value="notificationValue.data"
@@ -173,14 +177,20 @@ const columns = [
         </n-form-item>
         <n-form-item class="container-end">
           <n-button
-            @click="() => {
-              showModal = false;
-            }"
+            @click="
+              () => {
+                showModal = false;
+              }
+            "
           >
             Hủy
           </n-button>
-          <n-button type="success" style="color: white; margin-left: 12px" @click="handleCreateNotification" >
-            Tạo thông báo 
+          <n-button
+            type="success"
+            style="color: white; margin-left: 12px"
+            @click="handleCreateNotification"
+          >
+            Tạo thông báo
           </n-button>
         </n-form-item>
       </n-form>
@@ -189,26 +199,25 @@ const columns = [
 </template>
 
 <style lang="scss" scoped>
-.admin-notifications
-{
+.admin-notifications {
   overflow-x: scroll;
   padding: 20px 40px 40px;
 }
-.admin-header{
+.admin-header {
   @include flex(space-between, center);
   margin: 20px 0;
-  h2{
+  h2 {
     font-weight: 500;
     text-decoration: underline;
   }
 }
 .admin-notifications::-webkit-scrollbar {
-  height: 8px; 
+  height: 8px;
   display: none;
 }
 .admin-notifications::-webkit-scrollbar-thumb {
-  background-color: #ccc; 
-  border-radius: 4px; 
+  background-color: #ccc;
+  border-radius: 4px;
 }
 .admin-notifications::-webkit-scrollbar-track {
   background-color: #f1f1f1;
@@ -217,6 +226,6 @@ const columns = [
 <route lang="yaml">
 name: Admin-Notifications
 meta:
-    layout: admin
-    requiresAuth: true
+  layout: admin
+  requiresAuth: true
 </route>

@@ -13,7 +13,7 @@ const loading = ref(false);
 const goToPage = () => {
   router.push('/');
 };
-const loadAnalysisToday = async() => {
+const loadAnalysisToday = async () => {
   try {
     loading.value = true;
     const result = await getAnalysisToday();
@@ -47,9 +47,9 @@ const loadAnalysisToday = async() => {
   } catch (error) {
     console.log(error);
     loading.value = false;
-    message.error("Tải thông tin thất bại")
+    message.error('Tải thông tin thất bại');
   }
-}
+};
 onBeforeMount(loadAnalysisToday);
 </script>
 <template>
@@ -61,7 +61,7 @@ onBeforeMount(loadAnalysisToday);
           <img v-else src="@/assets/images/user-avatar.png" alt="background" style="width: 72%" />
         </div>
         <h1 class="user-name">
-          {{ user?.currentUser.fullname !== 'Null Null' ? user.currentUser.fullname  : 'Admin' }}
+          {{ user?.currentUser.fullname !== 'Null Null' ? user.currentUser.fullname : 'Admin' }}
         </h1>
         <n-button type="warning" @click="goToPage">Về trang chủ của thành viên</n-button>
       </div>
@@ -77,7 +77,7 @@ onBeforeMount(loadAnalysisToday);
       </div>
       <HfNoData v-else></HfNoData>
     </div>
-    <HfLoading v-else/>
+    <HfLoading v-else />
   </div>
 </template>
 
@@ -86,4 +86,5 @@ onBeforeMount(loadAnalysisToday);
 name: Admin
 meta:
   layout: admin
+  requiresAuth: true
 </route>

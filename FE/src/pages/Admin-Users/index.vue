@@ -1,9 +1,15 @@
 <script setup>
-import { changeAvatar, changeInforUser, changeInforUserById, deleteUser, getAllUser } from '@/api/user.api';
+import {
+  changeAvatar,
+  changeInforUser,
+  changeInforUserById,
+  deleteUser,
+  getAllUser
+} from '@/api/user.api';
 import { NButton, useDialog, useLoadingBar, useMessage } from 'naive-ui';
 import { h, onBeforeMount } from 'vue';
 import moment from 'moment';
-import avatar from '@/assets/images/user.png'
+import avatar from '@/assets/images/user.png';
 import { validateDOB, validateFirstName, validateLastName } from '@/utils/validator';
 
 const users = ref([]);
@@ -41,25 +47,24 @@ const rules = {
   }
 };
 
-const loadUsers = async() => {
+const loadUsers = async () => {
   try {
     const result = await getAllUser();
     users.value = result;
   } catch (error) {
     console.log(error);
   }
-}
-onBeforeMount(async() => {
+};
+onBeforeMount(async () => {
   try {
     loading.value = true;
     await loadUsers();
     loading.value = false;
-    message.success("Tải danh sách người dùng thành công");
+    message.success('Tải danh sách người dùng thành công');
   } catch (error) {
     loading.value = false;
-    message.error('Tải danh sách người dùng thất bại')
+    message.error('Tải danh sách người dùng thất bại');
   }
-
 });
 const handleDeleteUser = async (id) => {
   try {
@@ -83,7 +88,7 @@ const beforeUpload = async (data) => {
       data.file.file?.type === 'image/jpeg' ||
       data.file.file?.type === 'image/gif'
     ) {
-      userValue.avatarUrl = data.file.file
+      userValue.avatarUrl = data.file.file;
       loadingBar.finish();
       return true;
     }
@@ -104,7 +109,7 @@ const columns = [
     key: 'id',
     defaultSortOrder: false,
     sorter: {
-      compare: (a, b) => a.id - b.id,
+      compare: (a, b) => a.id - b.id
     }
   },
   {
@@ -129,7 +134,7 @@ const columns = [
   },
   {
     title: 'Tên',
-    key: 'firstName',
+    key: 'firstName'
   },
   {
     title: 'Ngày sinh',
@@ -139,17 +144,17 @@ const columns = [
   {
     title: 'Giới tính',
     key: 'gender',
-    render: (row) => row.gender ? 'Nam' : 'Nữ'
+    render: (row) => (row.gender ? 'Nam' : 'Nữ')
   },
   {
     title: 'Địa chỉ',
-    key: 'country',
+    key: 'country'
   },
   {
-  title: 'Actions',
-  key: 'actions',
-  render(row) {
-    const buttons = [
+    title: 'Actions',
+    key: 'actions',
+    render(row) {
+      const buttons = [
         {
           label: 'Chỉnh sửa',
           type: 'info',
@@ -173,8 +178,8 @@ const columns = [
               content: 'Bạn có chắc chắn muốn xóa người dùng này?',
               positiveText: 'Hủy',
               negativeText: 'Xóa người dùng',
-              onNegativeClick:  () => {
-                  handleDeleteUser(row.id);
+              onNegativeClick: () => {
+                handleDeleteUser(row.id);
               },
               onPositiveClick: () => {}
             });
@@ -206,7 +211,7 @@ const columns = [
       );
     }
   }
-]
+];
 const handleUpdateUserInformation = async () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
@@ -225,7 +230,7 @@ const handleUpdateUserInformation = async () => {
           country: userValue.country,
           avatarUrl: userValue.avatarUrl
         };
-        await changeInforUserById(userIDDelete.value,newUser);
+        await changeInforUserById(userIDDelete.value, newUser);
         loadingBar.finish();
         message.success('Cập nhập thông tin thành công!');
         showModal.value = false;
@@ -239,14 +244,13 @@ const handleUpdateUserInformation = async () => {
     }
   });
 };
-
 </script>
 <template>
   <div class="admin-users">
     <div class="admin-header">
       <h2>Danh sách người dùng</h2>
     </div>
-     <HfLoading v-if="loading"></HfLoading>
+    <HfLoading v-if="loading"></HfLoading>
     <div v-else>
       <n-data-table
         class="data-table"
@@ -266,20 +270,10 @@ const handleUpdateUserInformation = async () => {
     >
       <n-form :label-width="80" :model="userValue" :rules="rules" ref="formRef" size="large">
         <n-form-item label="Họ đệm:" path="lastName" style="margin-bottom: 8px">
-          <n-input
-            v-model:value="userValue.lastName"
-            placeholder=""
-            type="text"
-            class="input"
-          />
+          <n-input v-model:value="userValue.lastName" placeholder="" type="text" class="input" />
         </n-form-item>
         <n-form-item label="Tên:" path="firstName" style="margin-bottom: 8px">
-          <n-input
-            v-model:value="userValue.firstName"
-            placeholder=""
-            type="text"
-            class="input"
-          />
+          <n-input v-model:value="userValue.firstName" placeholder="" type="text" class="input" />
         </n-form-item>
         <n-form-item label="Ngày sinh:" path="birthday" style="margin-bottom: 8px">
           <n-date-picker
@@ -321,13 +315,19 @@ const handleUpdateUserInformation = async () => {
         </n-form-item>
         <n-form-item class="container-end">
           <n-button
-            @click="() => {
-              showModal = false;
-            }"
+            @click="
+              () => {
+                showModal = false;
+              }
+            "
           >
             Hủy
           </n-button>
-          <n-button type="success" style="color: white; margin-left: 12px" @click="handleUpdateUserInformation" >
+          <n-button
+            type="success"
+            style="color: white; margin-left: 12px"
+            @click="handleUpdateUserInformation"
+          >
             Chỉnh sửa
           </n-button>
         </n-form-item>
@@ -336,28 +336,26 @@ const handleUpdateUserInformation = async () => {
   </div>
 </template>
 
-
 <style lang="scss" scoped>
-.admin-users
-{
+.admin-users {
   overflow-x: scroll;
   padding: 20px 40px 40px;
 }
-.admin-header{
+.admin-header {
   @include flex(space-between, center);
   margin: 20px 0;
-  h2{
+  h2 {
     font-weight: 500;
     text-decoration: underline;
   }
 }
 .admin-users::-webkit-scrollbar {
-  height: 8px; 
+  height: 8px;
   display: none;
 }
 .admin-users::-webkit-scrollbar-thumb {
-  background-color: #ccc; 
-  border-radius: 4px; 
+  background-color: #ccc;
+  border-radius: 4px;
 }
 .admin-users::-webkit-scrollbar-track {
   background-color: #f1f1f1;

@@ -21,7 +21,10 @@ const userApi = () => ({
   followerByUserId: async (id) => api.post(`${ApiConstant.user.followUser}/${id}`),
   unFollowerByUserId: async (id) => api.post(`${ApiConstant.user.unFollowUser}/${id}`),
   checkFollowByUserId: async (id) => api.get(`${ApiConstant.user.checkFollow}/${id}`),
-  changeInforUserById: async (id,{ firstName, lastName, introduction, birthday, gender, country,avatarUrl }) =>
+  changeInforUserById: async (
+    id,
+    { firstName, lastName, introduction, birthday, gender, country, avatarUrl }
+  ) =>
     apiUpload.put(`${ApiConstant.user.userUpdate}/?id=${id}`, {
       firstName,
       lastName,
@@ -30,7 +33,7 @@ const userApi = () => ({
       gender,
       country,
       avatarUrl
-    }),
+    })
 });
 
 export const {

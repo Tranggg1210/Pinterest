@@ -51,24 +51,21 @@ const loginHandler = () => {
           password: account.password
         };
         const { data } = await login(user);
-        if(data)
-        {
+        if (data) {
           const isAdmin = await checkAdmin(account.email);
-          if(isAdmin?.roles.includes('Blocker'))
-          {
-            message.warning("Tài khoản đã bị khóa, vui lòng liên hệ đội kỹ thuật");
+          if (isAdmin?.roles.includes('Blocker')) {
+            message.warning('Tài khoản đã bị khóa, vui lòng liên hệ đội kỹ thuật');
             authStore.clear();
             currentUser.clear();
-            router.push("/contact");
+            router.push('/contact');
             loadingBar.finish();
             return;
-          }else {
+          } else {
             authStore.save({
               ...data
             });
             const currentUserData = await getCurrentUser();
-            if(isAdmin?.roles.includes('Member') && isAdmin.roles.length === 1)
-            {
+            if (isAdmin?.roles.includes('Member') && isAdmin.roles.length === 1) {
               if (currentUserData) {
                 currentUser.save({
                   fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
@@ -78,7 +75,7 @@ const loginHandler = () => {
                 });
                 router.push(route.query.redirect || '/');
               }
-            }else if(isAdmin?.roles.includes('Admin') && isAdmin.roles.length === 2){
+            } else if (isAdmin?.roles.includes('Admin') && isAdmin.roles.length === 2) {
               if (currentUserData) {
                 currentUser.save({
                   fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),

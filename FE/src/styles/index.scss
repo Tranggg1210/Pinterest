@@ -94,6 +94,6 @@ svg {
   font-size: 15px;
   transition: all 0.4s linear;
 }
-.container-end{
+.container-end {
   @include flex(end, center);
 }

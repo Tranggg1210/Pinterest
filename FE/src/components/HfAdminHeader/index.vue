@@ -1,7 +1,7 @@
 <script setup>
 import { useCurrentUserStore } from '@/stores/currentUser';
 
-  const currentU = useCurrentUserStore();
+const currentU = useCurrentUserStore();
 </script>
 <template>
   <div class="header">
@@ -10,8 +10,13 @@ import { useCurrentUserStore } from '@/stores/currentUser';
       to="/user-infor"
     >
       <div class="avatar">
-        <img src="@/assets/images/user-avatar.png" alt="avatar" class="user-avatar" v-if="!currentU.currentUser.avatar"/>
-        <img :src="currentU.currentUser.avatar" alt="avatar" class="user-avatar" v-else/>
+        <img
+          src="@/assets/images/user-avatar.png"
+          alt="avatar"
+          class="user-avatar"
+          v-if="!currentU.currentUser.avatar"
+        />
+        <img :src="currentU.currentUser.avatar" alt="avatar" class="user-avatar" v-else />
       </div>
       <span>Admin!</span>
     </RouterLink>
@@ -30,7 +35,7 @@ import { useCurrentUserStore } from '@/stores/currentUser';
   a:hover {
     opacity: 0.6;
   }
-  .avatar{
+  .avatar {
     height: 36px;
     width: 36px;
     border-radius: 50%;

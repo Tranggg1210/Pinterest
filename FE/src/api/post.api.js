@@ -1,4 +1,4 @@
-import { api, apiUpload } from './index';
+import { api, apiPHP, apiUpload } from './index';
 import { ApiConstant } from '@/constant/api.constant';
 
 const postApi = () => ({
@@ -36,7 +36,8 @@ const postApi = () => ({
     return api.get(`${ApiConstant.post.getByCollectionId}?collectionId=${id}`);
   },
   toggleLike: async (id) => api.post(`${ApiConstant.post.toggleLike}?postId=${id}`),
-  checkLike: async (id) => api.get(`${ApiConstant.post.checkLike}/${id}`)
+  checkLike: async (id) => api.get(`${ApiConstant.post.checkLike}/${id}`),
+  searchPosts: async(keyword) => apiPHP.get(`${ApiConstant.post.search}/${keyword}`)
 });
 
 export const {
@@ -48,5 +49,6 @@ export const {
   updatePost,
   getPostByCollectionId,
   toggleLike,
-  checkLike
+  checkLike,
+  searchPosts
 } = postApi();

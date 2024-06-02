@@ -47,8 +47,8 @@
     @include flex(center, center);
     flex-wrap: wrap;
     gap: 20px;
-    @include tablet{
-        width: 90%;
+    @include tablet {
+      width: 90%;
     }
   }
 }

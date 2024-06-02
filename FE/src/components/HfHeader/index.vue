@@ -3,16 +3,18 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { auth } from '@/middlewares/auth';
 import { useAuthStore } from '@/stores/auth';
 import { useCurrentUserStore } from '@/stores/currentUser';
-import { useMessage } from 'naive-ui';
+import { useMessage, useNotification } from 'naive-ui';
 import { useRouter } from 'vue-router';
+import { getNotication } from '@/api/notification.api';
 
 const user = useAuthStore();
 const message = useMessage();
 const router = useRouter();
 const show = ref(false);
-const showSearchModel = ref(false);
 const isScrolled = ref(false);
+const searchValue = ref('');
 const currentU = useCurrentUserStore();
+const notification = useNotification();
 const loggedInRouters = ref([
   { label: 'Trang chủ', key: '/' },
   { label: 'Tạo bài viết', key: '/posts' },
@@ -54,6 +56,16 @@ onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleScroll);
 });
 
+const handleSearch = () => {
+  if (searchValue.value.trim()) {
+    localStorage.setItem('keyword', searchValue.value);
+    const currentPath = router.currentRoute.value.fullPath;
+    localStorage.setItem('previousPath', currentPath);
+    router.push({ path: '/search', query: { q: searchValue.value } });
+    searchValue.value = '';
+  }
+}
+
 const goToPage = (key) => {
   if (key === 'logout') {
     user.clear();
@@ -64,6 +76,40 @@ const goToPage = (key) => {
     router.push(key);
   }
 };
+function formatDateTime(dateTimeString) {
+  const date = new Date(dateTimeString);
+
+  const options = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: false, 
+    timeZone: 'Asia/Ho_Chi_Minh'
+  };
+
+  return date.toLocaleString('vi-VN', options);
+}
+const handleShowNotifications = async() => {
+  try {
+    const result = await getNotication();
+    const resultReverse = result.reverse().slice(0, 5);
+    resultReverse.forEach((noti) => notification.info(
+      {
+        title: "Thông báo",
+        content: noti.data,
+        meta: formatDateTime(noti.createdAt),
+        duration: 10000,
+      }
+    ))
+    
+  } catch (error) {
+    message.error("Tải thông báo thất bại")
+    console.log(error);
+  }
+}
 </script>
 
 <template>
@@ -89,9 +135,9 @@ const goToPage = (key) => {
           <HfButton> <IconPlus /> </HfButton>
         </router-link>
       </div>
-      <div class="header-search" @click="showSearchModel = true" v-if="user.loggedIn">
-        <IconSearch size="20px" />
-        <input type="text" placeholder="Tìm kiếm..." />
+      <div class="header-search" v-if="user.loggedIn">
+        <IconSearch size="20px" @click="handleSearch"/>
+        <input type="text" v-model="searchValue" placeholder="Tìm kiếm..." @keyup.enter="handleSearch" />
       </div>
       <div class="btn-container" v-if="!user.loggedIn">
         <router-link class="header-link" to="/introduce" exact-active-class="active">
@@ -163,7 +209,7 @@ const goToPage = (key) => {
           alt="notification"
           title="notification"
           class="menu-logined-icon"
-          @click="() => goToPage('/notification')"
+          @click="handleShowNotifications"
         />
         <img
           src="@/assets/images/messenger.png"
@@ -173,7 +219,9 @@ const goToPage = (key) => {
         />
         <n-dropdown
           v-if="user.loggedIn"
-          :options="currentU.currentUser.isAdmin ? loggedInRoutersDropdownAdmin : loggedInRoutersDropdown"
+          :options="
+            currentU.currentUser.isAdmin ? loggedInRoutersDropdownAdmin : loggedInRoutersDropdown
+          "
           show-arrow
           @select="goToPage"
         >
