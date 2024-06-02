@@ -146,7 +146,8 @@ li {
   transition: all 0.3s linear;
   cursor: pointer;
   @include flex(start, center);
-  a,.logout {
+  a,
+  .logout {
     padding: 12px 24px;
     @include flex(start, center);
     width: 100%;
@@ -181,8 +182,8 @@ li {
     }
   }
 }
-.logout{
-  &:hover{
+.logout {
+  &:hover {
     color: #fff;
   }
 }
@@ -202,7 +203,7 @@ span {
   color: #fff;
 }
 .buffer-zone {
-  width: 273px!important;
+  width: 273px !important;
   @include mobile {
     width: 58px !important;
   }

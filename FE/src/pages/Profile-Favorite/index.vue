@@ -74,10 +74,18 @@ const removePost = (postId) => {
     <div class="wide">
       <div class="basic-profile container">
         <div class="user-avatar">
-          <img :src="user.currentUser.avatar" alt="avatar" v-if="user.currentUser.avatar"/>
-          <img src="@/assets/images/user-avatar.png" alt="avatar" v-else/>
+          <img :src="user.currentUser.avatar" alt="avatar" v-if="user.currentUser.avatar" />
+          <img src="@/assets/images/user-avatar.png" alt="avatar" v-else />
         </div>
-        <h1 class="user-name">{{ user.currentUser.fullname ? (user.currentUser.fullname !== 'Null Null' ? user.currentUser.fullname : 'Admin') : 'User' }}</h1>
+        <h1 class="user-name">
+          {{
+            user.currentUser.fullname
+              ? user.currentUser.fullname !== 'Null Null'
+                ? user.currentUser.fullname
+                : 'Admin'
+              : 'User'
+          }}
+        </h1>
         <p class="user-account">
           <IconBrandPinterest size="20" />
           {{ user.currentUser.username || 'User' }}

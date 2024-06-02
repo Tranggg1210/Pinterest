@@ -34,25 +34,24 @@ const rules = {
   }
 };
 
-const loadPosts = async() => {
+const loadPosts = async () => {
   try {
     const result = await getAllPost();
     posts.value = result;
   } catch (error) {
     console.log(error);
   }
-}
-onBeforeMount(async() => {
+};
+onBeforeMount(async () => {
   try {
     loading.value = true;
     await loadPosts();
     loading.value = false;
-    message.success("Tải danh sách bài viết thành công");
+    message.success('Tải danh sách bài viết thành công');
   } catch (error) {
     loading.value = false;
-    message.error('Tải danh sách bài viết thất bại')
+    message.error('Tải danh sách bài viết thất bại');
   }
-
 });
 const handleDeletePost = async (id) => {
   try {
@@ -66,7 +65,7 @@ const handleDeletePost = async (id) => {
     loadingBar.finish();
   }
 };
-const oldDataBeforeUpdate = ref({}); 
+const oldDataBeforeUpdate = ref({});
 const isEdit = ref(false);
 
 const columns = [
@@ -75,7 +74,7 @@ const columns = [
     key: 'id',
     defaultSortOrder: false,
     sorter: {
-      compare: (a, b) => a.id - b.id,
+      compare: (a, b) => a.id - b.id
     }
   },
   {
@@ -100,25 +99,25 @@ const columns = [
   },
   {
     title: 'Mô tả',
-    key: 'detail',
+    key: 'detail'
   },
   {
     title: 'Lượt thích',
     key: 'like',
     defaultSortOrder: false,
     sorter: {
-      compare: (a, b) => a.like - b.like,
+      compare: (a, b) => a.like - b.like
     }
   },
   {
     title: 'Chủ đề',
-    key: 'theme',
+    key: 'theme'
   },
   {
-  title: 'Actions',
-  key: 'actions',
-  render(row) {
-    const buttons = [
+    title: 'Actions',
+    key: 'actions',
+    render(row) {
+      const buttons = [
         {
           label: 'Chỉnh sửa',
           type: 'info',
@@ -142,7 +141,7 @@ const columns = [
               content: 'Bạn có chắc chắn muốn xóa bài viết này?',
               positiveText: 'Hủy',
               negativeText: 'Xóa bài viết',
-              onNegativeClick:  () => {
+              onNegativeClick: () => {
                 handleDeletePost(row.id);
               },
               onPositiveClick: () => {}
@@ -175,7 +174,7 @@ const columns = [
       );
     }
   }
-]
+];
 
 const beforeUpload = async (data) => {
   try {
@@ -237,11 +236,9 @@ const handleUpdatePost = async () => {
   <div class="admin-posts">
     <div class="admin-header">
       <h2>Danh sách bài viết</h2>
-      <n-button type="warning" @click="showModal = true">
-        Thêm bài viết
-      </n-button>
+      <n-button type="warning" @click="showModal = true"> Thêm bài viết </n-button>
     </div>
-     <HfLoading v-if="loading"></HfLoading>
+    <HfLoading v-if="loading"></HfLoading>
     <div v-else>
       <n-data-table
         class="data-table"
@@ -261,18 +258,12 @@ const handleUpdatePost = async () => {
     >
       <n-form ref="formRef" :model="postValue" :rules="rules" size="large">
         <n-form-item label="Ảnh minh họa của bài viết:" path="file">
-          <n-upload
-            @before-upload="beforeUpload"
-          >
+          <n-upload @before-upload="beforeUpload">
             <n-button>Upload ảnh</n-button>
           </n-upload>
         </n-form-item>
         <n-form-item label="Tiêu đề" path="caption">
-          <n-input
-            v-model:value="postValue.caption"
-            placeholder="Thêm tiêu đề"
-            class="input"
-          />
+          <n-input v-model:value="postValue.caption" placeholder="Thêm tiêu đề" class="input" />
         </n-form-item>
         <n-form-item label="Mô tả" path="detail">
           <n-input
@@ -302,16 +293,28 @@ const handleUpdatePost = async () => {
         </n-form-item>
         <n-form-item class="container-end">
           <n-button
-            @click="() => {
-              showModal = false;
-            }"
+            @click="
+              () => {
+                showModal = false;
+              }
+            "
           >
             Hủy
           </n-button>
-          <n-button type="success" style="color: white; margin-left: 12px" @click="handleCreatePost" v-if="!isEdit">
+          <n-button
+            type="success"
+            style="color: white; margin-left: 12px"
+            @click="handleCreatePost"
+            v-if="!isEdit"
+          >
             Tạo bài viết
           </n-button>
-          <n-button type="success" style="color: white; margin-left: 12px" @click="handleUpdatePost" v-else>
+          <n-button
+            type="success"
+            style="color: white; margin-left: 12px"
+            @click="handleUpdatePost"
+            v-else
+          >
             Chỉnh sửa bài viết
           </n-button>
         </n-form-item>
@@ -320,28 +323,26 @@ const handleUpdatePost = async () => {
   </div>
 </template>
 
-
 <style lang="scss" scoped>
-.admin-posts
-{
+.admin-posts {
   overflow-x: scroll;
   padding: 20px 40px 40px;
 }
-.admin-header{
+.admin-header {
   @include flex(space-between, center);
   margin: 20px 0;
-  h2{
+  h2 {
     font-weight: 500;
     text-decoration: underline;
   }
 }
 .admin-posts::-webkit-scrollbar {
-  height: 8px; 
+  height: 8px;
   display: none;
 }
 .admin-posts::-webkit-scrollbar-thumb {
-  background-color: #ccc; 
-  border-radius: 4px; 
+  background-color: #ccc;
+  border-radius: 4px;
 }
 .admin-posts::-webkit-scrollbar-track {
   background-color: #f1f1f1;

@@ -173,7 +173,9 @@ const goToPage = (key) => {
         />
         <n-dropdown
           v-if="user.loggedIn"
-          :options="currentU.currentUser.isAdmin ? loggedInRoutersDropdownAdmin : loggedInRoutersDropdown"
+          :options="
+            currentU.currentUser.isAdmin ? loggedInRoutersDropdownAdmin : loggedInRoutersDropdown
+          "
           show-arrow
           @select="goToPage"
         >

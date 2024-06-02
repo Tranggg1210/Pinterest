@@ -1,5 +1,4 @@
 <script setup>
-
 const themeOverrides = {
   common: {
     baseColor: '#e60023',
@@ -31,7 +30,7 @@ const themeOverrides = {
     sizeMedium: '15px',
     fontSizeMedium: '15px',
     borderRadius: '4px',
-    textColor: '#313131',
+    textColor: '#313131'
   }
 };
 </script>
