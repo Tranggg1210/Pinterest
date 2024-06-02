@@ -86,4 +86,5 @@ onBeforeMount(loadAnalysisToday);
 name: Admin
 meta:
   layout: admin
+  requiresAuth: true
 </route>
