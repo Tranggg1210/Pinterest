@@ -37,9 +37,10 @@ const postApi = () => ({
   },
   toggleLike: async (id) => api.post(`${ApiConstant.post.toggleLike}?postId=${id}`),
   checkLike: async (id) => api.get(`${ApiConstant.post.checkLike}/${id}`),
-  searchPosts: async({keyword}) => apiPHP.get(`${ApiConstant.post.search}`,{
-    keyword
-  })
+  searchPosts: async ({ keyword }) =>
+    apiPHP.get(`${ApiConstant.post.search}`, {
+      keyword
+    })
 });
 
 export const {

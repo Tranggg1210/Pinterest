@@ -51,15 +51,12 @@ const loadMessages = async () => {
   }
 };
 
-const debouncedLoadUserAndMessages = debounce(async() => {
+const debouncedLoadUserAndMessages = debounce(async () => {
   await loadUser();
   await loadMessages();
 }, 300);
 
-watch(
-  () => router.currentRoute.value.params.id,
-  debouncedLoadUserAndMessages
-);
+watch(() => router.currentRoute.value.params.id, debouncedLoadUserAndMessages);
 
 watchEffect(async () => {
   if (messagesBody.value) {
@@ -90,7 +87,7 @@ const handleSendMessages = async () => {
     if (idConversation.value !== -1) {
       const newMessage = {
         content: inputValue.value,
-        id: idConversation.value,
+        id: idConversation.value
       };
       const result = await sendMessages(newMessage);
       const formattedMessage = {
@@ -98,7 +95,7 @@ const handleSendMessages = async () => {
         ConversationId: result.data.id_conversation.toString(),
         SenderId: result.data.sender_id.toString(),
         RecipientId: result.data.receiver_id.toString(),
-        Content: result.data.content,
+        Content: result.data.content
       };
       messageStore.addMessage(formattedMessage);
       nextTick(() => {
@@ -144,7 +141,8 @@ const handleCancelCreateConversation = async () => {
     </div>
     <div class="messages-body" ref="messagesBody">
       <div v-if="messageStore.messagesValue.length > 0">
-        <HfMessagesItem v-for="(item) in messageStore.messagesValue" 
+        <HfMessagesItem
+          v-for="item in messageStore.messagesValue"
           :key="item.Id"
           :messageData="item"
           :user="user"
@@ -154,15 +152,30 @@ const handleCancelCreateConversation = async () => {
     <div class="messages-footer">
       <div class="user">
         <div class="user-avatar">
-          <img src="@/assets/images/user-avatar.png" alt="avatar" v-if="!currentU.currentUser.avatar" />
+          <img
+            src="@/assets/images/user-avatar.png"
+            alt="avatar"
+            v-if="!currentU.currentUser.avatar"
+          />
           <img :src="currentU.currentUser.avatar" alt="avatar" class="user-avatar" v-else />
         </div>
         <div class="comment-input" v-if="idConversation === -1">
-          <input type="text" placeholder="Nhắn tin" v-model="inputValue" @keypress.enter="handleSendMessages" />
+          <input
+            type="text"
+            placeholder="Nhắn tin"
+            v-model="inputValue"
+            @keypress.enter="handleSendMessages"
+          />
           <IconSend2 size="24" @click="handleSendMessages" class="icon-send" />
         </div>
         <div class="comment-input" v-else>
-          <input type="text" placeholder="Nhắn tin" :disabled="creatingMessage" v-model="inputValue" @keypress.enter="handleSendMessages" />
+          <input
+            type="text"
+            placeholder="Nhắn tin"
+            :disabled="creatingMessage"
+            v-model="inputValue"
+            @keypress.enter="handleSendMessages"
+          />
           <IconSend2 size="24" class="icon-send" />
         </div>
       </div>
@@ -171,8 +184,7 @@ const handleCancelCreateConversation = async () => {
   <HfLoading v-else></HfLoading>
 </template>
 
-<style lang="scss" scoped src="./DetailMessage.scss">
-</style>
+<style lang="scss" scoped src="./DetailMessage.scss"></style>
 
 <route lang="yaml">
 path: '/detail-message/:id'

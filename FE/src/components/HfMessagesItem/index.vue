@@ -26,7 +26,11 @@ const isSend = computed(() => currentUser.currentUser.userId === props.messageDa
       </div>
       <div class="user">
         <div class="user-avatar">
-          <img src="@/assets/images/user-avatar.png" alt="avatar" v-if="!currentUser.currentUser.avatar" />
+          <img
+            src="@/assets/images/user-avatar.png"
+            alt="avatar"
+            v-if="!currentUser.currentUser.avatar"
+          />
           <img :src="currentUser.currentUser.avatar" alt="avatar" class="user-avatar" v-else />
         </div>
       </div>

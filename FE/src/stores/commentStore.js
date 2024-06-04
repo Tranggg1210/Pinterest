@@ -4,7 +4,7 @@ import { useMessage } from 'naive-ui';
 export const useCommentStore = defineStore({
   id: 'comment',
   state: () => ({
-    comments: [],
+    comments: []
   }),
   actions: {
     async loadComments(postId) {
@@ -19,12 +19,12 @@ export const useCommentStore = defineStore({
       try {
         await createComment({
           PostId: postId,
-          Content: content,
+          Content: content
         });
         await this.loadComments(postId);
       } catch (error) {
         console.error('Lỗi khi tạo bình luận:', error);
-        message.error("Lỗi không thể tạo bình luận");
+        message.error('Lỗi không thể tạo bình luận');
       }
     },
     async deleteComment(commentId) {
@@ -40,7 +40,7 @@ export const useCommentStore = defineStore({
       try {
         await updateComment({
           commentId: commentId,
-          Content: content,
+          Content: content
         });
         this.comments = this.comments.map((comment) => {
           if (comment.Id === commentId) {
@@ -51,6 +51,6 @@ export const useCommentStore = defineStore({
       } catch (error) {
         console.error('Lỗi khi cập nhật bình luận:', error);
       }
-    },
-  },
+    }
+  }
 });

@@ -2,10 +2,7 @@
 import { defineProps, ref, reactive, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useLoadingBar, useMessage } from 'naive-ui';
-import {
-  isCheckSaveCollection,
-  savePostInCollection
-} from '@/api/collection.api';
+import { isCheckSaveCollection, savePostInCollection } from '@/api/collection.api';
 
 const { postInfor, isNotDefault } = defineProps(['postInfor', 'isNotDefault']);
 const emit = defineEmits(['updateSavedProducts', 'deletePost', 'updatePosts']);
@@ -25,7 +22,6 @@ const handleURLImage = async (url) => {
   }
 };
 
-
 const checkSaveCollection = async () => {
   try {
     isCheckSave.value = await isCheckSaveCollection(postInfor.Id);
@@ -38,7 +34,6 @@ onBeforeMount(async () => {
   handleURLImage(postInfor.ThumbnailUrl);
   await checkSaveCollection();
 });
-
 
 const goToDetailProduct = (id) => router.push(`/detail-post/${id}`);
 

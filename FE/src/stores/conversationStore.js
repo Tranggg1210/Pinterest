@@ -7,7 +7,7 @@ import { getUserById, searchUser } from '@/api/user.api';
 export const useConversationStore = defineStore({
   id: 'conversation',
   state: () => ({
-    conversations: [],
+    conversations: []
   }),
   actions: {
     async loadConversation() {
@@ -32,7 +32,7 @@ export const useConversationStore = defineStore({
           avatarUrl: userData[index].avatarUrl,
           FirstName: userData[index].firstName,
           LastName: userData[index].lastName,
-          UserName: userData[index].userName,
+          UserName: userData[index].userName
         }));
       } catch (error) {
         console.error('Error loading user details:', error);
@@ -41,23 +41,22 @@ export const useConversationStore = defineStore({
     async handleSearchValue(inputValue) {
       try {
         const result = await searchUser(inputValue);
-        console.log(result);
-          this.conversations = result.data.users;
-          if (this.conversations.length > 0) {
+        this.conversations = result.data.users;
+        if (this.conversations.length > 0) {
           const userPromises = this.conversations.map((item) => getUserById(item.Id));
-              try {
-                  const userData = await Promise.all(userPromises);
-                  userData.forEach((data, index) => {
-                      this.conversations[index].avatarUrl = data.avatarUrl;
-                      this.conversations[index].ConnectorId = data.id;
-                  });
-              } catch (error) {
-                  console.error('Lỗi khi tải thông tin user:', error);
-              }
+          try {
+            const userData = await Promise.all(userPromises);
+            userData.forEach((data, index) => {
+              this.conversations[index].avatarUrl = data.avatarUrl;
+              this.conversations[index].ConnectorId = data.id;
+            });
+          } catch (error) {
+            console.error('Lỗi khi tải thông tin user:', error);
           }
-        } catch (error) {
-          console.error(error);
         }
+      } catch (error) {
+        console.error(error);
+      }
     },
     async createConversationById(id, inputValue) {
       try {
@@ -65,6 +64,6 @@ export const useConversationStore = defineStore({
       } catch (error) {
         console.error('Error creating conversation:', error);
       }
-    },
-  },
+    }
+  }
 });

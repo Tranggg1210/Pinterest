@@ -34,7 +34,7 @@ const userApi = () => ({
       country,
       avatarUrl
     }),
-    searchUser: async(keyword) => apiPHP.post(`${ApiConstant.user.searchUser}/${keyword}`)
+  searchUser: async (keyword) => apiPHP.post(`${ApiConstant.user.searchUser}/${keyword}`)
 });
 
 export const {

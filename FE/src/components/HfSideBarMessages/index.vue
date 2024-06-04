@@ -16,7 +16,10 @@ const goBack = () => {
 };
 
 const handleFullName = (firstName, lastName) => {
-  return `${lastName} ${firstName}`.replace(/\s+/g, ' ').trim().replace(/(^|\s)\S/g, (match) => match.toUpperCase());
+  return `${lastName} ${firstName}`
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/(^|\s)\S/g, (match) => match.toUpperCase());
 };
 
 const loadConversations = async () => {
@@ -25,7 +28,7 @@ const loadConversations = async () => {
     try {
       await conversationStore.loadConversation();
     } catch (error) {
-      message.error("Lỗi, không thể tải các cuộc hội thoại");
+      message.error('Lỗi, không thể tải các cuộc hội thoại');
     } finally {
       loading.value = false;
     }
@@ -34,14 +37,13 @@ const loadConversations = async () => {
 
 const debouncedHandleSearch = async () => {
   try {
-    if(inputValue.value)
-    {
+    if (inputValue.value) {
       loadingBar.start();
       await conversationStore.handleSearchValue(inputValue.value);
       loadingBar.finish();
       inputValue.value = '';
-    }else{
-      message.warning("Bạn chưa nhập thông tin tìm kiếm")
+    } else {
+      message.warning('Bạn chưa nhập thông tin tìm kiếm');
     }
   } catch (error) {
     message.error('Tìm kiếm thất bại');
@@ -50,7 +52,6 @@ const debouncedHandleSearch = async () => {
     loadingBar.finish();
   }
 };
-
 
 onBeforeMount(loadConversations);
 </script>
@@ -64,7 +65,12 @@ onBeforeMount(loadConversations);
       </div>
       <div class="sidebar-search">
         <div>
-          <input type="text" v-model="inputValue" placeholder="Tìm kiếm theo email" @keypress.enter="debouncedHandleSearch"/>
+          <input
+            type="text"
+            v-model="inputValue"
+            placeholder="Tìm kiếm theo email"
+            @keypress.enter="debouncedHandleSearch"
+          />
           <IconSearch size="24" @click="debouncedHandleSearch" />
         </div>
       </div>
@@ -166,7 +172,7 @@ onBeforeMount(loadConversations);
     border-radius: 50%;
     @include flex(center, center);
     margin-right: 8px;
-    .icon { 
+    .icon {
       color: #fff;
       margin: 0;
     }

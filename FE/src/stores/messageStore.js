@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 export const useMessageStore = defineStore({
   id: 'message',
   state: () => ({
-    messagesValue: [],
+    messagesValue: []
   }),
   actions: {
     async loadMessages(messages) {
@@ -14,6 +14,6 @@ export const useMessageStore = defineStore({
     },
     async clearMessages() {
       this.messagesValue = [];
-    },
-  },
+    }
+  }
 });
