@@ -1,5 +1,5 @@
 <script setup>
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, onBeforeMount } from 'vue';
   import { useCommentStore } from '@/stores/commentStore';
   import { getUserById } from '@/api/user.api';
   import { useRouter } from 'vue-router';
@@ -12,7 +12,7 @@
   const router = useRouter();
   const isCurrentUser = ref(false);
   const showModal = ref(false);
-  const commentUpdate = ref({ content: commentItem.Content });
+  const commentUpdate = ref({});
   const options = ref([
   {
     label: 'Trả lời',
@@ -56,7 +56,7 @@ const optionsNotCurrentUser = [
     }
   };
   
-  onMounted(loadUser);
+  onBeforeMount(loadUser);
   
   function getFormattedDate(dateTimeString) {
   if (!dateTimeString) {
@@ -84,6 +84,8 @@ const optionsNotCurrentUser = [
   
   const handleSelect = (key) => {
     if (key === 2) {
+      console.log(commentItem);
+      commentUpdate.value = { content: commentItem.Content }
       showModal.value = true;
     } else if (key === 3) {
       commentStore.deleteComment(commentItem.Id);

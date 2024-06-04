@@ -31,6 +31,7 @@ export const useCommentStore = defineStore({
       try {
         await deleteComment(commentId);
         this.comments = this.comments.filter((comment) => comment.Id !== commentId);
+        console.log(this.comments);
       } catch (error) {
         console.error('Lỗi khi xóa bình luận:', error);
       }
