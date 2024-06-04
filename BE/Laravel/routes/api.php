@@ -48,7 +48,7 @@ Route::group(['middleware' => 'api',], function ($router) {
     Route::post('/create-chat/{id?}', [ChatController::class,'createConversation']);
     Route::get('/get-conversation', [ChatController::class,'getConversations']);
     Route::post('/send-message', [ChatController::class,'sendMessage']);
-    Route::get('/get-message/{id}', [ChatController::class,'getConversations']);
+    Route::get('/get-message/{id}', [ChatController::class,'getAllMessage']);
     // });
 
 

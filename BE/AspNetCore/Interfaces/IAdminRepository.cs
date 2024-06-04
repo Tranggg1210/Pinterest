@@ -6,7 +6,7 @@ namespace PixelPalette.Interfaces
     {
         Task<IEnumerable<UserRoleModel>> GetAllRolesAsync();
         Task<IList<string>> EditRoleAsync(int id, List<string> roles);
-        Task<UserRoleModel> GetRoleByUserIdAsync(int id);
+        Task<UserRoleModel> GetRoleByUsernameAsync(string username);
 
 
     }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PixelPalette.Data;
 
@@ -11,9 +12,10 @@ using PixelPalette.Data;
 namespace PixelPalette.Data.Migrations
 {
     [DbContext(typeof(PixelPaletteContext))]
-    partial class PixelPaletteContextModelSnapshot : ModelSnapshot
+    [Migration("20240531081003_newDate")]
+    partial class newDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,7 +50,7 @@ namespace PixelPalette.Data.Migrations
                     b.Property<int>("AccessCountInDay")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreateAt")
+                    b.Property<DateTime>("Date")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime")
                         .HasDefaultValueSql("('0001-01-01T00:00:00.000')");

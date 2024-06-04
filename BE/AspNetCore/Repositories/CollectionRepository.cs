@@ -28,10 +28,9 @@ namespace PixelPalette.Repositories
 
         public async Task<CollectionModel> AddCollectionAsync(int userId, CollectCreateParams entryParams)
         {
-            var model = new CollectionModel();
-            _tools.Duplicate(entryParams, ref model);
-            model.UserId = userId;
-            var colection = _mapper.Map<Entities.Collection>(model);
+            var colection = new Entities.Collection();
+            _tools.Duplicate(entryParams, ref colection);
+            colection.UserId = userId;
             _context.Collections.Add(colection);
             await _context.SaveChangesAsync();
             return _mapper.Map<CollectionModel>(colection);

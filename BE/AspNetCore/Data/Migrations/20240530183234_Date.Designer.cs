@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PixelPalette.Data;
 
@@ -11,9 +12,10 @@ using PixelPalette.Data;
 namespace PixelPalette.Data.Migrations
 {
     [DbContext(typeof(PixelPaletteContext))]
-    partial class PixelPaletteContextModelSnapshot : ModelSnapshot
+    [Migration("20240530183234_Date")]
+    partial class Date
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,10 +50,8 @@ namespace PixelPalette.Data.Migrations
                     b.Property<int>("AccessCountInDay")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreateAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasDefaultValueSql("('0001-01-01T00:00:00.000')");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("NotificationCount")
                         .HasColumnType("int");
@@ -64,7 +64,7 @@ namespace PixelPalette.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Analysis", (string)null);
+                    b.ToTable("Analysises");
                 });
 
             modelBuilder.Entity("PixelPalette.Entities.Collection", b =>

@@ -16,7 +16,7 @@ namespace PixelPalette.Controllers
         private readonly IAdminRepository _repo;
         public AdminController(IAdminRepository repo)
         {
-           _repo = repo;
+            _repo = repo;
         }
 
         [HttpGet("GetAllRoles")]
@@ -33,13 +33,12 @@ namespace PixelPalette.Controllers
             }
         }
 
-        [HttpGet("GetRole/{UserId}")]
-        [Authorize(Roles = "Member")]
-        public async Task<ActionResult> GetRole(int UserId)
+        [HttpGet("GetRole/{userName}")]
+        public async Task<ActionResult> GetRole(string username)
         {
             try
             {
-                return Ok(await _repo.GetRoleByUserIdAsync(UserId));
+                return Ok(await _repo.GetRoleByUsernameAsync(username));
             }
             catch (Exception ex)
             {

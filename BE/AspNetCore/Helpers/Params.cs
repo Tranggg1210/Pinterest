@@ -35,6 +35,18 @@
         public string? Country { get; set; }
     }
 
+    public class UserPrams
+    {
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
+        public string? AvatarId { get; set; }
+        public string? AvatarUrl { get; set; }
+        public string? Introduction { get; set; }
+        public DateTime? Birthday { get; set; }
+        public bool? Gender { get; set; }
+        public string? Country { get; set; }
+    }
+
     public class CollectCreateParams
     {
         public string Name { get; set; } = null!;
@@ -46,11 +58,14 @@
         public string? Description { get; set; }
     }
 
+    public class NotificationParam
+    {
+        public string Data { get; set; } = null!;
+    }
+
     public class  Thumbnail
     {
         public string PublicId { get; set; } = null!;
         public string Url { get; set; } = null!;
     }
-
-
 }

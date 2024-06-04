@@ -1,5 +1,6 @@
 ﻿
 using AutoMapper;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PixelPalette.Data;
@@ -81,6 +82,33 @@ namespace PixelPalette.Repositories
                 _context.Users!.Update(updateProfile);
                 await _context.SaveChangesAsync();
                 return _mapper.Map<UserModel>(updateProfile);
+            }
+            return null!;
+        }
+
+        public async Task<UserModel> UpdateUserAsync(int id, UserPrams entryParams, IFormFile? file)
+        {
+            var updateUser = await _context.Users!.FindAsync(id);
+            if (updateUser != null)
+            {
+                if(file != null)
+                {
+                    var addResult = await _photoService.AddPhotoAsync(file);
+                    if (addResult.Error != null) return null!;
+
+                    if (updateUser.AvatarId != null)
+                    {
+                        var deleteResult = await _photoService.DeletePhotoAsync(updateUser.AvatarId);
+                        if (deleteResult.Error != null || deleteResult.Result == "not found") return null!;
+                    }
+                    var Url = addResult.SecureUrl.AbsoluteUri;
+                    updateUser.AvatarUrl = Url;
+                    updateUser.AvatarId = addResult.PublicId;
+                }
+                _tools.Duplicate(entryParams, ref updateUser);
+                _context.Users!.Update(updateUser);
+                await _context.SaveChangesAsync();
+                return _mapper.Map<UserModel>(updateUser);
             }
             return null!;
         }

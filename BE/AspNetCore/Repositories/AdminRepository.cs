@@ -38,10 +38,10 @@ namespace PixelPalette.Repositories
                 }
             }
 
-            var result = await _userManager.AddToRolesAsync(user, selectedRoles);
+            var result = await _userManager.RemoveFromRolesAsync(user, userRoles);
             if (!result.Succeeded) return null!;
 
-            result = await _userManager.RemoveFromRolesAsync(user, userRoles);
+            result = await _userManager.AddToRolesAsync(user, selectedRoles);
             if (!result.Succeeded) return null!;
 
             return await _userManager.GetRolesAsync(user);
@@ -62,11 +62,11 @@ namespace PixelPalette.Repositories
             return roles;
         }
 
-        public async Task<UserRoleModel> GetRoleByUserIdAsync(int id)
+        public async Task<UserRoleModel> GetRoleByUsernameAsync(string username)
         {
             var role = await _userManager.Users
                 .Include(d => d.UserRoles)
-                .FirstOrDefaultAsync(d => d.Id == id);
+                .FirstOrDefaultAsync(d => d.UserName == username);
             return role == null ? null! : new UserRoleModel
             {
                 Id = role.Id,

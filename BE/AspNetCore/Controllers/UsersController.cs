@@ -119,5 +119,20 @@ namespace PixelPalette.Controllers
                 return BadRequest(ex.Message.ToString());
             }
         }
+
+        [HttpPut("update")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<UserModel>> Update(int id, [FromForm] UserPrams entryParams, IFormFile? file)
+        {
+            try
+            {
+                var profile = await _repo.UpdateUserAsync(id, entryParams, file);
+                return profile == null ? NotFound("Not found") : Ok(profile);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
+            }
+        }
     }
 }

@@ -14,6 +14,8 @@ namespace PixelPalette.Helpers
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
             CreateMap<Post, PostModel>().ReverseMap();
             CreateMap<Collection, CollectionModel>().ReverseMap();
+            CreateMap<Analysis, AnalysisModel>();
+            CreateMap<Notification, NotificationModel>();
         }
     }
 }

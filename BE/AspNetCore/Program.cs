@@ -27,6 +27,7 @@ builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.ConfigureCors();
 builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddHostedService<StartupTask>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
@@ -34,6 +35,8 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ICollectionRepository, CollectionRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IFollowRepository, FollowRepository>();
+builder.Services.AddScoped<IAnalysisesRepository, AnalysisesRepository>();
+
 
 
 builder.Services.AddScoped<IPhotoService, PhotoService>();
@@ -74,21 +77,5 @@ app.UseAuthorization();
 app.UseCors("Policy");
 
 app.MapControllers();
-
-using var scope = app.Services.CreateScope();
-var services = scope.ServiceProvider;
-try
-{
-    var userManager = services.GetRequiredService<UserManager<User>>();
-    var roleManager = services.GetRequiredService<RoleManager<Role>>();
-    var mapper = services.GetRequiredService<IMapper>();
-    await Seed.SeedUsers(userManager, roleManager, mapper);
-}
-catch (Exception ex)
-{
-    var logger = services.GetRequiredService<ILogger<Program>>();
-    logger.LogError(ex, "An error occurred during migration");
-}
-
 
 app.Run();
