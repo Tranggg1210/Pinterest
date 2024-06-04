@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { searchPosts } from '@/api/post.api';
 import { getAllConversation, createConversation } from '@/api/chat.api';
-import { getUserById } from '@/api/user.api';
+import { getUserById, searchUser } from '@/api/user.api';
 
 export const useConversationStore = defineStore({
   id: 'conversation',
@@ -24,7 +24,7 @@ export const useConversationStore = defineStore({
     },
     async loadUserDetails() {
       try {
-        const userPromises = this.conversations.map((item) => getUserById(item.CreatorId));
+        const userPromises = this.conversations.map((item) => getUserById(item.ConnectorId));
         const userData = await Promise.all(userPromises);
 
         this.conversations = this.conversations.map((conversation, index) => ({
@@ -40,9 +40,8 @@ export const useConversationStore = defineStore({
     },
     async handleSearchValue(inputValue) {
       try {
-        const result = await searchPosts({
-            keyword: inputValue   
-        });
+        const result = await searchUser(inputValue);
+        console.log(result);
           this.conversations = result.data.users;
           if (this.conversations.length > 0) {
           const userPromises = this.conversations.map((item) => getUserById(item.Id));

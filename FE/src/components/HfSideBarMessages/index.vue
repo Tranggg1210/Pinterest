@@ -10,7 +10,7 @@ const inputValue = ref('');
 const loading = ref(false);
 const message = useMessage();
 const loadingBar = useLoadingBar();
-
+console.log(conversationStore.conversations);
 const goBack = () => {
   router.push('/');
 };
@@ -71,8 +71,8 @@ onBeforeMount(loadConversations);
       <div class="sidebar-body">
         <nav v-if="!loading">
           <ul v-if="conversationStore.conversations.length > 0">
-            <li v-for="(user, index) in conversationStore.conversations" :key="index">
-              <RouterLink :to="`/detail-message/${user.CreatorId}`" exact-active-class="active">
+            <li v-for="user in conversationStore.conversations" :key="user.Id">
+              <RouterLink :to="`/detail-message/${user.ConnectorId}`" exact-active-class="active">
                 <div class="user-avatar">
                   <img src="@/assets/images/user-avatar.png" alt="avatar" v-if="!user?.avatarUrl" />
                   <img :src="user?.avatarUrl" alt="avatar" class="user-avatar" v-else />

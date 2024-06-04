@@ -20,7 +20,6 @@ const conversationList = ref([]);
 const messagesBody = ref(null);
 const creatingMessage = ref(false);
 const user = ref({});
-
 const messageStore = useMessageStore();
 
 const loadUser = async () => {
@@ -52,9 +51,9 @@ const loadMessages = async () => {
   }
 };
 
-const debouncedLoadUserAndMessages = debounce(() => {
-  loadUser();
-  loadMessages();
+const debouncedLoadUserAndMessages = debounce(async() => {
+  await loadUser();
+  await loadMessages();
 }, 300);
 
 watch(
@@ -91,11 +90,17 @@ const handleSendMessages = async () => {
     if (idConversation.value !== -1) {
       const newMessage = {
         content: inputValue.value,
-        senderId: currentU.currentUser.id,
-        timestamp: new Date().toISOString(),
+        id: idConversation.value,
       };
-      await sendMessages(newMessage, idConversation.value);
-      messageStore.addMessage(newMessage);
+      const result = await sendMessages(newMessage);
+      const formattedMessage = {
+        Id: result.data.id_conversation,
+        ConversationId: result.data.id_conversation.toString(),
+        SenderId: result.data.sender_id.toString(),
+        RecipientId: result.data.receiver_id.toString(),
+        Content: result.data.content,
+      };
+      messageStore.addMessage(formattedMessage);
       nextTick(() => {
         if (messagesBody.value) {
           messagesBody.value.scrollTop = messagesBody.value.scrollHeight;
@@ -139,8 +144,8 @@ const handleCancelCreateConversation = async () => {
     </div>
     <div class="messages-body" ref="messagesBody">
       <div v-if="messageStore.messagesValue.length > 0">
-        <HfMessagesItem v-for="(item, index) in messageStore.messagesValue" 
-          :key="index"
+        <HfMessagesItem v-for="(item) in messageStore.messagesValue" 
+          :key="item.Id"
           :messageData="item"
           :user="user"
         />
