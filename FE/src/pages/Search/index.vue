@@ -63,7 +63,9 @@ onBeforeMount(handleSearchValue);
         <HfLoading />
       </div>
       <div v-else>
-        <div class="post-container" v-if="posts.length > 0"></div>
+        <div class="posts-container" v-if="posts.length > 0">
+          <HfPostSearch v-for="(post, index) in posts" :key="index" :postInfor="post" :isNotDefault="fasle"/>
+        </div>
         <HfNoData v-else/>
       </div>
     </div>
