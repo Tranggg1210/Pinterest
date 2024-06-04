@@ -216,6 +216,7 @@ const handleShowNotifications = async() => {
           alt="message"
           title="message"
           class="menu-logined-icon"
+          @click="() => goToPage('/messages')"
         />
         <n-dropdown
           v-if="user.loggedIn"

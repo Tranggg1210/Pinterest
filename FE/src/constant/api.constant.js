@@ -59,5 +59,11 @@ export const ApiConstant = {
     create: 'comments',
     delete: 'del-comment',
     update: 'edit-comment'
+  },
+  chat: {
+    getConversation: 'get-conversation',
+    createConversation: 'create-chat',
+    getMessageById: 'get-message',
+    sendMessages: 'send-message'
   }
 };

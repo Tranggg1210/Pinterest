@@ -25,7 +25,9 @@ const goBack = () => {
 const handleSearchValue = async () => {
   try {
     loading.value = true;
-    const result = await searchPosts(keyword.value);
+    const result = await searchPosts({
+      keyword: keyword.value
+    });
     posts.value = result.data.posts;
     loading.value = false;
   } catch (error) {
