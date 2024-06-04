@@ -20,9 +20,9 @@ const {
   handleCreateTable,
   handleSelect,
   gotoPage,
-  handleLike,
+  handleLike
 } = useDetailPost();
-const commentsStore = useCommentStore()
+const commentsStore = useCommentStore();
 </script>
 
 <template>
@@ -87,7 +87,11 @@ const commentsStore = useCommentStore()
                 <IconChevronUp class="icon-comment" size="24"></IconChevronUp>
               </div>
               <div class="comment-list" v-if="commentsStore.comments.length > 0">
-                <HfCommentUser v-for="(item,index) in commentsStore.comments" :key="index" :commentItem="item"/>
+                <HfCommentUser
+                  v-for="item in commentsStore.comments"
+                  :key="item.Id"
+                  :commentItem="item"
+                />
               </div>
             </div>
             <div class="detail-right-footer">
@@ -162,7 +166,7 @@ const commentsStore = useCommentStore()
                 </div>
               </div>
               <div class="dt-footer-bottom">
-                <HfComment :postId="post.id"/>
+                <HfComment :postId="post.id" />
               </div>
             </div>
           </div>

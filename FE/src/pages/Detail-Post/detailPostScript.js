@@ -54,19 +54,16 @@ export const useDetailPost = () => {
   };
 
   const loadTableByUserId = () => {
-    fetchData(
-      getCollectionByUserId,
-      (result) => {
-        if (result.length > 0) {
-          const data = result.filter((item) => item.isDefault === false);
-          options.value = data.map((choose) => ({ label: choose.name, key: choose.id }));
-        }
-        options.value.push({
-          label: '📌 Tạo bảng',
-          key: 'create'
-        });
-      },
-    );
+    fetchData(getCollectionByUserId, (result) => {
+      if (result.length > 0) {
+        const data = result.filter((item) => item.isDefault === false);
+        options.value = data.map((choose) => ({ label: choose.name, key: choose.id }));
+      }
+      options.value.push({
+        label: '📌 Tạo bảng',
+        key: 'create'
+      });
+    });
   };
 
   const loadPost = () => {
@@ -82,7 +79,7 @@ export const useDetailPost = () => {
           loading.value = false;
         }
       },
-      () => {},
+      () => {}
     );
   };
 
@@ -91,17 +88,14 @@ export const useDetailPost = () => {
       () => isCheckSaveCollection(router.currentRoute.value.params.id),
       (result) => {
         isCheckSave.value = result;
-      },
+      }
     );
   };
 
   const loadAllCollection = () => {
-    fetchData(
-      getAllCollection,
-      (data) => {
-        postList.value = data;
-      }
-    );
+    fetchData(getAllCollection, (data) => {
+      postList.value = data;
+    });
   };
 
   const handleURLImage = async (url) => {
@@ -114,7 +108,7 @@ export const useDetailPost = () => {
       console.error('Lỗi khi tải ảnh:', error);
     }
   };
-  
+
   const loadCheckLike = async () => {
     try {
       like.value = await checkLike(router.currentRoute.value.params.id);
@@ -123,19 +117,18 @@ export const useDetailPost = () => {
     }
   };
 
-
   onBeforeMount(async () => {
     try {
-        await loadPost();
-        await checkSaveCollection();
-        await loadAllCollection();
-        await loadTableByUserId();
-        await loadCheckLike();
-        handleURLImage(post?.value.thumbnailUrl);
-        await commentStore.loadComments(router.currentRoute.value.params.id);
+      await loadPost();
+      await checkSaveCollection();
+      await loadAllCollection();
+      await loadTableByUserId();
+      await loadCheckLike();
+      handleURLImage(post?.value.thumbnailUrl);
+      await commentStore.loadComments(router.currentRoute.value.params.id);
     } catch (error) {
-        message.error("Tải dữ liệu thất bại");
-        router.back();
+      message.error('Tải dữ liệu thất bại');
+      router.back();
     }
   });
 
@@ -244,7 +237,7 @@ export const useDetailPost = () => {
       message.error(`Lỗi không thể like bài viết`);
     }
   };
- 
+
   return {
     imageURL,
     message,
@@ -266,6 +259,6 @@ export const useDetailPost = () => {
     handleCreateTable,
     handleSelect,
     gotoPage,
-    handleLike,
+    handleLike
   };
 };

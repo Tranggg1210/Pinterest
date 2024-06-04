@@ -25,7 +25,9 @@ const goBack = () => {
 const handleSearchValue = async () => {
   try {
     loading.value = true;
-    const result = await searchPosts(keyword.value);
+    const result = await searchPosts({
+      keyword: keyword.value
+    });
     posts.value = result.data.posts;
     loading.value = false;
   } catch (error) {
@@ -35,12 +37,15 @@ const handleSearchValue = async () => {
   }
 };
 
-watch(() => route.query.q, async (newQuery) => {
-  if (newQuery) {
-    keyword.value = newQuery;
-    await handleSearchValue();
+watch(
+  () => route.query.q,
+  async (newQuery) => {
+    if (newQuery) {
+      keyword.value = newQuery;
+      await handleSearchValue();
+    }
   }
-});
+);
 
 onBeforeMount(handleSearchValue);
 </script>
@@ -52,29 +57,36 @@ onBeforeMount(handleSearchValue);
         <IconArrowLeft class="icon icon-back" />
       </div>
       <h1 class="title">
-          Kết quả tìm kiếm
-          <template v-if="keyword">
-              về <span>{{ keyword.toLowerCase() }}</span>
-          </template>
+        Kết quả tìm kiếm
+        <template v-if="keyword">
+          về <span>{{ keyword.toLowerCase() }}</span>
+        </template>
       </h1>
       <div class="container" v-if="loading">
         <HfLoading />
       </div>
       <div v-else>
-        <div class="post-container" v-if="posts.length > 0"></div>
-        <HfNoData v-else/>
+        <div class="posts-container" v-if="posts.length > 0">
+          <HfPostSearch
+            v-for="(post, index) in posts"
+            :key="index"
+            :postInfor="post"
+            :isNotDefault="fasle"
+          />
+        </div>
+        <HfNoData v-else />
       </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.title{
+.title {
   margin: 32px 0;
   font-weight: 600;
   color: #333;
   text-align: center;
-  span{
+  span {
     color: $primary-color;
     text-decoration: underline;
   }

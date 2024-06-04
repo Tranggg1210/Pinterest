@@ -68,6 +68,7 @@ const loginHandler = () => {
             if (isAdmin?.roles.includes('Member') && isAdmin.roles.length === 1) {
               if (currentUserData) {
                 currentUser.save({
+                  userId: currentUserData.id,
                   fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
                   avatar: currentUserData.avatarUrl,
                   username: currentUserData.userName,
@@ -78,6 +79,7 @@ const loginHandler = () => {
             } else if (isAdmin?.roles.includes('Admin') && isAdmin.roles.length === 2) {
               if (currentUserData) {
                 currentUser.save({
+                  userId: currentUserData.id,
                   fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
                   avatar: currentUserData.avatarUrl,
                   username: currentUserData.userName,

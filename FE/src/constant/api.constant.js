@@ -27,7 +27,8 @@ export const ApiConstant = {
     unFollowUser: 'Follow/unfollower',
     checkFollow: 'Follow/checkFollower',
     getAll: 'Users/getAll',
-    userUpdate: 'Users/update'
+    userUpdate: 'Users/update',
+    searchUser: 'search-user'
   },
   collection: {
     collectionAll: 'Posts/getAll',
@@ -59,5 +60,11 @@ export const ApiConstant = {
     create: 'comments',
     delete: 'del-comment',
     update: 'edit-comment'
+  },
+  chat: {
+    getConversation: 'get-conversation',
+    createConversation: 'create-chat',
+    getMessageById: 'get-message',
+    sendMessages: 'send-message'
   }
 };

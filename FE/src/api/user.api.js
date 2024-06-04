@@ -1,5 +1,5 @@
 import { ApiConstant } from '@/constant/api.constant';
-import { api, apiUpload } from '.';
+import { api, apiPHP, apiUpload } from '.';
 
 const userApi = () => ({
   getAllUser: async () => api.get(ApiConstant.user.getAll),
@@ -33,7 +33,8 @@ const userApi = () => ({
       gender,
       country,
       avatarUrl
-    })
+    }),
+  searchUser: async (keyword) => apiPHP.post(`${ApiConstant.user.searchUser}/${keyword}`)
 });
 
 export const {
@@ -47,5 +48,6 @@ export const {
   followerByUserId,
   unFollowerByUserId,
   checkFollowByUserId,
-  changeInforUserById
+  changeInforUserById,
+  searchUser
 } = userApi();

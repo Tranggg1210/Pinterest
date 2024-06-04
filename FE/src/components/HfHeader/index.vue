@@ -64,7 +64,7 @@ const handleSearch = () => {
     router.push({ path: '/search', query: { q: searchValue.value } });
     searchValue.value = '';
   }
-}
+};
 
 const goToPage = (key) => {
   if (key === 'logout') {
@@ -86,30 +86,29 @@ function formatDateTime(dateTimeString) {
     day: 'numeric',
     hour: 'numeric',
     minute: 'numeric',
-    hour12: false, 
+    hour12: false,
     timeZone: 'Asia/Ho_Chi_Minh'
   };
 
   return date.toLocaleString('vi-VN', options);
 }
-const handleShowNotifications = async() => {
+const handleShowNotifications = async () => {
   try {
     const result = await getNotication();
     const resultReverse = result.reverse().slice(0, 5);
-    resultReverse.forEach((noti) => notification.info(
-      {
-        title: "Thông báo",
+    resultReverse.forEach((noti) =>
+      notification.info({
+        title: 'Thông báo',
         content: noti.data,
         meta: formatDateTime(noti.createdAt),
-        duration: 10000,
-      }
-    ))
-    
+        duration: 10000
+      })
+    );
   } catch (error) {
-    message.error("Tải thông báo thất bại")
+    message.error('Tải thông báo thất bại');
     console.log(error);
   }
-}
+};
 </script>
 
 <template>
@@ -136,8 +135,13 @@ const handleShowNotifications = async() => {
         </router-link>
       </div>
       <div class="header-search" v-if="user.loggedIn">
-        <IconSearch size="20px" @click="handleSearch"/>
-        <input type="text" v-model="searchValue" placeholder="Tìm kiếm..." @keyup.enter="handleSearch" />
+        <IconSearch size="20px" @click="handleSearch" />
+        <input
+          type="text"
+          v-model="searchValue"
+          placeholder="Tìm kiếm..."
+          @keyup.enter="handleSearch"
+        />
       </div>
       <div class="btn-container" v-if="!user.loggedIn">
         <router-link class="header-link" to="/introduce" exact-active-class="active">
@@ -216,6 +220,7 @@ const handleShowNotifications = async() => {
           alt="message"
           title="message"
           class="menu-logined-icon"
+          @click="() => goToPage('/messages')"
         />
         <n-dropdown
           v-if="user.loggedIn"

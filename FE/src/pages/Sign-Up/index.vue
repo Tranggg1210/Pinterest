@@ -75,6 +75,7 @@ const registerHandler = () => {
         const currentUserData = await getCurrentUser();
         if (currentUserData) {
           currentUser.save({
+            userId: currentUserData.id,
             fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
             avatar: currentUserData.avatarUrl,
             username: currentUserData.userName,
