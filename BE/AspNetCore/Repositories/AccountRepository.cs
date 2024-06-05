@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PixelPalette.Data;
 using PixelPalette.Entities;
@@ -78,7 +79,11 @@ namespace PixelPalette.Repositories
 
             if (!result)
                 return false;
-
+            try
+            {
+                await AccessTimes();
+            }
+            catch (Exception) { }
             return result;
         }
 
@@ -92,6 +97,17 @@ namespace PixelPalette.Repositories
                 await _userManager.AddToRoleAsync(user, "Member");
             }
             return result;
+        }
+
+        public async Task AccessTimes()
+        {
+            var analysis = await _context.Analysises.FirstOrDefaultAsync(a => a.CreateAt.Year == DateTime.Today.Year && a.CreateAt.Month == DateTime.Today.Month && a.CreateAt.Day == DateTime.Today.Day);
+            if (analysis != null)
+            {
+                analysis.AccessCountInDay++;
+                _context.Analysises.Update(analysis);
+                await _context.SaveChangesAsync();
+            }
         }
         public async Task<bool> ChangePasswordAsync(string userName, ChangePasswordParams entryParams)
         {

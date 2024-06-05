@@ -10,7 +10,6 @@ namespace PixelPalette.Data
 {
     public class Seed
     {
-
         public static async Task SeedUsers(UserManager<User> userManager,
            RoleManager<Role> roleManager, IMapper mapper)
         {
@@ -19,11 +18,18 @@ namespace PixelPalette.Data
             //var userData = await System.IO.File.ReadAllTextAsync("Data/UserSeedData.json");
             //var users = JsonSerializer.Deserialize<List<User>>(userData);
             //if (users == null) return;
+            //foreach (var user in users)
+            //{
+            //    user.UserName = user.UserName.ToLower();
+            //    await userManager.CreateAsync(user, "abcxyz123$");
+            //    await userManager.AddToRoleAsync(user, "Member");
+            //}
 
             var roles = new List<Role>
             {
                 new Role{Name = "Member"},
-                new Role{Name = "Admin"}
+                new Role{Name = "Admin"},
+                new Role{ Name = "Blocker"}
             };
 
             foreach (var role in roles)
@@ -40,12 +46,6 @@ namespace PixelPalette.Data
                 Password = "abcxyz123$"
             };
 
-            //foreach (var user in users)
-            //{
-            //    user.UserName = user.UserName.ToLower();
-            //    await userManager.CreateAsync(user, "abcxyz123$");
-            //    await userManager.AddToRoleAsync(user, "Member");
-            //}
             var adminRoles = new List<string>() { "Member", "Admin" };
             var admin = mapper.Map<User>(adminSignUp);
             await userManager.CreateAsync(admin, adminSignUp.Password);

@@ -29,6 +29,7 @@ namespace PixelPalette.Data
         public virtual DbSet<Post> Posts { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
+        public virtual DbSet<Analysis> Analysises { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -296,6 +297,15 @@ namespace PixelPalette.Data
                 entity.Ignore("PhoneNumberConfirmed");
 
                 entity.Ignore("TwoFactorEnabled");
+            });
+
+            modelBuilder.Entity<Analysis>(entity =>
+            {
+                entity.ToTable("Analysis");
+
+                entity.Property(e => e.CreateAt)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("('0001-01-01T00:00:00.000')");
             });
 
             OnModelCreatingPartial(modelBuilder);

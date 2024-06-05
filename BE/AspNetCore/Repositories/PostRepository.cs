@@ -26,21 +26,33 @@ namespace PixelPalette.Repositories
         }
         public async Task<PostModel> AddPostAsync(int userId, PostCreateParams entryParams, IFormFile file)
         {
-            var model = new PostModel();
-            model.UserId = userId;
-            var addResult = await _photoService.AddPhotoAsync(file);
-            if (addResult.Error != null) return null!;
-            model.ThumbnailId = addResult.PublicId;
-            model.ThumbnailUrl = addResult.SecureUrl.AbsoluteUri;
-            _tools.Duplicate(entryParams, ref model);
-            var post = _mapper.Map<Post>(model);
-            _context.Posts.Add(post);
-            await _context.SaveChangesAsync();
+            var user = await _context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                var model = new PostModel();
+                model.UserId = userId;
+                var addResult = await _photoService.AddPhotoAsync(file);
+                if (addResult.Error != null) return null!;
+                model.ThumbnailId = addResult.PublicId;
+                model.ThumbnailUrl = addResult.SecureUrl.AbsoluteUri;
+                _tools.Duplicate(entryParams, ref model);
+                var post = _mapper.Map<Post>(model);
+                _context.Posts.Add(post);
+                string fullName = string.IsNullOrEmpty(user.FirstName + " " + user.LastName) ? "Undefine" : user.FirstName + " " + user.LastName;
+                var noticate = new Notification
+                {
+                    UserId = userId,
+                    Data = $"New! {fullName} đã chia sẻ bài đăng có tiêu đề {post.Caption}"
+                };
+                await _context.Notifications.AddAsync(noticate);
+                await _context.SaveChangesAsync();
 
-            if (entryParams.CollectionId != null)
-                await OwnershipAsync(userId, post.Id, entryParams.CollectionId);
+                if (entryParams.CollectionId != null)
+                    await OwnershipAsync(userId, post.Id, entryParams.CollectionId);
 
-            return _mapper.Map<PostModel>(post);
+                return _mapper.Map<PostModel>(post);
+            }
+            return null!;
         }
 
         public async Task<bool> OwnershipAsync(int userId, int postId, int? collectionId)
@@ -232,6 +244,13 @@ namespace PixelPalette.Repositories
                     await _context.LikePosts.AddAsync(likePost);
                     post!.Like++;
                     _context.Posts.Update(post);
+                    string fullName = string.IsNullOrEmpty(user.FirstName + " " + user.LastName) ? "Undefine" : user.FirstName + " " + user.LastName;
+                    var noticate = new Notification
+                    {
+                        UserId = userId,
+                        Data = $"Hot! {fullName} Đã thích bài đăng {post.Caption}"
+                    };
+                    await _context.Notifications.AddAsync(noticate);
                     await _context.SaveChangesAsync();
                     return true;
                 }
