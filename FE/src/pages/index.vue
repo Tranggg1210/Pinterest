@@ -1,27 +1,51 @@
 <script setup>
-import axios from 'axios';
 import { onBeforeMount } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import HfFeature from '@/components/HfFeature/HfFeature.vue';
+import { getAllPost } from '@/api/post.api';
 const posts = ref([]);
-const loadPosts = async() => {
+const user = useAuthStore();
+const message = useMessage();
+const loading = ref(true);
+
+const loadPosts = async () => {
+  loading.value = true;
   try {
-    const {data} = await axios.get('https://picsum.photos/v2/list?page=2&limit=100');
-    posts.value = data;
+    const result = await getAllPost();
+    posts.value = result;
+    loading.value = false;
   } catch (err) {
+    loading.value = false;
     console.log(err);
-    if (!!err.response) {
-      message.error(err.response.data.message);
-    } else {
-      message.error(err.message);
-    }
+    message.error('Tải danh sách bài viết không thành công');
   }
-}
-onBeforeMount(loadPosts);
+};
+onBeforeMount(() => {
+  if (user.loggedIn) {
+    loadPosts();
+  }
+});
+const goToDetailProduct = (id) => {
+  router.push(`/detail-post/${id}`);
+};
 </script>
 <template>
-  <div class="container">
-    <div class="wide posts-container" >
-      <HfPost  v-for="post in posts" :key="post.id" :postInfor="post"/>
+  <div v-if="user.loggedIn">
+    <HfLoading v-if="loading" />
+    <div v-else class="container">
+      <div class="wide posts-container" v-if="posts.length > 0">
+        <HfPost v-for="post in posts" :key="post.id" :postInfor="post" :isEdit="false" />
+      </div>
+      <div v-else>
+        <HfNoData />
+      </div>
     </div>
+  </div>
+  <div v-else>
+    <HfBanner />
+    <HfFeature />
+    <HfShowCase />
+    <HfFooter />
   </div>
 </template>
 

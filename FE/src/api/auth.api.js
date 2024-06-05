@@ -1,16 +1,19 @@
-import { apiDefault } from './index';
+import { apiDefault, apiDefaultPHP } from './index';
 import { ApiConstant } from '@/constant/api.constant';
 
 const authApi = () => ({
-  login: async({email, passowrd}) => apiDefault.post(ApiConstant.auth.login, {email, passowrd}),
-  register: async ({ email, password, birthday }) => {
+  login: async ({ userName, password }) =>
+    apiDefault.post(ApiConstant.auth.login, { userName, password }),
+  register: async ({ firstName, lastName, email, password }) => {
     return apiDefault.post(ApiConstant.auth.register, {
+      firstName,
+      lastName,
       email,
-      password,
-      repeatPassword,
-      birthday
+      password
     });
-  }
+  },
+  forgotPassword: async ({ email }) =>
+    apiDefaultPHP.post(ApiConstant.auth.forgotPassword, { email })
 });
 
-export const { login,register } = authApi();
+export const { login, register, forgotPassword } = authApi();

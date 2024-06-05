@@ -1,16 +1,20 @@
 <script setup>
 import { computed, reactive } from 'vue';
 import { RouterLink } from 'vue-router';
-import {login} from '../../api/auth.api';
+import { login } from '../../api/auth.api';
 import { validateEmail, validatePassword } from '@/utils/validator';
-import axios from 'axios';
 import { useAuthStore } from '@/stores/auth';
 import { useRoute } from 'vue-router';
+import { getCurrentUser } from '@/api/user.api';
+import { checkAdmin } from '@/api/admin.api';
+import { useCurrentUserStore } from '@/stores/currentUser';
 
 const message = useMessage();
 const authStore = useAuthStore();
+const loadingBar = useLoadingBar();
 const router = useRouter();
 const route = useRoute();
+const currentUser = useCurrentUserStore();
 const account = reactive({
   email: null,
   password: null
@@ -28,28 +32,70 @@ const rules = {
     trigger: 'blur'
   }
 };
-const showForgotPassword = computed(() => {
-  if(!account.password) return true;
-  else{
-    return true;
-  }
-});
+const handleFullName = (firstName, lastName) => {
+  const fullName = `${lastName} ${firstName} `;
+  const formattedFullName = fullName
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/(^|\s)\S/g, (match) => match.toUpperCase());
+
+  return formattedFullName;
+};
 const loginHandler = () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       try {
-        const { data } = await axios.post("https://api.escuelajs.co/api/v1/auth/login",account);
-        authStore.save({
-          ...data
-        });
-        message.success('Đăng nhập thành công. Xin chào ' + account.email);
-        router.push(route.query.redirect || '/');
-      } catch (err) {
-        if (!!err.response) {
-          message.error(err.response.data.message);
-        } else {
-          message.error(err.message);
+        loadingBar.start();
+        const user = {
+          userName: account.email,
+          password: account.password
+        };
+        const { data } = await login(user);
+        if (data) {
+          const isAdmin = await checkAdmin(account.email);
+          if (isAdmin?.roles.includes('Blocker')) {
+            message.warning('Tài khoản đã bị khóa, vui lòng liên hệ đội kỹ thuật');
+            authStore.clear();
+            currentUser.clear();
+            router.push('/contact');
+            loadingBar.finish();
+            return;
+          } else {
+            authStore.save({
+              ...data
+            });
+            const currentUserData = await getCurrentUser();
+            if (isAdmin?.roles.includes('Member') && isAdmin.roles.length === 1) {
+              if (currentUserData) {
+                currentUser.save({
+                  userId: currentUserData.id,
+                  fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
+                  avatar: currentUserData.avatarUrl,
+                  username: currentUserData.userName,
+                  isAdmin: false
+                });
+                router.push(route.query.redirect || '/');
+              }
+            } else if (isAdmin?.roles.includes('Admin') && isAdmin.roles.length === 2) {
+              if (currentUserData) {
+                currentUser.save({
+                  userId: currentUserData.id,
+                  fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
+                  avatar: currentUserData.avatarUrl,
+                  username: currentUserData.userName,
+                  isAdmin: true
+                });
+              }
+              router.push(route.query.redirect || '/admin');
+            }
+            message.success('Đăng nhập thành công. Xin chào ' + account.email);
+          }
+          loadingBar.finish();
         }
+      } catch (err) {
+        loadingBar.error();
+        console.log(err);
+        message.error('Lỗi đăng nhập, kiểm tra mật khẩu');
       }
     }
   });
@@ -62,17 +108,16 @@ const loginHandler = () => {
       <IconBrandPinterest size="36" style="color: red" />
     </div>
     <div class="login__title">
-      <p class="login__title-heading">Chào mừng bạn đến với Pinterest</p>
+      <p class="login__title-heading">Chào mừng bạn đến với PixelPalette</p>
     </div>
     <n-form class="login__wrapper" ref="formRef" :model="account" :rules="rules" size="large">
       <n-form-item path="email" label="Email">
-        <n-input
-          v-model:value="account.email"
-          placeholder="Email"
-          class="form-input"
-        />
+        <n-input v-model:value="account.email" placeholder="Email" class="form-input" />
       </n-form-item>
-      <n-form-item path="password" label="Mật khẩu" style="margin-top: 4px;">
+      <n-form-item path="password" label="Mật khẩu" style="margin-top: 4px" class="password-label">
+        <div class="login__wrapper-forgotpass">
+          <RouterLink to="/forgot-password">Quên mật khẩu?</RouterLink>
+        </div>
         <n-input
           v-model:value="account.password"
           placeholder="Mật khẩu"
@@ -81,17 +126,16 @@ const loginHandler = () => {
           class="form-input"
         />
       </n-form-item>
-      <div class="login__wrapper-forgotpass" v-if="showForgotPassword">
-        <RouterLink to="/forgot-password">Quên mật khẩu?</RouterLink>
-      </div>
       <n-form-item>
-        <button type="submit" class="login__wrapper-button button-login" @click="loginHandler">Đăng nhập</button>
+        <button type="submit" class="login__wrapper-button button-login" @click="loginHandler">
+          Đăng nhập
+        </button>
       </n-form-item>
       <div class="login__wrapper-infor">
         <p>
           Bằng cách tiếp tục, bạn đồng ý với <br />
-          <a href="#" class="login__strong-infor">Điều khoản dịch vụ</a> của Pinterest và xác nhận
-          rằng <br />
+          <a href="#" class="login__strong-infor">Điều khoản dịch vụ</a> của PixelPalette và xác
+          nhận rằng <br />
           bạn đã đọc <a href="#" class="login__strong-infor">Chính sách quyền riêng tư</a> của chúng
           tôi. <br />
           <a href="#" class="login__strong-infor">Thông báo khi thu thập.</a>
@@ -115,31 +159,51 @@ button {
   border: none;
 }
 
+.login__logo {
+  @include mobile {
+    display: none;
+  }
+  @include small-tablet {
+    display: none;
+  }
+}
+.password-label {
+  position: relative !important;
+}
 .login {
-  width: 484px;
+  width: 40%;
   background: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px 10px 24px 10px;
-  border-radius: 35px;
   margin: 0 auto;
 
-  &__wrapper {
-    width: 268px;
+  @include mobile {
+    width: 80%;
+    padding-top: 0;
   }
-
-  &__title {
-    width: 400px;
-    height: 80px;
-    margin-bottom: 60px;
+  @include small-tablet {
+    width: 60%;
+    padding-top: 0;
   }
 
   &__title-heading {
+    width: 60%;
     font-size: 32px;
     color: #333333;
     text-align: center;
     font-weight: 600;
+    margin: 16px auto 36px;
+    @include mobile {
+      width: 100%;
+    }
+    @include small-tablet {
+      width: 100%;
+    }
+    @include tablet {
+      width: 100%;
+    }
   }
 
   &__wrapper-forgotpass {
@@ -148,6 +212,10 @@ button {
     font-weight: 450;
     margin: -23px 6px 12px;
     text-align: right;
+    position: absolute;
+    bottom: 49px;
+    left: 61%;
+    text-wrap: nowrap;
     a:hover {
       color: #e60023;
     }

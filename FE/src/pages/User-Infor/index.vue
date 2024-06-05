@@ -1,32 +1,38 @@
 <script setup>
 import { onBeforeMount, reactive } from 'vue';
-import { validateFullName, validateDOB, validatePassword } from '@/utils/validator';
-import router from '@/router';
-import { useAuthStore } from '@/stores/auth';
+import {
+  validateDOB,
+  validateFirstName,
+  validateLastName,
+  validatePassword
+} from '@/utils/validator';
+import { changeAvatar, changeInforUser, changePassword, getCurrentUser } from '@/api/user.api';
+import { useCurrentUserStore } from '@/stores/currentUser';
 
 const message = useMessage();
-const auth = useAuthStore();
 const loadingBar = useLoadingBar();
 const disabledRef = ref(true);
-const dialog = useDialog();
 const userForm = ref({});
-const user = ref({});
-const account = reactive({
-  username: '',
-  oldPassword: '',
-  password: '',
-  repeatPassword: ''
-});
-
 const formRef = ref(null);
 const formRefAccount = ref(null);
+const user = useCurrentUserStore();
+const account = reactive({
+  oldPassword: '',
+  newPassword: '',
+  comfirmPassword: ''
+});
 const rules = {
-  fullName: {
+  firstName: {
     required: true,
-    validator: validateFullName,
+    validator: validateFirstName,
     trigger: 'blur'
   },
-  dob: {
+  lastName: {
+    required: true,
+    validator: validateLastName,
+    trigger: 'blur'
+  },
+  birthday: {
     required: true,
     validator: validateDOB,
     trigger: ['input', 'blur']
@@ -38,15 +44,15 @@ const rulesAccount = {
     validator: validatePassword,
     trigger: 'blur'
   },
-  password: {
+  newPassword: {
     required: true,
     validator: validatePassword,
     trigger: 'blur'
   },
-  repeatPassword: {
+  comfirmPassword: {
     required: true,
-    validator: (_, repeatPassword) => {
-      if (repeatPassword !== account.password) {
+    validator: (_, comfirmPassword) => {
+      if (comfirmPassword !== account.newPassword) {
         return new Error('Mật khẩu không giống với mật khẩu đã nhập lại!');
       }
       return true;
@@ -54,27 +60,92 @@ const rulesAccount = {
     trigger: ['blur', 'password-input']
   }
 };
+
+const handleFullName = (firstName, lastName) => {
+  const fullName = `${lastName} ${firstName} `;
+  const formattedFullName = fullName
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/(^|\s)\S/g, (match) => match.toUpperCase());
+
+  return formattedFullName;
+};
+
+const loadUser = async () => {
+  try {
+    const result = await getCurrentUser();
+    userForm.value = result;
+    userForm.value.birthday = new Date(userForm.value.birthday).getTime();
+    userForm.value.gender = userForm.value.gender ? 'Male'.toString() : 'Female';
+    user.save({
+      fullname: handleFullName(result.firstName, result.lastName),
+      avatar: result.avatarUrl,
+      username: result.userName
+    });
+  } catch (err) {
+    console.log(err);
+    message.error('Lấy thông tin người dùng thất bại');
+  }
+};
+
+onBeforeMount(loadUser);
+
+const beforeUpload = async (data) => {
+  try {
+    loadingBar.start();
+    disabledRef.value = false;
+    if (
+      data.file.file?.type === 'image/png' ||
+      data.file.file?.type === 'image/jpg' ||
+      data.file.file?.type === 'image/jpeg' ||
+      data.file.file?.type === 'image/gif'
+    ) {
+      await changeAvatar(data.file);
+      loadingBar.finish();
+      disabledRef.value = true;
+      await loadUser();
+      return true;
+    }
+    message.error('Vui lòng nhập đúng định dạng ảnh');
+    return false;
+  } catch (err) {
+    console.log(err);
+    message.error('Cập nhập ảnh người dùng không thành công!');
+  } finally {
+    loadingBar.finish();
+    disabledRef.value = true;
+  }
+};
+
 const handleUpdateUserInformation = async () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       try {
         loadingBar.start();
         disabledRef.value = false;
-        let day = new Date(userForm.value.dob).getDate();
-        let month = new Date(userForm.value.dob).getMonth() + 1;
-        let year = new Date(userForm.value.dob).getFullYear();
-        console.log(userForm.value.dob);
+        let day = new Date(userForm.value.birthday).getDate();
+        let month = new Date(userForm.value.birthday).getMonth() + 1;
+        let year = new Date(userForm.value.birthday).getFullYear();
         let dobUser = year + '-' + month + '-' + day;
+        const newUser = {
+          firstName: userForm.value.firstName,
+          lastName: userForm.value.lastName,
+          introduction: userForm.value.introduction,
+          birthday: dobUser,
+          gender: userForm.value.gender === 'Male' ? true : false,
+          country: userForm.value.country
+        };
+        await changeInforUser(newUser);
         loadingBar.finish();
         disabledRef.value = true;
         message.success('Cập nhập thông tin thành công!');
+        await loadUser();
       } catch (err) {
         console.log(err);
-        if (!!err.response) {
-          message.error(err.response.data.message);
-        } else {
-          message.error(err.message);
-        }
+        message.error('Cập nhập thông tin người dùng thất bại!');
+      } finally {
+        loadingBar.finish();
+        disabledRef.value = true;
       }
     }
   });
@@ -85,57 +156,19 @@ const handleChangePassword = async () => {
       try {
         loadingBar.start();
         disabledRef.value = false;
+        await changePassword(account);
+        loadingBar.finish();
+        disabledRef.value = true;
+        message.success('Thay đổi mật khẩu thành công!');
       } catch (err) {
         console.log(err);
-        if (!!err.response) {
-          message.error(err.response.data.message);
-        } else {
-          message.error(err.message);
-        }
+        message.error('Thay đổi mật khẩu không thành công, vui lòng kiểm tra mật khẩu cũ!');
+      } finally {
+        loadingBar.finish();
+        disabledRef.value = true;
       }
     }
   });
-};
-const handleDeleteAccount = async () => {
-  try {
-    dialog.warning({
-      title: 'Xóa tài khoản',
-      content: 'Bạn có chắc chắn muốn xóa tài khoản này?',
-      positiveText: 'Đồng ý',
-      negativeText: 'Hủy',
-      onNegativeClick: async () => {
-        loadingBar.start();
-        disabledRef.value = false;
-        loadingBar.finish();
-        disabledRef.value = false;
-        message.success('Xóa tài khoản thành công!');
-        auth.clear();
-        router.push('/');
-      },
-      onNegativeClick: () => {}
-    });
-  } catch (err) {
-    console.log(err);
-    if (!!err.response) {
-      message.error(err.response.data.message);
-    } else {
-      message.error(err.message);
-    }
-  }
-};
-
-const scrollBehavior = (to, from, savedPosition) => {
-  if (to.hash) {
-    return {
-      el: to.hash,
-      top: 100,
-      behavior: 'smooth'
-    };
-  }
-};
-router.options.scrollBehavior = scrollBehavior;
-const scrollToTarget = (hash) => {
-  router.push({ hash: `#${hash}` });
 };
 </script>
 <template>
@@ -145,29 +178,25 @@ const scrollToTarget = (hash) => {
       <div class="infor">
         <div class="infor-basic">
           <div class="avatar">
-            <img src="https://cdn-icons-png.flaticon.com/512/9131/9131529.png" alt="avatar" />
+            <img
+              :src="
+                user.currentUser.avatar
+                  ? user.currentUser.avatar
+                  : 'https://cdn-icons-png.flaticon.com/512/9131/9131529.png'
+              "
+              alt="avatar"
+            />
           </div>
           <div class="user-bio">
             <h2>
-              {{ user.fullName ? user.fullName : 'Không xác định' }}
+              {{ user.currentUser.fullname ? user.currentUser.fullname : 'Không xác định' }}
             </h2>
             <p>
-              <IconPhone />
+              <IconMail />
               <span>
-                {{ user.phoneNumber ? user.phoneNumber : 'Không xác định' }}
+                {{ user.currentUser.username ? user.currentUser.username : 'Không xác định' }}
               </span>
             </p>
-            <div class="infor-active">
-              <n-button type="info" @click="() => scrollToTarget('user-profile')">
-                Thông tin chi tiết
-              </n-button>
-              <n-button type="success" @click="() => scrollToTarget('user-account')">
-                Thông tin tài khoản
-              </n-button>
-              <n-button type="error" @click="() => scrollToTarget('user-delete')">
-                Xóa tài khoản
-              </n-button>
-            </div>
           </div>
         </div>
         <div class="infor-detail">
@@ -176,27 +205,43 @@ const scrollToTarget = (hash) => {
             <hr />
             <br />
             <n-form :label-width="80" :model="userForm" :rules="rules" ref="formRef" size="large">
-              <n-form-item label="Họ tên:" path="fullName" style="margin-bottom: 8px">
-                <n-input v-model:value="userForm.fullName" placeholder="" type="text" class="form-input" />
+              <n-form-item label="Họ đệm:" path="lastName" style="margin-bottom: 8px">
+                <n-input
+                  v-model:value="userForm.lastName"
+                  placeholder=""
+                  type="text"
+                  class="form-input"
+                />
               </n-form-item>
-              <n-form-item label="Ngày sinh:" path="dob" style="margin-bottom: 8px">
+              <n-form-item label="Tên:" path="firstName" style="margin-bottom: 8px">
+                <n-input
+                  v-model:value="userForm.firstName"
+                  placeholder=""
+                  type="text"
+                  class="form-input"
+                />
+              </n-form-item>
+              <n-form-item label="Ngày sinh:" path="birthday" style="margin-bottom: 8px">
                 <n-date-picker
                   style="width: 100%"
-                  v-model:value="userForm.dob"
+                  v-model:value="userForm.birthday"
                   placeholder="2003-10-27"
                   type="date"
                   class="form-input"
                 />
               </n-form-item>
-              <n-form-item label="Giới tính" path="userForm.gender">
-                <n-checkbox-group v-model:value="userForm.gender">
-                  <n-space>
-                    <n-radio value="Male" class="form-radio"> Nam </n-radio>
-                    <n-radio value="Female" class="form-radio"> Nữ </n-radio>
-                  </n-space>
-                </n-checkbox-group>
+              <n-form-item label="Giới tính:" path="gender">
+                <n-radio-group v-model:value="userForm.gender" name="gender">
+                  <n-radio value="Male"> Nam </n-radio>
+                  <n-radio value="Female"> Nữ </n-radio>
+                </n-radio-group>
               </n-form-item>
-              <n-form-item label="Giới thiệu" path="introduction" style="margin-bottom: 8px">
+              <n-form-item label="Ảnh đại diện:" path="avatarUrl">
+                <n-upload @before-upload="beforeUpload">
+                  <n-button>Upload ảnh</n-button>
+                </n-upload>
+              </n-form-item>
+              <n-form-item label="Giới thiệu:" path="introduction" style="margin-bottom: 8px">
                 <n-input
                   v-model:value="userForm.introduction"
                   placeholder=""
@@ -205,9 +250,9 @@ const scrollToTarget = (hash) => {
                   :autosize="{ minRows: 1, maxRows: 3 }"
                 />
               </n-form-item>
-              <n-form-item label="Địa chỉ" path="address">
+              <n-form-item label="Địa chỉ:" path="country">
                 <n-input
-                  :value="userForm.address"
+                  v-model:value="userForm.country"
                   type="textarea"
                   placeholder=""
                   class="form-input"
@@ -232,8 +277,14 @@ const scrollToTarget = (hash) => {
               ref="formRefAccount"
               size="large"
             >
-              <n-form-item label="Tên đăng nhập:" path="username" style="margin-bottom: 8px">
-                <n-input readonly v-model:value="account.username" placeholder="" type="text" class="form-input" />
+              <n-form-item label="Tên đăng nhập:" path="userName" style="margin-bottom: 8px">
+                <n-input
+                  disabled
+                  v-model:value="userForm.email"
+                  placeholder=""
+                  type="text"
+                  class="form-input"
+                />
               </n-form-item>
               <n-form-item label="Mật khẩu cũ:" path="oldPassword" style="margin-bottom: 8px">
                 <n-input
@@ -243,24 +294,31 @@ const scrollToTarget = (hash) => {
                   class="form-input"
                 />
               </n-form-item>
-              <n-form-item label="Mật khẩu mới:" path="password" style="margin-bottom: 8px">
-                <n-input v-model:value="account.password" placeholder="" type="text" class="form-input"/>
+              <n-form-item label="Mật khẩu mới:" path="newPassword" style="margin-bottom: 8px">
+                <n-input
+                  v-model:value="account.newPassword"
+                  placeholder=""
+                  type="text"
+                  class="form-input"
+                />
               </n-form-item>
               <n-form-item
                 label="Nhập lại mật khẩu mới:"
-                path="repeatPassword"
+                path="comfirmPassword"
                 style="margin-bottom: 8px"
               >
-                <n-input v-model:value="account.repeatPassword" placeholder="" type="text" class="form-input"/>
+                <n-input
+                  v-model:value="account.comfirmPassword"
+                  placeholder=""
+                  type="text"
+                  class="form-input"
+                />
               </n-form-item>
               <n-form-item style="display: flex; justify-content: center; margin-top: 12px">
                 <HfButton @click="handleChangePassword">Thay đổi mật khẩu</HfButton>
               </n-form-item>
             </n-form>
           </div>
-          <HfButton id="user-delete" @click="handleDeleteAccount" class="btn-delete"
-            >Xóa tài khoản</HfButton
-          >
         </div>
       </div>
     </div>
@@ -273,5 +331,5 @@ const scrollToTarget = (hash) => {
 name: UserInfor
 meta:
   layout: default
-  <!-- requiresAuth: true -->
+  requiresAuth: true
 </route>

@@ -4,7 +4,7 @@ import * as yup from 'yup';
 
 const schema = yup.object({
   email: yup.string().email().required(),
-  password: yup.string().min(6).required(),
+  password: yup.string().min(6).required()
 });
 
 function onSubmit(values) {

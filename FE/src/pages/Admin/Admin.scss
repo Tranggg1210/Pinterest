@@ -1,0 +1,72 @@
+.home-banner {
+  height: 44vh;
+  background-image: linear-gradient(to bottom right, #b2b6ff, #7bd5f5);
+  padding: 80px 0;
+  @include mobile {
+    height: 52vh;
+  }
+}
+.basic-user {
+  @include flex(center, center);
+  flex-direction: column;
+  align-items: center;
+  .user-background {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 4px solid #fff;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s linear;
+    > img {
+      width: 100% !important;
+    }
+    &:hover {
+      scale: 0.9;
+    }
+    @include mobile {
+      width: 88px;
+      height: 88px;
+    }
+  }
+  .user-name {
+    margin: 16px 0 0;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 20px;
+    @include mobile {
+      font-size: 24px;
+    }
+  }
+}
+.card-quality {
+  @include flex(center, center);
+  margin: 40px 0;
+  > div {
+    width: 80%;
+    @include flex(center, center);
+    flex-wrap: wrap;
+    gap: 20px;
+    @include tablet {
+      width: 90%;
+    }
+  }
+}
+.collection-item-1 {
+  background-color: #18975f;
+}
+.collection-item-2 {
+  background-color: #c31162;
+}
+.collection-item-3 {
+  background-color: #ffba00;
+}
+.collection-item-4 {
+  background-color: #cc3433;
+}
+.collection-item-5 {
+  background-color: #0095db;
+}
+.collection-item-6 {
+  background-color: #814235;
+}

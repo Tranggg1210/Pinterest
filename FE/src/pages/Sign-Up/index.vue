@@ -1,20 +1,43 @@
 <script setup>
 import { ref, reactive } from 'vue';
-import { register } from '@/api/auth.api';
+import { login, register } from '@/api/auth.api';
 import { useAuthStore } from '@/stores/auth';
-import { validateEmail, validatePassword } from '@/utils/validator';
+import {
+  validateLastName,
+  validateFirstName,
+  validateEmail,
+  validatePassword
+} from '@/utils/validator';
+import { useRoute, useRouter } from 'vue-router';
+import { getCurrentUser } from '@/api/user.api';
+import { useCurrentUserStore } from '@/stores/currentUser';
+import { useLoadingBar } from 'naive-ui';
 
 const message = useMessage();
-const loading = ref(false);
-const formValue = reactive({
+const authStore = useAuthStore();
+const loadingBar = useLoadingBar();
+const router = useRouter();
+const route = useRoute();
+const currentUser = useCurrentUserStore();
+const account = reactive({
+  firstName: '',
+  lastName: '',
   email: '',
-  password: '',
-  birthday: '',
-  repeatPassword: ''
+  password: ''
 });
 
 const formRef = ref(null);
 const rules = {
+  firstName: {
+    required: true,
+    validator: validateFirstName,
+    trigger: 'blur'
+  },
+  lastName: {
+    required: true,
+    validator: validateLastName,
+    trigger: 'blur'
+  },
   email: {
     required: true,
     validator: validateEmail,
@@ -24,20 +47,51 @@ const rules = {
     required: true,
     validator: validatePassword,
     trigger: 'blur'
-  },
-  repeatPassword: {
-    required: true,
-    validator: (_, repeatPassword) => {
-      if (repeatPassword !== formValue.password) {
-        return new Error('Mật khẩu không giống với mật khẩu đã nhập lại!');
-      }
-      return true;
-    },
-    trigger: ['blur', 'password-input']
   }
 };
+const handleFullName = (firstName, lastName) => {
+  const fullName = `${lastName} ${firstName} `;
+  const formattedFullName = fullName
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/(^|\s)\S/g, (match) => match.toUpperCase());
 
-const registerHandler = () => {};
+  return formattedFullName;
+};
+const registerHandler = () => {
+  formRef.value?.validate(async (errors) => {
+    if (!errors) {
+      try {
+        loadingBar.start();
+        await register(account);
+        const user = {
+          userName: account.email,
+          password: account.password
+        };
+        const result = await login(user);
+        authStore.save({
+          ...result.data
+        });
+        const currentUserData = await getCurrentUser();
+        if (currentUserData) {
+          currentUser.save({
+            userId: currentUserData.id,
+            fullname: handleFullName(currentUserData.firstName, currentUserData.lastName),
+            avatar: currentUserData.avatarUrl,
+            username: currentUserData.userName,
+            isAdmin: false
+          });
+        }
+        loadingBar.finish();
+        message.success('Đăng nhập thành công. Xin chào ' + account.email);
+        router.push(route.query.redirect || '/');
+      } catch (err) {
+        loadingBar.error();
+        message.error('Đăng ký không thành công');
+      }
+    }
+  });
+};
 </script>
 <template>
   <div class="sign-up">
@@ -45,43 +99,34 @@ const registerHandler = () => {};
       <IconBrandPinterest size="40" class="logo" />
       <h1 class="signup-title">Chào mừng bạn đến với</h1>
       <h1 class="signup-title">PixelPalette</h1>
-      <p>Tìm những ý tưởng mới để thử</p>
-
-      <form action="" class="form" :model="formValue" :rules="rules" ref="formRef">
-        <div class="form-item">
-          <label for="email">Email</label>
-          <input type="email" v-model="formValue.email" placeholder="Email" />
-        </div>
-        <div class="form-item">
-          <label for="password">Mật khẩu</label>
-          <input type="password" v-model="formValue.password" placeholder="Tạo mật khẩu" />
-        </div>
-        <div class="form-item">
-          <label for="password">Mật khẩu vừa nhập</label>
-          <input
+      <br /><br />
+      <n-form class="login__wrapper" ref="formRef" :model="account" :rules="rules" size="large">
+        <n-form-item path="firstName" label="Tên">
+          <n-input v-model:value="account.firstName" placeholder="Tên" class="form-input" />
+        </n-form-item>
+        <n-form-item path="lastName" label="Họ">
+          <n-input v-model:value="account.lastName" placeholder="Họ" class="form-input" />
+        </n-form-item>
+        <n-form-item path="email" label="Email">
+          <n-input v-model:value="account.email" placeholder="Email" class="form-input" />
+        </n-form-item>
+        <n-form-item path="password" label="Mật khẩu" style="margin-top: 4px">
+          <n-input
+            v-model:value="account.password"
+            placeholder="Mật khẩu"
             type="password"
-            v-model="formValue.repeatPassword"
-            placeholder="Xác nhận mật khẩu"
+            show-password-on="click"
+            class="form-input"
           />
-        </div>
-        <div class="form-item">
-          <label for="date">Ngày sinh</label>
-          <input type="date" v-model="formValue.birthday" />
-        </div>
-        <button
-          type="submit"
-          class="btn-submit pointer"
-          :loading="loading"
-          @click="registerHandler"
-        >
-          Tiếp tục
-        </button>
-      </form>
-
+        </n-form-item>
+        <n-form-item>
+          <button type="submit" class="btn-submit" @click="registerHandler">Đăng ký</button>
+        </n-form-item>
+      </n-form>
       <div class="note">
         <p>Bằng cách tiếp tục, bạn đồng ý với</p>
         <p>
-          <span>Điều khoản dịch vụ</span> của Pinterest và xác nhận rằng bạn đã đọc
+          <span>Điều khoản dịch vụ</span> của PixelPalette và xác nhận rằng bạn đã đọc
           <span>Chính sách quyền riêng tư </span>của chúng tôi.
         </p>
         <p class="pointer"><span>Thông báo khi thu thập</span></p>
@@ -95,22 +140,25 @@ const registerHandler = () => {};
 
 <style lang="scss" scoped>
 .container {
-  width: 500px;
+  width: 40%;
   border-radius: 25px;
   margin: 10px auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   color: #111111;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%);
+  @include mobile {
+    width: 80% !important;
+  }
+  @include small-tablet {
+    width: 60% !important;
+  }
 }
 
 .signup-title {
   line-height: 1.5;
   font-weight: 500;
+  text-align: center;
 }
 .sign-up {
   height: 100%;
@@ -122,9 +170,6 @@ const registerHandler = () => {};
   color: red;
   margin-top: 25px;
   margin-bottom: 10px;
-}
-form {
-  width: 300px;
 }
 .note {
   width: 300px;
@@ -139,26 +184,26 @@ form {
     margin: 30px 0px 40px;
   }
   margin-top: 20px;
+  @include mobile {
+    width: 90%;
+  }
 }
 
 .pointer {
   cursor: pointer;
 }
-.form-item {
-  display: flex;
-  flex-direction: column;
 
-  input {
-    border-radius: 15px;
-    border: 1px solid #ccc;
-    outline: none;
-    padding: 13px 15px;
-    margin-bottom: 10px;
-    margin-top: 5px;
-
-    &:hover {
-      box-shadow: 1px 1px 10px rgb(198, 253, 198);
-    }
+.form-input {
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  outline: none;
+  padding: 5px;
+  position: relative;
+  margin-bottom: 2px;
+  width: 100%;
+  min-width: 280px;
+  @include mobile {
+    min-width: unset;
   }
 }
 
@@ -173,6 +218,7 @@ form {
   font-size: 16px;
   padding: 13px 0px;
   margin-top: 10px;
+  cursor: pointer;
   &:hover {
     opacity: 0.7;
     border: 0;
@@ -182,6 +228,7 @@ form {
 
 span {
   color: #333333;
+  width: 80;
 }
 </style>
 <route lang="yaml">

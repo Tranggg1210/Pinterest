@@ -1,40 +1,116 @@
-.posts{
+.handle-posts {
+  margin-top: 40px;
+  @include flex(center, start);
+  background-color: #fff;
+  padding: 0 24px;
+  @include mobile {
     margin-top: 20px;
-}
-.posts-title{
-    font-size: 24px;
-    font-weight: 600;
-    padding: 8px;
-    text-align: center;
-    color: #fff;
-    background-color: #e60023;
-    border-radius: 2px;
-}
-.handle-posts{
-    @include flex(center, center);
     flex-direction: column;
-    background-color: #fff;
-    padding: 24px;
-    box-shadow: 0px 0px 12px rgba(0 0 0 / 10%);
-}
-.image-uploaded{
-    margin: 24px 0 0;
+    padding: 0 12px;
+  }
+  @include small-tablet {
+    flex-direction: column;
+  }
 }
 
-.infor-uploaded{
-    width: 60%;
-    margin: 24px 40px;
+.title {
+  font-weight: 400;
+  margin: 20px 24px;
+  text-transform: uppercase;
+  font-style: italic;
+  font-size: 24px;
+  text-align: center;
+  padding: 4px;
+  border-radius: 4px;
+  text-decoration: underline;
+  color: #fff;
+  background-color: cornflowerblue;
+  display: none;
+  @include mobile {
+    display: block;
+    font-size: 20px;
+    margin: 20px 12px;
+  }
+  @include small-tablet {
+    display: block;
+    margin: 20px 24px;
+  }
 }
-.posts-input{
-    border: 1px solid #ccc;
-    border-radius:4px ;
+.upload-dragger {
+  border: 2px dotted #ccc;
+  transition: all 0.4s linear;
+  &:hover {
+    border: 2px dotted red;
+  }
 }
-.btn-container{
-    @include flex(center, center);
-    button{
-        background-color: red;
-        color: #fff;
-        font-weight: 600;
-        padding: 12px 36px;
+.image-uploaded {
+  width: 50%;
+  @include flex(center, center);
+  @include mobile {
+    width: 100%;
+    height: max-content;
+    margin: 20px 0;
+  }
+  @include small-tablet {
+    width: 100%;
+    height: max-content;
+    margin: 20px 0;
+  }
+}
+.infor-uploaded {
+  width: 50%;
+  margin: 0px 0 24px 3rem;
+  border-left: 2px solid #ccc;
+  padding-left: 3rem;
+  @include mobile {
+    width: 100%;
+    margin: 0 0 40px;
+    border: none;
+    padding: 0;
+  }
+  @include small-tablet {
+    width: 100%;
+    margin: 0 0 40px;
+    border: none;
+    padding: 0;
+  }
+}
+.posts-input {
+  border: 2px solid #ccc;
+  padding: 4px 0;
+  border-radius: 4px;
+  font-size: 15px;
+  transition: all 0.4s linear;
+}
+.posts-select {
+  border-radius: 4px 0 0 4px;
+}
+.btn-container {
+  @include flex(center, center);
+  button {
+    background-color: red;
+    color: #fff;
+    font-weight: 600;
+    padding: 12px 36px;
+    border-radius: 40px;
+    opacity: 1;
+    &:hover {
+      background-color: red;
+      color: #fff;
+      opacity: 0.7;
     }
+  }
+}
+.btn-create-table {
+  color: #fff !important;
+  padding: 25px 16px;
+  border-radius: 0 4px 4px 0;
+  border: 1px solid #18a058;
+  &:hover {
+    color: #fff;
+    opacity: 0.6;
+  }
+}
+.container-end {
+  @include flex(end, center);
 }
